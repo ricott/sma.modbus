@@ -1,0 +1,29 @@
+{
+  "name": "sma.modbus",
+  "version": "1.0.0",
+  "description": "Monitor SMA SunnyBoy inverters over modbus protocol",
+  "main": "app.js",
+  "dependencies": {
+    "node-modbus": "^4.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jghaanstra/sma.modbus.git"
+  },
+  "keywords": [
+    "SMA",
+    "inverter",
+    "solar",
+    "sunnyboy"
+  ],
+  "author": "Jelger Haanstra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jghaanstra/sma.modbus/issues"
+  },
+  "homepage": "https://github.com/jghaanstra/sma.modbus"
+}

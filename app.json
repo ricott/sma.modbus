@@ -1,0 +1,139 @@
+{
+	"id": "sma.modbus",
+	"sdk": 2,
+	"name": {
+		"en": "SMA Inverters",
+		"nl": "SMA Omvormers"
+	},
+	"tags": {
+		"en": [ "SMA", "inverter", "solar", "sunny boy" ],
+		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy" ]
+	},
+	"version": "1.0.0",
+	"compatibility": "1.x >=1.5.0",
+	"author": {
+		"name": "Jelger Haanstra",
+		"email": "homey@solidewebservices.com",
+		"website": "https://github.com/jghaanstra/sma.modbus"
+	},
+	"contributing": {
+		"donate": {
+			"paypal": {
+				"username": "jghaanstra"
+			}
+		}
+	},
+	"bugs": {
+		"url": "https://github.com/jghaanstra/sma.modbus/issues"
+	},
+  "homeyCommunityTopicId": 122,
+	"images": {
+		"large": "./assets/images/large.png",
+		"small": "./assets/images/small.png"
+	},
+	"category": "energy",
+	"description": {
+		"en": "Monitor SMA Sunny Boy inverters over modbus protocol",
+		"nl": "Monitor SMA Sunny Boy omvormers via modbus protocol"
+	},
+	"dependencies": {
+		"net": "*"
+	},
+  "capabilities": {
+    "measure_yield": {
+      "type": "number",
+      "title": {
+        "en": "Total Yield",
+        "nl": "Totale opbrengst"
+      },
+      "getable": true,
+      "setable": true,
+      "units": {
+        "en": "MWh",
+        "nl": "MWh"
+      }
+    }
+  },
+	"drivers": [
+		{
+			"id": "sunny-boy",
+			"name": {
+				"en": "Sunny Boy",
+				"nl": "Sunny Boy"
+			},
+			"images": {
+				"large": "drivers/sunny-boy/assets/images/large.jpg",
+				"small": "drivers/sunny-boy/assets/images/small.jpg"
+			},
+			"class": "sensor",
+			"capabilities": [
+        "measure_power",
+				"meter_power",
+				"measure_voltage",
+        "measure_yield"
+			],
+			"pair": [
+				{
+					"id": "start"
+				}
+			],
+			"settings": [
+				{
+					"type": "group",
+					"label": {
+						"en": "Sunny Boy settings",
+						"nl": "Sunny Boy instellingen"
+					},
+					"children": [
+						{
+							"id": "address",
+							"type": "text",
+							"value": "0.0.0.0",
+							"label": {
+								"en": "IP Address",
+								"nl": "IP adres"
+							}
+						},
+						{
+							"id": "port",
+							"type": "number",
+							"value": 502,
+							"step": 1,
+							"label": {
+								"en": "Port",
+								"nl": "Poort"
+							}
+						},
+						{
+							"id": "polling",
+							"type": "number",
+							"value": 5,
+							"step": 1,
+							"attr": {
+								"min": 2,
+								"max": 3600
+							},
+							"label": {
+								"en": "Polling",
+								"nl": "Polling"
+							}
+						}
+					]
+				}
+			],
+      "mobile": {
+        "components": [
+          {
+            "id": "sensor",
+            "capabilities": [ "measure_power", "meter_power", "measure_voltage", "measure_yield" ],
+            "options": {
+              "icons": {
+                "measure_yield": "/assets/total_yield.svg"
+              }
+            }
+          }
+        ]
+      }
+		}
+	]
+}

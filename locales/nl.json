@@ -1,0 +1,11 @@
+{
+  "pair": {
+    "title": "SMA SunnyBoy toevoegen",
+    "nosettings": "Vul a.u.b. alle verplichte velden in.",
+    "intro": "Voer het IP adres en de port in van je SMA SunnyBoy en stel de polling frequency in.",
+    "address": "IP adres",
+    "port": "Poort",
+    "polling": "Polling frequentie",
+    "connect": "Verbind"
+  }
+}
