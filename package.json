@@ -4,6 +4,7 @@
   "description": "Monitor SMA SunnyBoy inverters over modbus protocol",
   "main": "app.js",
   "dependencies": {
+    "lodash": "^4.17.10",
     "node-modbus": "^4.3.0"
   },
   "devDependencies": {},
