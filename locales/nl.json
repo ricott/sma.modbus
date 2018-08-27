@@ -1,8 +1,8 @@
 {
   "pair": {
-    "title": "SMA SunnyBoy toevoegen",
+    "title": "SMA omvormer toevoegen",
     "nosettings": "Vul a.u.b. alle verplichte velden in.",
-    "intro": "Voer het IP adres en de port in van je SMA SunnyBoy en stel de polling frequency in.",
+    "intro": "Voer het IP adres, het poortnummer en de polling frequentie in van je SMA omvormer.",
     "address": "IP adres",
     "port": "Poort",
     "polling": "Polling frequentie",

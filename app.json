@@ -26,7 +26,7 @@
 	"bugs": {
 		"url": "https://github.com/jghaanstra/sma.modbus/issues"
 	},
-  "homeyCommunityTopicId": 122,
+  "homeyCommunityTopicId": 696,
 	"images": {
 		"large": "./assets/images/large.png",
 		"small": "./assets/images/small.png"
@@ -47,7 +47,7 @@
         "nl": "Totale opbrengst"
       },
       "getable": true,
-      "setable": true,
+      "setable": false,
       "units": {
         "en": "MWh",
         "nl": "MWh"

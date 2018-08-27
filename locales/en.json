@@ -1,8 +1,8 @@
 {
   "pair": {
-    "title": "Add SMA SunnyBoy inverter",
+    "title": "Add SMA Inverter",
     "nosettings": "Please fill in all the required fields.",
-    "intro": "Enter the IP address and port of your SMA SunnyBoy and set the polling frequency.",
+    "intro": "Enter the IP address, port number and polling frequentie of your SMA inverter.",
     "address": "IP Address",
     "port": "Port",
     "polling": "Polling Frequency",
