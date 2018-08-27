@@ -47,7 +47,7 @@ class SmaModbusDevice extends Homey.Device {
 
             /* VOLTAGE */
             client.readHoldingRegisters(30783, 2).then((resp) => {
-              var volt = resp.payload.readUInt32BE();
+              var volt = resp.payload.readUInt32BE() / 100;
               if (volt < 0 || volt > 10000) {
                 this.setCapabilityValue('measure_voltage', 0);
               } else {
@@ -80,10 +80,6 @@ class SmaModbusDevice extends Homey.Device {
       this.setUnavailable(err);
     })
 
-  }
-
-  onDeleted() {
-    client.close();
   }
 
 }

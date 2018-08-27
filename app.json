@@ -33,8 +33,8 @@
 	},
 	"category": "energy",
 	"description": {
-		"en": "Monitor SMA Sunny Boy inverters over modbus protocol",
-		"nl": "Monitor SMA Sunny Boy omvormers via modbus protocol"
+		"en": "Monitor SMA inverters over modbus protocol",
+		"nl": "Monitor SMA omvormers via modbus protocol"
 	},
 	"dependencies": {
 		"net": "*"
@@ -56,14 +56,14 @@
   },
 	"drivers": [
 		{
-			"id": "sunny-boy",
+			"id": "inverter",
 			"name": {
-				"en": "Sunny Boy",
-				"nl": "Sunny Boy"
+				"en": "Inverter",
+				"nl": "Omvormer"
 			},
 			"images": {
-				"large": "drivers/sunny-boy/assets/images/large.jpg",
-				"small": "drivers/sunny-boy/assets/images/small.jpg"
+				"large": "drivers/inverter/assets/images/large.jpg",
+				"small": "drivers/inverter/assets/images/small.jpg"
 			},
 			"class": "sensor",
 			"capabilities": [
@@ -81,8 +81,8 @@
 				{
 					"type": "group",
 					"label": {
-						"en": "Sunny Boy settings",
-						"nl": "Sunny Boy instellingen"
+						"en": "Inverter settings",
+						"nl": "Omvormer instellingen"
 					},
 					"children": [
 						{
