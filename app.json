@@ -58,8 +58,8 @@
 		{
 			"id": "inverter",
 			"name": {
-				"en": "Inverter",
-				"nl": "Omvormer"
+				"en": "SMA Inverters",
+				"nl": "SMA Omvormer"
 			},
 			"images": {
 				"large": "drivers/inverter/assets/images/large.jpg",
