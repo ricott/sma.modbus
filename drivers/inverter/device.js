@@ -63,6 +63,7 @@ class SmaModbusDevice extends Homey.Device {
               client.readHoldingRegisters(30513, 4).then((resp) => {
                 var totalyield = resp.payload.readUInt32BE(4) / 1000;
                 var totalyieldmwh = +totalyield.toFixed(2);
+                //var totalyieldmwh = new Intl.NumberFormat('nl-NL', { style: 'decimal', maximumFractionDigits: 2 }).format(totalyield);
                 this.setCapabilityValue('measure_yield', totalyieldmwh);
               }).catch((err) => {
                 console.log(err);
