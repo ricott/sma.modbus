@@ -39,7 +39,8 @@ class SmaModbusDevice extends Homey.Device {
 
           /* DAILY YIELD */
           client.readHoldingRegisters(30517, 4).then((resp) => {
-            this.setCapabilityValue('meter_power', resp.payload.readUInt32BE(4));
+            var meterpower = resp.payload.readUInt32BE(4) / 1000;
+            this.setCapabilityValue('meter_power', meterpower);
           }).catch((err) => {
             console.log(err);
             this.setUnavailable(err);
