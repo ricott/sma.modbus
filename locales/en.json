@@ -7,5 +7,6 @@
     "port": "Port",
     "polling": "Polling Frequency",
     "connect": "Connect"
-  }
+  },
+  "Unreachable": "Unreachable"
 }

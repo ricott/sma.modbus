@@ -23,51 +23,72 @@ class SmaModbusDevice extends Homey.Device {
 
     client.on('connect', () => {
 
+      console.log('Connected ...')
+
       setInterval(() => {
         /* Current Power AC */
         client.readHoldingRegisters(30775, 2).then((resp) => {
-          var powerac = resp.payload.readUInt32BE(0, 1);
-          if (powerac < 0 || powerac > 10000) {
-            this.setCapabilityValue('measure_power', 0);
+          if (resp.payload.length > 0) {
+            var powerac = resp.payload.readUInt32BE(0, 1);
+            if (powerac < 0 || powerac > 10000) {
+              this.setCapabilityValue('measure_power', 0);
+            } else {
+              this.setCapabilityValue('measure_power', powerac);
+            }
           } else {
-            this.setCapabilityValue('measure_power', powerac);
+            console.log('Reading out current power AC failed.');
           }
         }).catch((err) => {
           console.log(err);
-          this.setUnavailable(err);
+          this.setUnavailable(err.err);
+          client.close();
         }).done(() => {
 
           /* DAILY YIELD */
           client.readHoldingRegisters(30517, 4).then((resp) => {
-            var meterpower = resp.payload.readUInt32BE(4) / 1000;
-            this.setCapabilityValue('meter_power', meterpower);
+            if (resp.payload.length > 0) {
+              var meterpower = resp.payload.readUInt32BE(4) / 1000;
+              this.setCapabilityValue('meter_power', meterpower);
+            } else {
+              console.log('Reading out daily yield failed.');
+            }
           }).catch((err) => {
             console.log(err);
-            this.setUnavailable(err);
+            this.setUnavailable(err.err);
+            client.close();
           }).done(() => {
 
             /* VOLTAGE */
             client.readHoldingRegisters(30783, 2).then((resp) => {
-              var volt = resp.payload.readUInt32BE() / 100;
-              if (volt < 0 || volt > 10000) {
-                this.setCapabilityValue('measure_voltage', 0);
+              if (resp.payload.length > 0) {
+                var volt = resp.payload.readUInt32BE() / 100;
+                if (volt < 0 || volt > 10000) {
+                  this.setCapabilityValue('measure_voltage', 0);
+                } else {
+                  this.setCapabilityValue('measure_voltage', volt);
+                }
               } else {
-                this.setCapabilityValue('measure_voltage', volt);
+                console.log('Reading out voltage failed.');
               }
             }).catch((err) => {
               console.log(err);
-              this.setUnavailable(err);
+              this.setUnavailable(err.err);
+              client.close();
             }).done(() => {
 
               /* TOTAL YIELD */
               client.readHoldingRegisters(30513, 4).then((resp) => {
-                var totalyield = resp.payload.readUInt32BE(4) / 1000;
-                var totalyieldmwh = +totalyield.toFixed(2);
-                //var totalyieldmwh = new Intl.NumberFormat('nl-NL', { style: 'decimal', maximumFractionDigits: 2 }).format(totalyield);
-                this.setCapabilityValue('measure_yield', totalyieldmwh);
+                if (resp.payload.length > 0) {
+                  var totalyield = resp.payload.readUInt32BE(4) / 1000;
+                  var totalyieldmwh = +totalyield.toFixed(0);
+                  this.setCapabilityValue('measure_yield', totalyieldmwh);
+                } else {
+                  console.log('Reading out total yield failed.');
+                }
               }).catch((err) => {
                 console.log(err);
-                this.setUnavailable(err);
+                this.setUnavailable(err.err);
+                client.close();
               })
 
             })
@@ -78,8 +99,18 @@ class SmaModbusDevice extends Homey.Device {
     })
 
     client.on('error', (err) => {
-      console.log(err);
-      this.setUnavailable(err);
+      this.log(err);
+      this.setUnavailable(err.err);
+      client.close();
+    })
+
+    client.on('close', () => {
+      console.log('Client closed, retrying in 63 seconds');
+
+      setTimeout(() => {
+        client.connect();
+        console.log('Reconnecting now ...');
+      }, 63000)
     })
 
   }

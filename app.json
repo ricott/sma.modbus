@@ -72,6 +72,14 @@
 				"measure_voltage",
         "measure_yield"
 			],
+      "capabilitiesOptions": {
+        "meter_power": {
+          "title": {
+            "en": "Daily Yield",
+            "nl": "Dagopbrengst"
+          }
+        }
+      },
 			"pair": [
 				{
 					"id": "start"

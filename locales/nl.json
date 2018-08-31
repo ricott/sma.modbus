@@ -7,5 +7,6 @@
     "port": "Poort",
     "polling": "Polling frequentie",
     "connect": "Verbind"
-  }
+  },
+  "Unreachable": "Onbereikbaar"
 }
