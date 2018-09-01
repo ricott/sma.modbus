@@ -18,8 +18,9 @@ For support please use the official support topic on the forum [here](https://co
 ## Changelog
 ### 2018-08-31 - v1.0.1
 * FIX: display daily yield in KWh instead of Wh
+* FIX: display total yield in MWh instead of Wh
 * FIX: fix an issue with "Index out of range" errors
-* IMPROVEMENT: remove decimals from total yield
+* IMPROVEMENT: switched node library for ready out modbus
 * IMPROVEMENT: changed title of capability meter_power to Daily Yield
 
 ### 2018-08-27 - v1.0.0
