@@ -63,6 +63,8 @@ class SmaModbusDevice extends Homey.Device {
           /* TOTAL YIELD */
           var measureyield = total_yield / 1000;
           this.setCapabilityValue('measure_yield', measureyield);
+        }).catch((err) => {
+          this.log(err);
         })
       }, this.getSetting('polling') * 1000)
 
@@ -71,7 +73,7 @@ class SmaModbusDevice extends Homey.Device {
     socket.on('error', (err) => {
       this.log(err);
       this.setUnavailable(err.err);
-      client.close();
+      socket.end();
     })
 
     socket.on('close', () => {
