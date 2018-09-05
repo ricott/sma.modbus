@@ -27,7 +27,10 @@ class SmaModbusDevice extends Homey.Device {
 
     socket.on('connect', () => {
 
-      this.log('Connected ...')
+      this.log('Connected ...');
+      if (!this.getAvailable()) {
+        this.setAvailable();
+      }
 
       this.pollingInterval = setInterval(() => {
         Promise.all([
