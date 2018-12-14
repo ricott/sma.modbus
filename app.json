@@ -1,6 +1,7 @@
 {
 	"id": "sma.modbus",
 	"sdk": 2,
+  "brandColor": "#df001c",
 	"name": {
 		"en": "SMA Inverters",
 		"nl": "SMA Omvormers"
@@ -9,8 +10,8 @@
 		"en": [ "SMA", "inverter", "solar", "sunny boy" ],
 		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy" ]
 	},
-	"version": "1.0.2",
-	"compatibility": "1.x >=1.5.0",
+	"version": "1.0.3",
+	"compatibility": ">=1.5.12",
 	"author": {
 		"name": "Jelger Haanstra",
 		"email": "homey@solidewebservices.com",

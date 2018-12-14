@@ -16,15 +16,5 @@ For Homey to be able to communicate with your SMA inverter over the modbus proto
 For support please use the official support topic on the forum [here](https://community.athom.com/t/696).
 
 ## Changelog
-### 2018-09-05 - v1.0.2
-* FIX: device registered as unavailable where not set to available again
-
-### 2018-09-02 - v1.0.1
-* FIX: display daily yield in KWh instead of Wh
-* FIX: display total yield in MWh instead of Wh
-* FIX: fix an issue with "Index out of range" errors
-* IMPROVEMENT: switched node library for ready out modbus
-* IMPROVEMENT: changed title of capability meter_power to Daily Yield
-
-### 2018-08-27 - v1.0.0
-* NEW: initial release
+### v1.0.3 - 2018-12-14
+* FIX: update compatibility to enable install on Homey firmware v2.x
