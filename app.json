@@ -10,8 +10,8 @@
 		"en": [ "SMA", "inverter", "solar", "sunny boy" ],
 		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy" ]
 	},
-	"version": "1.0.3",
-	"compatibility": ">=1.5.12",
+	"version": "1.0.4",
+	"compatibility": ">=2.0.0",
 	"author": {
 		"name": "Jelger Haanstra",
 		"email": "homey@solidewebservices.com",

@@ -1,6 +1,6 @@
 {
   "name": "sma.modbus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Monitor SMA SunnyBoy inverters over modbus protocol",
   "main": "app.js",
   "dependencies": {
