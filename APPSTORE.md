@@ -16,5 +16,6 @@ For Homey to be able to communicate with your SMA inverter over the modbus proto
 For support please use the official support topic on the forum [here](https://community.athom.com/t/696).
 
 ## Changelog
-### v1.0.4 - 2019-02-06
+### v1.0.4 - 2019-02-09
 * FIX: improvements to pairing template for firmware 2.x
+* IMPROVEMENT: remove unnecassary lodash node module
