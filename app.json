@@ -10,7 +10,7 @@
 		"en": [ "SMA", "inverter", "solar", "sunny boy" ],
 		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy" ]
 	},
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"compatibility": ">=2.0.0",
 	"author": {
 		"name": "Jelger Haanstra",
@@ -49,10 +49,68 @@
       },
       "getable": true,
       "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/total_yield.svg",
       "units": {
         "en": "MWh",
         "nl": "MWh"
       }
+    },
+    "battery_capacity": {
+      "type": "number",
+      "title": {
+        "en": "Battery Capacity",
+        "nl": "Batterij capaciteit"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/battery_capacity.svg",
+      "units": {
+        "en": "%",
+        "nl": "%"
+      }
+    },
+    "power_drawn": {
+      "type": "number",
+      "title": {
+        "en": "Power Drawn",
+        "nl": "Stroom afname"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/power_drawn.svg",
+      "units": {
+        "en": "W",
+        "nl": "W"
+      }
+    },
+    "powergrid_feed_in": {
+      "type": "number",
+      "title": {
+        "en": "Powergrid Feed In",
+        "nl": "Vermogen netvoeding"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/powergrid_feed_in.svg",
+      "units": {
+        "en": "W",
+        "nl": "W"
+      }
+    },
+    "operational_status": {
+      "type": "string",
+      "title": {
+        "en": "Operational Status",
+        "nl": "Operationele status"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/operational_status.svg"
     }
   },
 	"drivers": [
@@ -129,20 +187,84 @@
 						}
 					]
 				}
+			]
+		},
+    {
+			"id": "storage",
+			"name": {
+				"en": "SMA Sunny Boy Storage",
+				"nl": "SMA Sunny Boy Storage"
+			},
+			"images": {
+				"large": "drivers/storage/assets/images/large.jpg",
+				"small": "drivers/storage/assets/images/small.jpg"
+			},
+			"class": "sensor",
+			"capabilities": [
+        "operational_status",
+        "measure_power",
+        "measure_battery",
+        "battery_capacity",
+        "power_drawn",
+        "powergrid_feed_in"
 			],
-      "mobile": {
-        "components": [
-          {
-            "id": "sensor",
-            "capabilities": [ "measure_power", "meter_power", "measure_voltage", "measure_yield" ],
-            "options": {
-              "icons": {
-                "measure_yield": "/assets/total_yield.svg"
-              }
-            }
+      "capabilitiesOptions": {
+        "measure_power": {
+          "title": {
+            "en": "Charge / Discharge",
+            "nl": "Opladen / Ontladen"
           }
-        ]
-      }
+        }
+      },
+			"pair": [
+				{
+					"id": "start"
+				}
+			],
+			"settings": [
+				{
+					"type": "group",
+					"label": {
+						"en": "Sunny Boy Storage settings",
+						"nl": "Sunny Boy Storage instellingen"
+					},
+					"children": [
+						{
+							"id": "address",
+							"type": "text",
+							"value": "0.0.0.0",
+							"label": {
+								"en": "IP Address",
+								"nl": "IP adres"
+							}
+						},
+						{
+							"id": "port",
+							"type": "number",
+							"value": 502,
+							"step": 1,
+							"label": {
+								"en": "Port",
+								"nl": "Poort"
+							}
+						},
+						{
+							"id": "polling",
+							"type": "number",
+							"value": 5,
+							"step": 1,
+							"attr": {
+								"min": 2,
+								"max": 3600
+							},
+							"label": {
+								"en": "Polling",
+								"nl": "Polling"
+							}
+						}
+					]
+				}
+			]
 		}
 	]
 }

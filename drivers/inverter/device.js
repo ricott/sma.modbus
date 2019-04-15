@@ -45,10 +45,12 @@ class SmaModbusDevice extends Homey.Device {
           var total_yield = results[3].response._body._valuesAsArray[1];
 
           // POWER
-          if (powerac < 0 || powerac > 10000) {
-            this.setCapabilityValue('measure_power', 0);
-          } else {
-            this.setCapabilityValue('measure_power', powerac);
+          if (this.getCapabilityValue('measure_power') != powerac) {
+            if (powerac < 0 || powerac > 10000) {
+              this.setCapabilityValue('measure_power', 0);
+            } else {
+              this.setCapabilityValue('measure_power', powerac);
+            }
           }
 
           /* DAILY YIELD */

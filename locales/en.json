@@ -8,5 +8,10 @@
     "polling": "Polling Frequency",
     "connect": "Connect"
   },
-  "Unreachable": "Unreachable"
+  "Unreachable": "Unreachable",
+  "Off": "Off",
+  "Standby": "Battery Standby",
+  "Charge": "Battery Charging",
+  "Discharge": "Battery Discharging",
+  "NA": "Information Not Available"
 }

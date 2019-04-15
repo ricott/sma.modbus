@@ -2,7 +2,7 @@
 This Homey app allows you to monitor your SMA inverter through the modbus protocol interface. Modbus is a serial communications protocol often used in connecting industrial electronic devices. The app currently supports reading Current Power AC, Daily Yield, Voltage and Total Yield.
 
 ## Supported devices
-In the [support topic](https://community.athom.com/t/696) is a shortened list of supported inverters including the available connection types for each inverter. You can view the complete list of supported inverters in the second tab of this [Google sheets document](https://docs.google.com/spreadsheets/d/1VDGGXSl3RE10oLtm8JgIrXKaZEp1--tMOS92ZPGuF4g/edit?usp=sharing). Unfortunately the configuration for reading out the data of each of these converters seems to differ. I have only tested it with an older Sunny Boy 2500TL. Support for other inverters may need to be added seperately and might require some research. If you connect your inverter and you do not see correct values appear in the Homey device, please use the support topic to ask for support for your type of inverter.
+In the [support topic](https://community.athom.com/t/696) is a shortened list of supported inverters including the available connection types for each inverter. You can view the complete list of supported inverters in the second tab of this [Google sheets document](https://docs.google.com/spreadsheets/d/1VDGGXSl3RE10oLtm8JgIrXKaZEp1--tMOS92ZPGuF4g/edit?usp=sharing). Unfortunately the configuration for reading out the data of each of these converters seems to differ. If you connect your inverter and you do not see correct values appear in the Homey device, please use the support topic to ask for support for your type of inverter.
 
 ## Instructions
 For Homey to be able to communicate with your SMA inverter over the modbus protocol this needs to be enabled on the inverter. You can enable modbus communication using the [SMA Sunny Explorer](https://www.sma.de/en/products/monitoring-control/sunny-explorer.html) software. So download and install it, the installable is located under PC Software in the previous link. During installation it may ask you to install the .NET framework 3.5 as well. Now follow these steps.
@@ -16,6 +16,5 @@ For Homey to be able to communicate with your SMA inverter over the modbus proto
 For support please use the official support topic on the forum [here](https://community.athom.com/t/696).
 
 ## Changelog
-### v1.0.4 - 2019-02-09
-* FIX: improvements to pairing template for firmware 2.x
-* IMPROVEMENT: remove unnecassary lodash node module
+### v1.1.0 - 2019-04-22
+* NEW: support for Sunny Boy Storage

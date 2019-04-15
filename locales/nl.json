@@ -8,5 +8,10 @@
     "polling": "Polling frequentie",
     "connect": "Verbind"
   },
-  "Unreachable": "Onbereikbaar"
+  "Unreachable": "Onbereikbaar",
+  "Off": "Uit",
+  "Standby": "Batterij standby",
+  "Charge": "Batterij opladen",
+  "Discharge": "Batterij ontladen",
+  "NA": "Informatie niet beschikbaar"
 }
