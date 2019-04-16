@@ -34,48 +34,19 @@ class SmaModbusStorageDevice extends Homey.Device {
 
       this.pollingInterval = setInterval(() => {
         Promise.all([
+          client.readHoldingRegisters(30955, 2),
           client.readHoldingRegisters(30845, 2),
-          client.readHoldingRegisters(30847, 2),
           client.readHoldingRegisters(30775, 2),
           client.readHoldingRegisters(30865, 2),
           client.readHoldingRegisters(30867, 2),
-          client.readHoldingRegisters(30955, 2)
+          client.readHoldingRegisters(30847, 2)
         ]).then((results) => {
-          var battery = results[0].response._body._valuesAsArray[1];
-          var battery_capacity = results[1].response._body._valuesAsArray[1];
+          var operational_code = results[0].response._body._valuesAsArray[1];
+          var battery = results[1].response._body._valuesAsArray[1];
           var powerac = results[2].response._body._valuesAsArray[1];
           var power_drawn = results[3].response._body._valuesAsArray[1];
           var powergrid_feed_in = results[4].response._body._valuesAsArray[1];
-          var operational_code = results[5].response._body._valuesAsArray[1];
-
-          // BATTERY
-          if (this.getCapabilityValue('measure_battery') != battery) {
-            this.setCapabilityValue('measure_battery', battery);
-          }
-
-          // BATTERY CAPACITY
-          if (this.getCapabilityValue('battery_capacity') != battery) {
-            this.setCapabilityValue('battery_capacity', battery);
-          }
-
-          // CHARGE / DISCHARGE
-          if (this.getCapabilityValue('measure_power') != powerac) {
-            if (powerac < 0 || powerac > 10000) {
-              this.setCapabilityValue('measure_power', 0);
-            } else {
-              this.setCapabilityValue('measure_power', powerac);
-            }
-          }
-
-          // POWER DRAWN
-          if (this.getCapabilityValue('power_drawn') != power_drawn) {
-            this.setCapabilityValue('power_drawn', power_drawn);
-          }
-
-          // POWERGRID FEED IN
-          if (this.getCapabilityValue('powergrid_feed_in') != powergrid_feed_in) {
-            this.setCapabilityValue('powergrid_feed_in', powergrid_feed_in);
-          }
+          var battery_capacity = results[5].response._body._valuesAsArray[1];
 
           // OPERATIONAL STATUS
           if (this.getCapabilityValue('operational_status') != Homey.__('Off') && operational_code == 303) {
@@ -88,6 +59,31 @@ class SmaModbusStorageDevice extends Homey.Device {
             this.setCapabilityValue('operational_status', Homey.__('Discharge'));
           } else if (this.getCapabilityValue('operational_status') != Homey.__('NA') && operational_code == 16777213) {
             this.setCapabilityValue('operational_status', Homey.__('NA'));
+          }
+
+          // BATTERY
+          if (this.getCapabilityValue('battery') != battery) {
+            this.setCapabilityValue('battery', battery);
+          }
+
+          // MEASURE_POWER: CHARGE / DISCHARGE
+          if (this.getCapabilityValue('measure_power') != powerac) {
+            this.setCapabilityValue('measure_power', powerac);
+          }
+
+          // POWER DRAWN
+          if (this.getCapabilityValue('power_drawn') != power_drawn) {
+            this.setCapabilityValue('power_drawn', power_drawn);
+          }
+
+          // POWERGRID FEED IN
+          if (this.getCapabilityValue('powergrid_feed_in') != powergrid_feed_in) {
+            this.setCapabilityValue('powergrid_feed_in', powergrid_feed_in);
+          }
+
+          // BATTERY CAPACITY
+          if (this.getCapabilityValue('battery_capacity') != battery_capacity) {
+            this.setCapabilityValue('battery_capacity', battery_capacity);
           }
 
         }).catch((err) => {

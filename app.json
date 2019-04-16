@@ -56,16 +56,27 @@
         "nl": "MWh"
       }
     },
-    "battery_capacity": {
-      "type": "number",
+    "operational_status": {
+      "type": "string",
       "title": {
-        "en": "Battery Capacity",
-        "nl": "Batterij capaciteit"
+        "en": "Operational Status",
+        "nl": "Operationele status"
       },
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "/assets/battery_capacity.svg",
+      "icon": "/assets/operational_status.svg"
+    },
+    "battery": {
+      "type": "number",
+      "title": {
+        "en": "Battery Charge",
+        "nl": "Batterij lading"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/battery.svg",
       "units": {
         "en": "%",
         "nl": "%"
@@ -101,17 +112,21 @@
         "nl": "W"
       }
     },
-    "operational_status": {
-      "type": "string",
+    "battery_capacity": {
+      "type": "number",
       "title": {
-        "en": "Operational Status",
-        "nl": "Operationele status"
+        "en": "Battery Capacity",
+        "nl": "Batterij capaciteit"
       },
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "/assets/operational_status.svg"
-    }
+      "icon": "/assets/battery_capacity.svg",
+      "units": {
+        "en": "%",
+        "nl": "%"
+      }
+    },
   },
 	"drivers": [
 		{
@@ -202,11 +217,11 @@
 			"class": "sensor",
 			"capabilities": [
         "operational_status",
+        "battery",
         "measure_power",
-        "measure_battery",
-        "battery_capacity",
         "power_drawn",
-        "powergrid_feed_in"
+        "powergrid_feed_in",
+        "battery_capacity"
 			],
       "capabilitiesOptions": {
         "measure_power": {
