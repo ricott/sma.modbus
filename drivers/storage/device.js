@@ -48,7 +48,7 @@ class SmaModbusStorageDevice extends Homey.Device {
           var powergrid_feed_in = results[4].response._body._valuesAsArray[1];
           var battery_capacity = results[5].response._body._valuesAsArray[1];
 
-          console.log('Charge / Discharge: ', powerac);
+          console.log(results[2].response._body);
 
           // OPERATIONAL STATUS
           if (this.getCapabilityValue('operational_status') != Homey.__('Off') && operational_code == 303) {
