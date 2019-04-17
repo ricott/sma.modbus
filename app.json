@@ -225,10 +225,16 @@
         "battery_capacity"
 			],
       "capabilitiesOptions": {
-        "measure_power": {
+        "measure_power.charge": {
           "title": {
-            "en": "Charge / Discharge",
-            "nl": "Opladen / Ontladen"
+            "en": "Charge",
+            "nl": "Opladen"
+          }
+        },
+        "measure_power.discharge": {
+          "title": {
+            "en": "Discharge",
+            "nl": "Ontladen"
           }
         }
       },
