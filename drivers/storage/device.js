@@ -36,22 +36,19 @@ class SmaModbusStorageDevice extends Homey.Device {
         Promise.all([
           client.readHoldingRegisters(30955, 2),
           client.readHoldingRegisters(30845, 2),
-          client.readHoldingRegisters(30775, 2),
+          client.readHoldingRegisters(31393, 2),
+          client.readHoldingRegisters(31395, 2),
           client.readHoldingRegisters(30865, 2),
           client.readHoldingRegisters(30867, 2),
-          client.readHoldingRegisters(30847, 2),
-          client.readHoldingRegisters(31393, 2),
-          client.readHoldingRegisters(31395, 2)
+          client.readHoldingRegisters(30847, 2)
         ]).then((results) => {
           var operational_code = results[0].response._body._valuesAsArray[1];
           var battery = results[1].response._body._valuesAsArray[1];
-          var powerac = results[2].response._body._valuesAsArray[1];
-          var power_drawn = results[3].response._body._valuesAsArray[1];
-          var powergrid_feed_in = results[4].response._body._valuesAsArray[1];
-          var battery_capacity = results[5].response._body._valuesAsArray[1];
-
-          console.log('Charge: ', results[6].response._body._valuesAsArray[1]);
-          console.log('Discharge: ', results[7].response._body._valuesAsArray[1]);
+          var charge = results[2].response._body._valuesAsArray[1];
+          var discharge = results[3].response._body._valuesAsArray[1];
+          var power_drawn = results[4].response._body._valuesAsArray[1];
+          var powergrid_feed_in = results[5].response._body._valuesAsArray[1];
+          var battery_capacity = results[6].response._body._valuesAsArray[1];
 
           // OPERATIONAL STATUS
           if (this.getCapabilityValue('operational_status') != Homey.__('Off') && operational_code == 303) {
@@ -71,9 +68,14 @@ class SmaModbusStorageDevice extends Homey.Device {
             this.setCapabilityValue('battery', battery);
           }
 
-          // MEASURE_POWER: CHARGE / DISCHARGE
-          if (this.getCapabilityValue('measure_power') != powerac) {
-            this.setCapabilityValue('measure_power', powerac);
+          // MEASURE_POWER: CHARGE
+          if (this.getCapabilityValue('measure_power.charge') != charge) {
+            this.setCapabilityValue('measure_power.charge', charge);
+          }
+
+          // MEASURE_POWER: DISCHARGE
+          if (this.getCapabilityValue('measure_power.discharge') != discharge) {
+            this.setCapabilityValue('measure_power.discharge', discharge);
           }
 
           // POWER DRAWN

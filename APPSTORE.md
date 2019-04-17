@@ -16,5 +16,5 @@ For Homey to be able to communicate with your SMA inverter over the modbus proto
 For support please use the official support topic on the forum [here](https://community.athom.com/t/696).
 
 ## Changelog
-### v1.1.0 - 2019-04-22
+### v1.1.0 - 2019-04-17
 * NEW: support for Sunny Boy Storage

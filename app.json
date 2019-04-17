@@ -218,7 +218,8 @@
 			"capabilities": [
         "operational_status",
         "battery",
-        "measure_power",
+        "measure_power.charge",
+        "measure_power.discharge",
         "power_drawn",
         "powergrid_feed_in",
         "battery_capacity"
