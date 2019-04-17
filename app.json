@@ -288,5 +288,273 @@
 				}
 			]
 		}
-	]
+	],
+  "flow": {
+    "triggers": [
+      {
+		    "id": "changedOperationalStatus",
+				"title": {
+					"en": "Operational Status Changed",
+					"nl": "Operationele status gewijzigd"
+				},
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Operational Status",
+              "nl": "Operationele status"
+            },
+            "example": "Battery Standby"
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    },
+      {
+		    "id": "changedBattery",
+				"title": {
+					"en": "Battery Charge Changed",
+					"nl": "Batterij lading gewijzigd"
+				},
+        "tokens": [
+          {
+            "name": "charge",
+            "type": "number",
+            "title": {
+              "en": "Battery Charge (%)",
+              "nl": "Batterij lading (%)"
+            },
+            "example": 66
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    },
+      {
+		    "id": "changedBatteryCharging",
+				"title": {
+					"en": "Battery Charging Changed (W)",
+					"nl": "Batterij opladen gewijzigd (W)"
+				},
+        "tokens": [
+          {
+            "name": "charging",
+            "type": "number",
+            "title": {
+              "en": "Battery Charging (W)",
+              "nl": "Batterij opladen (W)"
+            },
+            "example": 1337
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    },
+      {
+		    "id": "changedBatteryDischarging",
+				"title": {
+					"en": "Battery Discharging Changed (W)",
+					"nl": "Batterij ontladen gewijzigd (W)"
+				},
+        "tokens": [
+          {
+            "name": "discharging",
+            "type": "number",
+            "title": {
+              "en": "Battery Discharging (W)",
+              "nl": "Batterij ontladen (W)"
+            },
+            "example": 187
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    },
+      {
+		    "id": "changedPowerDrawn",
+				"title": {
+					"en": "Power Drawn Changed (W)",
+					"nl": "Stroom afname gewijzigd (W)"
+				},
+        "tokens": [
+          {
+            "name": "drawn",
+            "type": "number",
+            "title": {
+              "en": "Power Drawn (W)",
+              "nl": "Stroom afname (W)"
+            },
+            "example": 303
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    },
+      {
+		    "id": "changedPowerGridFeedin",
+				"title": {
+					"en": "Powergrid Feed In Changed (W)",
+					"nl": "Vermogen netvoeding gewijzigd (W)"
+				},
+        "tokens": [
+          {
+            "name": "feedin",
+            "type": "number",
+            "title": {
+              "en": "Powergrid Feed In (W)",
+              "nl": "Vermogen netvoeding (W)"
+            },
+            "example": 42
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    },
+      {
+		    "id": "changedBatteryCapacity",
+				"title": {
+					"en": "Battery Capacity Changed (%",
+					"nl": "Batterij capaciteit gewijzigd (%)"
+				},
+        "tokens": [
+          {
+            "name": "capacity",
+            "type": "number",
+            "title": {
+              "en": "Battery Capacity (%)",
+              "nl": "Batterij capaciteit (%)"
+            },
+            "example": 42
+          }
+        ],
+	      "args": [
+	        {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+	      ]
+	    }
+    ],
+    "conditions": [
+      {
+        "id": "isOperationalStatus",
+        "title": {
+          "en": "Operation status !{{is|is not}}",
+          "nl": "Operationele status !{{is|is niet}}"
+        },
+        "args": [
+          {
+            "name": "status",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "303",
+                "label": {
+                  "en": "Off",
+                  "nl": "Uit"
+                }
+              },
+              {
+                "id": "2291",
+                "label": {
+                  "en": "Battery Standby",
+                  "nl": "Batterij standby"
+                }
+              },
+              {
+                "id": "2292",
+                "label": {
+                  "en": "Battery Charging",
+                  "nl": "Batterij opladen"
+                }
+              },
+              {
+                "id": "2293",
+                "label": {
+                  "en": "Battery Discharging",
+                  "nl": "Batterij ontladen"
+                }
+              },
+              {
+                "id": "16777213",
+                "label": {
+                  "en": "Information Not Available",
+                  "nl": "Informatie Niet Beschikbaar"
+                }
+              }
+            ]
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Select Sunny Boy Storage",
+              "nl": "Selecteer  Sunny Boy Storage"
+            },
+            "filter": "driver_id=storage"
+	        }
+        ]
+      }
+	  ]
+  }
 }
