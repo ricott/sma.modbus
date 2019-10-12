@@ -1,0 +1,8 @@
+# Optional npm cache directory
+.npm
+
+# OS stuff
+.DS_Store
+
+#Secret environment variables
+/env.json
