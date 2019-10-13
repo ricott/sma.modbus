@@ -149,8 +149,8 @@
 				"en": "SMA Tripower"
 			},
 			"images": {
-				"large": "drivers/tripower/assets/images/large.jpg",
-				"small": "drivers/tripower/assets/images/small.jpg"
+				"large": "drivers/tripower/assets/images/large.png",
+				"small": "drivers/tripower/assets/images/small.png"
 			},
 			"class": "sensor",
 			"capabilities": [
