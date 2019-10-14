@@ -9,3 +9,8 @@ Homey app for monitoring SMA inverters through modbus protocol interface.
 - Moved SMA modbus logic to separate file(s) enabling easy testing outside Homey
 - If settings are updated the new values are used immediately, no app restart required
 - Grid power is stored in insights
+
+
+TODO
+Homey version 3.0
+- Change device class to solarpanel

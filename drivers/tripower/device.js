@@ -51,7 +51,7 @@ class TriPowerDevice extends Homey.Device {
 
         this._updateProperty('operational_status.health', readings.condition);
         this._updateProperty('operational_status', readings.status);
-        this._updateProperty('powergrid_feed_in', readings.acPowerTotal);
+        this._updateProperty('measure_power', readings.acPowerTotal);
         this._updateProperty('powergrid_voltage_in', readings.acVoltageL1);
         this._updateProperty('measure_voltage.dcA', readings.dcVoltageA);
         this._updateProperty('measure_voltage.dcB', readings.dcVoltageB);

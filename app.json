@@ -158,7 +158,7 @@
 				"operational_status",
 				"measure_voltage.dcA",
 				"measure_voltage.dcB",
-        "powergrid_feed_in",
+        "measure_power",
 				"powergrid_voltage_in",
 				"meter_power",
         "measure_yield"
@@ -184,7 +184,7 @@
             "en": "MPP B (DC)"
           }
         },
-				"powergrid_feed_in": {
+				"measure_power": {
           "title": {
             "en": "Grid power"
           }
