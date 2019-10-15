@@ -10,6 +10,10 @@ class SmaModbusDevice extends Homey.Device {
 
   onInit() {
 
+    if (this.getClass() !== 'solarpanel') {
+      this.setClass('solarpanel');
+    }
+
     let options = {
       'host': this.getSetting('address'),
       'port': this.getSetting('port'),
