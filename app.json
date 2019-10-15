@@ -17,6 +17,14 @@
 		"email": "homey@solidewebservices.com",
 		"website": "https://github.com/jghaanstra/sma.modbus"
 	},
+	"contributors": {
+		"developers": [
+			{
+				"name": "Richard Barkestam",
+				"email": "richard@barkestam.se"
+			}
+		]
+	},
 	"contributing": {
 		"donate": {
 			"paypal": {
