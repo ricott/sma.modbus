@@ -11,7 +11,7 @@
 		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy" ]
 	},
 	"version": "2.0.0",
-	"compatibility": ">=2.0.0",
+	"compatibility": ">=3.0.0",
 	"author": {
 		"name": "Jelger Haanstra",
 		"email": "homey@solidewebservices.com",
@@ -160,7 +160,7 @@
 				"large": "drivers/tripower/assets/images/large.png",
 				"small": "drivers/tripower/assets/images/small.png"
 			},
-			"class": "sensor",
+			"class": "solarpanel",
 			"capabilities": [
 				"operational_status.health",
 				"operational_status",
@@ -329,7 +329,7 @@
 				"large": "drivers/inverter/assets/images/large.jpg",
 				"small": "drivers/inverter/assets/images/small.jpg"
 			},
-			"class": "sensor",
+			"class": "solarpanel",
 			"capabilities": [
         "measure_power",
 				"meter_power",
