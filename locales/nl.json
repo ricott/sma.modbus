@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "title": "SMA Modbus instellingen",
+    "subtitle": "Voer poort in. Standaardpoort is 502."
+  },
   "pair": {
     "title": "SMA omvormer toevoegen",
     "nosettings": "Vul a.u.b. alle verplichte velden in.",

@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+    <head>
+
+        <!-- The '/homey.js' script must be included in your settings view to work -->
+        <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+
+    </head>
+    <body>
+
+        <h1 data-i18n="settings.title">
+            <!--
+            This field will automatically be filled by a translated string with key 'settings.title'.
+            Read more about translations at Internationalization.
+            -->
+        </h1>
+        <p data-i18n="settings.subtitle">
+            <!--
+            This field will also be translated
+            -->
+        </p>
+
+        <fieldset>
+            <legend>Settings</legend>
+            <div class="field row">
+                <label for="region">Port</label><br/>
+                <input id="port" type="text" value="" />
+<!--                <select id="region">
+                  <option value="eu">Europe</option>
+                  <option value="na">North America</option>
+                  <option value="cn">China</option>
+                </select>-->
+            </div>
+        </fieldset>
+
+        <button id="save" class="right">Save changes</button>
+
+        <script type="text/javascript">
+
+        // a method named 'onHomeyReady' must be present in your code
+        function onHomeyReady( Homey ){
+
+            // Tell Homey we're ready to be displayed
+            Homey.ready();
+
+            var portElement = document.getElementById('port');
+            var saveElement = document.getElementById('save');
+
+            Homey.get('port', function( err, port ) {
+               if( err ) return Homey.alert( err );
+               portElement.value = port;
+            });
+
+            saveElement.addEventListener('click', function(e) {
+                Homey.set('port', portElement.value, function( err ){
+                    if( err ) return Homey.alert( err );
+                });
+            });
+        }
+        </script>
+
+    </body>
+</html>

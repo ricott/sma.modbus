@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "title": "SMA Modbus settings",
+    "subtitle": "Please enter port. Default port is 502."
+  },
   "pair": {
     "title": "Add SMA Inverter",
     "nosettings": "Please fill in all the required fields.",

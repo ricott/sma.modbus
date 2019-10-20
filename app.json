@@ -7,33 +7,29 @@
 		"nl": "SMA Omvormers"
 	},
 	"tags": {
-		"en": [ "SMA", "inverter", "solar", "sunny boy" ],
-		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy" ]
+		"en": [ "SMA", "inverter", "solar", "sunny boy", "tripower", "pv", "emergy" ],
+		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy", "tripower", "pv", "energy" ]
 	},
 	"version": "2.0.0",
 	"compatibility": ">=3.0.0",
 	"author": {
-		"name": "Jelger Haanstra",
-		"email": "homey@solidewebservices.com",
-		"website": "https://github.com/jghaanstra/sma.modbus"
+    "name": "Richard Barkestam",
+    "email": "richard@barkestam.se",
+		"website": "https://github.com/ricott/sma.modbus"
 	},
-	"contributors": {
-		"developers": [
-			{
-				"name": "Richard Barkestam",
-				"email": "richard@barkestam.se"
-			}
-		]
-	},
-	"contributing": {
-		"donate": {
-			"paypal": {
-				"username": "jghaanstra"
-			}
-		}
-	},
+  "contributors": {
+    "developers": [{"name": "Richard Barkestam","email": "richard@barkestam.se"}, {"name": "Jelger Haanstra", "email": "homey@solidewebservices.com"}]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "RBarkestam",
+        "currency": "EUR"
+      }
+    }
+  },
 	"bugs": {
-		"url": "https://github.com/jghaanstra/sma.modbus/issues"
+		"url": "https://github.com/ricott/sma.modbus/issues"
 	},
   "homeyCommunityTopicId": 696,
 	"images": {
@@ -135,26 +131,14 @@
         "en": "%",
         "nl": "%"
       }
-    },
-		"powergrid_voltage_in": {
-      "type": "number",
-      "title": {
-        "en": "Grid voltage (L1)"
-      },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/powergrid_feed_in.svg",
-      "units": {
-        "en": "V"
-      }
     }
   },
 	"drivers": [
 		{
-			"id": "tripower",
+			"id": "inverter",
 			"name": {
-				"en": "SMA Tripower"
+				"en": "SMA Inverter",
+				"nl": "SMA Omvormer"
 			},
 			"images": {
 				"large": "drivers/tripower/assets/images/large.png",
@@ -167,46 +151,49 @@
 				"measure_voltage.dcA",
 				"measure_voltage.dcB",
         "measure_power",
-				"powergrid_voltage_in",
+				"measure_voltage",
 				"meter_power",
         "measure_yield"
 			],
       "capabilitiesOptions": {
 				"operational_status.health": {
           "title": {
-            "en": "Condition"
-          }
-        },
-				"operational_status": {
-          "title": {
-            "en": "Operational status"
+            "en": "Condition",
+            "nl": "Staat"
           }
         },
 				"measure_voltage.dcA": {
           "title": {
-            "en": "MPP A (DC)"
+            "en": "MPP A (DC)",
+            "nl": "MPP A (DC)"
           }
         },
         "measure_voltage.dcB": {
           "title": {
-            "en": "MPP B (DC)"
+            "en": "MPP B (DC)",
+            "nl": "MPP B (DC)"
           }
         },
 				"measure_power": {
           "title": {
-            "en": "Grid power"
+            "en": "Grid power",
+            "nl": "Netvermogen"
+          }
+        },
+        "measure_voltage": {
+          "title": {
+            "en": "Grid voltage (L1)",
+            "nl": "Netspanning (L1)"
           }
         },
         "meter_power": {
           "title": {
-            "en": "Daily Yield"
+            "en": "Daily Yield",
+            "nl": "Dagelijkse opbrengst"
           }
         }
       },
 			"pair": [
-				{
-					"id": "settings"
-				},
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -223,7 +210,8 @@
 				{
           "type": "group",
           "label": {
-            "en": "App settings"
+            "en": "Inverter settings",
+						"nl": "Omvormer instellingen"
           },
           "children": [
 						{
@@ -248,7 +236,7 @@
 						{
 							"id": "polling",
 							"type": "number",
-							"value": 5,
+							"value": 10,
 							"step": 1,
 							"attr": {
 								"min": 2,
@@ -264,14 +252,16 @@
         {
           "type": "group",
           "label": {
-            "en": "Information"
+            "en": "Information",
+            "nl": "Informatie"
           },
           "children": [
             {
               "id": "deviceType",
               "type": "label",
               "label": {
-                "en": "Device type"
+                "en": "Device type",
+                "nl": "Soort apparaat"
               },
               "value": ""
             },
@@ -279,7 +269,8 @@
               "id": "serialNo",
               "type": "label",
               "label": {
-                "en": "Serial number"
+                "en": "Serial number",
+                "nl": "Serienummer"
               },
               "value": ""
             },
@@ -287,7 +278,8 @@
               "id": "swVersion",
               "type": "label",
               "label": {
-                "en": "Software version"
+                "en": "Software version",
+                "nl": "Software versie"
               },
               "value": ""
             },
@@ -295,7 +287,8 @@
               "id": "maxPower",
               "type": "label",
               "label": {
-                "en": "Max power (W)"
+                "en": "Max power (W)",
+                "nl": "Max vermogen (W)"
               },
               "value": ""
             }
@@ -304,14 +297,16 @@
         {
           "type": "group",
           "label": {
-            "en": "Debug"
+            "en": "Debug",
+            "nl": "Debug"
           },
           "children": [
             {
               "id": "sma_last_error",
               "type": "textarea",
               "label": {
-                "en": "Most recent SMA Error"
+                "en": "Most recent SMA Error",
+                "nl": "Meest recente SMA-fout"
               },
               "value": ""
             }
@@ -319,82 +314,7 @@
         }
       ]
 		},
-		{
-			"id": "inverter",
-			"name": {
-				"en": "SMA Inverters",
-				"nl": "SMA Omvormer"
-			},
-			"images": {
-				"large": "drivers/inverter/assets/images/large.jpg",
-				"small": "drivers/inverter/assets/images/small.jpg"
-			},
-			"class": "solarpanel",
-			"capabilities": [
-        "measure_power",
-				"meter_power",
-				"measure_voltage",
-        "measure_yield"
-			],
-      "capabilitiesOptions": {
-        "meter_power": {
-          "title": {
-            "en": "Daily Yield",
-            "nl": "Dagopbrengst"
-          }
-        }
-      },
-			"pair": [
-				{
-					"id": "start"
-				}
-			],
-			"settings": [
-				{
-					"type": "group",
-					"label": {
-						"en": "Inverter settings",
-						"nl": "Omvormer instellingen"
-					},
-					"children": [
-						{
-							"id": "address",
-							"type": "text",
-							"value": "0.0.0.0",
-							"label": {
-								"en": "IP Address",
-								"nl": "IP adres"
-							}
-						},
-						{
-							"id": "port",
-							"type": "number",
-							"value": 502,
-							"step": 1,
-							"label": {
-								"en": "Port",
-								"nl": "Poort"
-							}
-						},
-						{
-							"id": "polling",
-							"type": "number",
-							"value": 5,
-							"step": 1,
-							"attr": {
-								"min": 2,
-								"max": 3600
-							},
-							"label": {
-								"en": "Polling",
-								"nl": "Polling"
-							}
-						}
-					]
-				}
-			]
-		},
-    {
+	  {
 			"id": "storage",
 			"name": {
 				"en": "SMA Sunny Boy Storage",
@@ -463,7 +383,7 @@
 						{
 							"id": "polling",
 							"type": "number",
-							"value": 5,
+							"value": 10,
 							"step": 1,
 							"attr": {
 								"min": 2,
