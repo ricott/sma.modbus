@@ -24,6 +24,7 @@ class InverterDriver extends Homey.Driver {
 
   onPair (socket) {
     let devices = [];
+    let discoveryError;
 
     socket.on('list_devices', (data, callback) => {
       //Discover devices using multicast query
@@ -46,10 +47,15 @@ class InverterDriver extends Homey.Driver {
           });
       });
 
+      discoveryQuery.on('error', error => {
+        discoveryError = error;
+      });
+
       //Wait for inverterInfo to be collected
       sleep(2500).then(() => {
-        
-        if (devices.length == 0) {
+        if (devices.length == 0 && discoveryError) {
+          callback(discoveryError);
+        } else if (devices.length == 0) {
           callback(new Error('No SMA Inverters found!'));
         } else {
           callback(null, devices);
