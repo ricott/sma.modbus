@@ -145,8 +145,13 @@ class TriPowerDevice extends Homey.Device {
           //this.log(`[${this.getName()}] Updating capability '${key}' from '${oldValue}' to '${value}'`);
           this.setCapabilityValue(key, value);
   
-          //Prepared for triggers, value changed from last value
-  
+          if (key === 'operational_status') {
+            let tokens = {
+              inverter_status: value || 'n/a'
+            }
+            this.getDriver().triggerFlow('trigger.inverter_status_changed', tokens, this);
+          }
+          
       } else {
         //Update value to show we are doing it in app
         //this.log(`[${this.getName()}] (NoDiff) Updating capability '${key}' from '${oldValue}' to '${value}'`);

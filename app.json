@@ -410,6 +410,33 @@
   "flow": {
     "triggers": [
       {
+        "id": "inverter_status_changed",
+        "title": {
+					"en": "Operational Status Changed",
+					"nl": "Operationele status gewijzigd"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=inverter"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "inverter_status",
+            "type": "string",
+            "title": {
+              "en": "Operational Status",
+              "nl": "Operationele status"
+            },
+            "example": {
+                "en": "MPP"
+            }
+          }
+        ]
+      },
+      {
 		    "id": "changedOperationalStatus",
 				"title": {
 					"en": "Operational Status Changed",
@@ -614,6 +641,46 @@
 	    }
     ],
     "conditions": [
+      {
+        "id":"isInverterDailyYield",
+        "title":{
+           "en":"Daily yield is !{{|not}} above"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter":"driver_id=inverter"
+          },
+          {
+            "name": "daily_yield",
+            "type": "number",
+            "title": {
+                "en": "Daily yield (kWh)"
+            }
+          }
+        ]
+      },
+      {
+        "id":"isInverterStatus",
+        "title":{
+           "en":"Operational status !{{contains|doesn't contain}}"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter":"driver_id=inverter"
+          },
+          {
+            "name": "inverter_status",
+            "type": "text",
+            "title": {
+                "en": "Operational status"
+            }
+          }
+        ]
+      },
       {
         "id": "isOperationalStatus",
         "title": {
