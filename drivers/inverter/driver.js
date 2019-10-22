@@ -35,6 +35,9 @@ class InverterDriver extends Homey.Driver {
       
       //We can find multiple inverters, this method is called once per inverter found
       discoveryQuery.on('inverterInfo', inverterInfo => {
+        //8001: Solar Inverters (DevClss1)
+        //Filter out storage devices, etc
+        if (inverterInfo.deviceClass == 8001) {
           devices.push({
             name: inverterInfo.deviceType,
             data: {
@@ -45,6 +48,9 @@ class InverterDriver extends Homey.Driver {
               port: Number(inverterInfo.port)
             }
           });
+        } else {
+          this.log('Found a SMA device that is not an inverter', inverterInfo);
+        }
       });
 
       discoveryQuery.on('error', error => {
