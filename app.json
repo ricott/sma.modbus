@@ -293,6 +293,15 @@
               "value": ""
             },
             {
+              "id": "activePowerLimit",
+              "type": "label",
+              "label": {
+                "en": "Active power limit (W)",
+                "nl": "Actief vermogen limiet (W)"
+              },
+              "value": ""
+            },
+            {
               "id": "gridCountry",
               "type": "label",
               "label": {

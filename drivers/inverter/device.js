@@ -79,6 +79,7 @@ class TriPowerDevice extends Homey.Device {
                         serialNo: String(properties.serialNo),
                         swVersion: String(properties.swVersion || 'unknown'),
                         maxPower: String(properties.maxPower || 'unknown'),
+                        activePowerLimit: String(properties.activePowerLimit || 'unknown'),
                         gridCountry: String(properties.gridCountry || 'unknown')})
         .catch(err => {
           this.error('Failed to update settings', err);
