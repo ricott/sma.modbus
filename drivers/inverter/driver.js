@@ -93,7 +93,7 @@ class InverterDriver extends Homey.Driver {
       discoveryQuery.discover();
       
       //We can find multiple inverters, this method is called once per inverter found
-      discoveryQuery.on('inverterInfo', inverterInfo => {
+      discoveryQuery.on('deviceInfo', inverterInfo => {
         //8001: Solar Inverters (DevClss1)
         //Filter out storage devices, etc
         if (inverterInfo.deviceClass == 8001) {

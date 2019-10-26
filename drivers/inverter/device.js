@@ -12,7 +12,7 @@ const deviceCapabilitesList = ['measure_power',
                               'measure_voltage.dcA',
                               'measure_voltage.dcB'];
 
-class TriPowerDevice extends Homey.Device {
+class InverterDevice extends Homey.Device {
 
   onInit() {
     this.log(`SMA inverter initiated, '${this.getName()}'`);
@@ -67,7 +67,11 @@ class TriPowerDevice extends Homey.Device {
 
       //New capabilities
       this._updateProperty('operational_status.health', readings.condition || 'n/a');
-      this._updateProperty('operational_status', readings.status || 'n/a');
+      //Skip the odd redings that sometimes appear that show 0 as condition
+      //There is no mapping for 0, so it is an unknown value
+      if (readings.status != 0) {
+        this._updateProperty('operational_status', readings.status || 'n/a');
+      }
       this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
       this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
     });
@@ -197,4 +201,4 @@ class TriPowerDevice extends Homey.Device {
 
 }
 
-module.exports = TriPowerDevice;
+module.exports = InverterDevice;

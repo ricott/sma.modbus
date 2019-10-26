@@ -36,7 +36,10 @@
 		"large": "./assets/images/large.png",
 		"small": "./assets/images/small.png"
 	},
-	"category": "energy",
+  "category": "energy",
+  "permissions":[
+    "homey:manager:api"
+  ],
 	"description": {
 		"en": "Monitor SMA inverters over modbus protocol",
 		"nl": "Monitor SMA omvormers via modbus protocol"
@@ -131,6 +134,51 @@
         "en": "%",
         "nl": "%"
       }
+    },
+    "power_grid": {
+      "type": "number",
+      "title": {
+        "en": "Grid power"
+      },
+			"insights": false,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/grid.svg",
+      "units": {
+        "en": "W",
+        "nl": "W"
+      }
+    },
+    "power_pv": {
+      "type": "number",
+      "title": {
+        "en": "PV power"
+      },
+			"insights": false,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/sun2.svg",
+      "units": {
+        "en": "W",
+        "nl": "W"
+      }
+    },
+    "power_self": {
+      "type": "number",
+      "title": {
+        "en": "Consumption"
+      },
+			"insights": false,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/house.svg",
+      "units": {
+        "en": "W",
+        "nl": "W"
+      }
     }
   },
 	"drivers": [
@@ -141,8 +189,8 @@
 				"nl": "SMA Omvormer"
 			},
 			"images": {
-				"large": "drivers/tripower/assets/images/large.png",
-				"small": "drivers/tripower/assets/images/small.png"
+				"large": "drivers/inverter/assets/images/large.png",
+				"small": "drivers/inverter/assets/images/small.png"
 			},
 			"class": "solarpanel",
 			"capabilities": [
@@ -236,7 +284,7 @@
 						{
 							"id": "polling",
 							"type": "number",
-							"value": 10,
+							"value": 5,
 							"step": 1,
 							"attr": {
 								"min": 2,
@@ -331,7 +379,194 @@
         }
       ]
 		},
-	  {
+		{
+			"id": "energy",
+			"name": {
+				"en": "SMA Energy Meter"
+			},
+			"images": {
+				"large": "drivers/energy/assets/images/large.png",
+				"small": "drivers/energy/assets/images/small.png"
+			},
+			"class": "sensor",
+			"capabilities": [
+        "measure_power.grid",
+        "measure_power.surplus",
+        "measure_power.L1",
+        "measure_current.L1",
+        "measure_power.L2",
+        "measure_current.L2",
+        "measure_power.L3",
+        "measure_current.L3"
+			],
+      "capabilitiesOptions": {
+				"measure_power.grid": {
+          "title": {
+            "en": "Grid power"
+          }
+        },
+				"measure_power.surplus": {
+          "title": {
+            "en": "Grid feed-in"
+          }
+        },
+        "measure_power.L1": {
+          "title": {
+            "en": "L1 power"
+          }
+        },
+				"measure_current.L1": {
+          "title": {
+            "en": "L1 current"
+          }
+        },
+        "measure_power.L2": {
+          "title": {
+            "en": "L2 power"
+          }
+        },
+				"measure_current.L2": {
+          "title": {
+            "en": "L2 current"
+          }
+        },
+        "measure_power.L3": {
+          "title": {
+            "en": "L3 power"
+          }
+        },
+				"measure_current.L3": {
+          "title": {
+            "en": "L3 current"
+          }
+        }
+      },
+			"pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+			],
+			"settings": [
+				{
+          "type": "group",
+          "label": {
+            "en": "Emergy Meter settings",
+						"nl": "Omvormer instellingen"
+          },
+          "children": [
+						{
+							"id": "polling",
+							"type": "number",
+							"value": 5,
+							"step": 1,
+							"attr": {
+								"min": 2,
+								"max": 3600
+							},
+							"label": {
+								"en": "Polling",
+								"nl": "Polling"
+							}
+						}
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Information",
+            "nl": "Informatie"
+          },
+          "children": [
+            {
+              "id": "serialNo",
+              "type": "label",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "value": ""
+            }     
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Debug",
+            "nl": "Debug"
+          },
+          "children": [
+            {
+              "id": "sma_last_error",
+              "type": "textarea",
+              "label": {
+                "en": "Most recent SMA Error",
+                "nl": "Meest recente SMA-fout"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+			"id": "summary",
+			"name": {
+				"en": "Energy summary"
+			},
+			"images": {
+				"large": "drivers/summary/assets/images/large.png",
+				"small": "drivers/summary/assets/images/small.png"
+			},
+			"class": "sensor",
+			"capabilities": ["power_pv", "power_grid", "power_self"],
+			"pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+			],
+			"settings": [
+				{
+          "type": "group",
+          "label": {
+            "en": "Inverter settings",
+						"nl": "Omvormer instellingen"
+          },
+          "children": [
+						{
+							"id": "polling",
+							"type": "number",
+							"value": 5,
+							"step": 1,
+							"attr": {
+								"min": 2,
+								"max": 3600
+							},
+							"label": {
+								"en": "Polling",
+								"nl": "Polling"
+							}
+						}
+          ]
+        }
+      ]
+    },
+    {
 			"id": "storage",
 			"name": {
 				"en": "SMA Sunny Boy Storage",
