@@ -11,22 +11,29 @@ class SummaryDevice extends Homey.Device {
         this.pollIntervals = [];
         this.summary = {
             name: this.getName(),
-            polling: this.getSettings().polling,
-            inverterId: this.getSettings().inverterId
+            polling: this.getSettings().polling
         };
-
-
 
         this._initilializeTimers();
     }
 
     updateValues() {
 
-        let inverter = ManagerDrivers.getDriver('inverter').getDevice({ id: this.summary.inverterId });
-        this._updateProperty('power_pv', inverter.getCapabilityValue('measure_power'));
+        let power_pv = 0;
+        ManagerDrivers.getDriver('inverter').getDevices().forEach(function(inverter) {
+            power_pv = power_pv + inverter.getCapabilityValue('measure_power');
+        });
+        this._updateProperty('power_pv', power_pv);
 
-        //this._updateProperty('measure_power.grid', readings.acPowerPV || 0);
-        //this._updateProperty('measure_power.self', readings.psurplus || 0);
+        let power_grid = 0;
+        let surplus = 0;
+        ManagerDrivers.getDriver('energy').getDevices().forEach(function(em) {
+            power_grid = power_grid + em.getCapabilityValue('measure_power.grid');
+            surplus = surplus + em.getCapabilityValue('measure_power.surplus');
+        });
+        //Will be negative if there is a surplus
+        this._updateProperty('power_grid', (power_grid - surplus));
+        this._updateProperty('power_self', ((power_pv + power_grid) - surplus));
 
     }
 
@@ -43,6 +50,11 @@ class SummaryDevice extends Homey.Device {
         this.pollIntervals.forEach(timer => {
             clearInterval(timer);
         });
+    }
+
+    _reinitializeTimers() {
+        this._deleteTimers();
+        this._initilializeTimers();
     }
 
     _updateProperty(key, value) {
@@ -77,7 +89,7 @@ class SummaryDevice extends Homey.Device {
         }
 
         if (change) {
-            //TODO refresh polling interval
+            this._reinitializeTimers();
         }
     }
 

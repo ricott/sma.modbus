@@ -15,11 +15,11 @@ class EnergyDriver extends Homey.Driver {
 
     socket.on('list_devices', (data, callback) => {
 
-      let emSession = new EnergyMeter();
+      let emSession = new EnergyMeter({});
   
       emSession.on('readings', readings => {
         
-        if (!devices.find(({ em }) => em.data.id === readings.serialNo)) {
+        if (!devices.find(( em ) => em.data.id === readings.serialNo)) {
           devices.push({
             name: `Energy Meter (${readings.serialNo})`,
             data: {

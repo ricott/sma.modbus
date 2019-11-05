@@ -18,7 +18,7 @@ class EnergyDevice extends Homey.Device {
     };
 
     //Update serial number setting
-    this.setSettings({serialNo: String(this.energy.serialNo)})
+    this.setSettings({ serialNo: String(this.energy.serialNo) })
       .catch(err => {
         this.error('Failed to update settings', err);
       });
@@ -52,16 +52,6 @@ class EnergyDevice extends Homey.Device {
 
     });
 
-    this.energy.emSession.on('properties', properties => {
-      this.energy.properties = properties;
-
-      this.setSettings({serialNo: String(properties.serialNo)})
-        .catch(err => {
-          this.error('Failed to update settings', err);
-        });
-
-    });
-
     this.energy.emSession.on('error', error => {
       this.error('Houston we have a problem', error);
 
@@ -71,14 +61,14 @@ class EnergyDevice extends Homey.Device {
       } else {
         try {
           message = JSON.stringify(error, null, "  ");
-        } catch(e) {
+        } catch (e) {
           this.log('Failed to stringify object', e);
           message = error.toString();
         }
       }
 
       let dateTime = new Date().toISOString();
-      this.setSettings({sma_last_error: dateTime + '\n' + message})
+      this.setSettings({ sma_last_error: dateTime + '\n' + message })
         .catch(err => {
           this.error('Failed to update settings', err);
         });
@@ -93,9 +83,9 @@ class EnergyDevice extends Homey.Device {
     if (this.hasCapability(key)) {
       let oldValue = this.getCapabilityValue(key);
       if (oldValue !== null && oldValue != value) {
-          this.setCapabilityValue(key, value);
-          //Placeholder for trigger logic
-  
+        this.setCapabilityValue(key, value);
+        //Placeholder for trigger logic
+
       } else {
         this.setCapabilityValue(key, value);
       }
@@ -108,23 +98,23 @@ class EnergyDevice extends Homey.Device {
     this.energy.emSession = null;
   }
 
-  onRenamed (name) {
+  onRenamed(name) {
     this.log(`Renaming SMA energy meter from '${this.energy.name}' to '${name}'`);
     this.energy.name = name;
   }
 
-    async onSettings(oldSettings, newSettings, changedKeysArr) {
-        let change = false;
-        if (changedKeysArr.indexOf("polling") > -1) {
-            this.log('Polling value was change to:', newSettings.polling);
-            this.energy.polling = newSettings.polling;
-            change = true;
-        }
-
-        if (change) {
-            //TODO refresh polling interval
-        }
+  async onSettings(oldSettings, newSettings, changedKeysArr) {
+    let change = false;
+    if (changedKeysArr.indexOf("polling") > -1) {
+      this.log('Polling value was change to:', newSettings.polling);
+      this.energy.polling = newSettings.polling;
+      change = true;
     }
+
+    if (change) {
+      this.energy.emSession.setRefreshInterval(this.energy.polling);
+    }
+  }
 
 }
 

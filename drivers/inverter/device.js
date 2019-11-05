@@ -69,8 +69,8 @@ class InverterDevice extends Homey.Device {
       this._updateProperty('operational_status.health', readings.condition || 'n/a');
       //Skip the odd redings that sometimes appear that show 0 as condition
       //There is no mapping for 0, so it is an unknown value
-      if (readings.status != 0) {
-        this._updateProperty('operational_status', readings.status || 'n/a');
+      if (readings.status && !readings.status.startsWith('UNKNOWN')) {
+        this._updateProperty('operational_status', readings.status);
       }
       this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
       this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);

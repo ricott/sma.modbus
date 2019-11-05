@@ -3,6 +3,7 @@
 const Homey = require('homey');
 const modbus = require('jsmodbus');
 const net = require('net');
+const decodeData = require('../../lib/decodeData.js');
 const socket = new net.Socket();
 
 class SmaModbusStorageDevice extends Homey.Device {
@@ -42,13 +43,13 @@ class SmaModbusStorageDevice extends Homey.Device {
           client.readHoldingRegisters(30867, 2),
           client.readHoldingRegisters(30847, 2)
         ]).then((results) => {
-          var operational_code = results[0].response._body._valuesAsArray[1];
-          var battery = results[1].response._body._valuesAsArray[1];
-          var charge = results[2].response._body._valuesAsArray[1];
-          var discharge = results[3].response._body._valuesAsArray[1];
-          var power_drawn = results[4].response._body._valuesAsArray[1];
-          var powergrid_feed_in = results[5].response._body._valuesAsArray[1];
-          var battery_capacity = results[6].response._body._valuesAsArray[1];
+          let operational_code = decodeData.decodeU32(results[0].response._body._valuesAsArray, 0, 0);
+          let battery = decodeData.decodeU32(results[1].response._body._valuesAsArray, 0, 0);
+          let charge = decodeData.decodeU32(results[2].response._body._valuesAsArray, 0, 0);
+          let discharge = decodeData.decodeU32(results[3].response._body._valuesAsArray, 0, 0);
+          let power_drawn = decodeData.decodeS32(results[4].response._body._valuesAsArray, 0, 0);
+          let powergrid_feed_in = decodeData.decodeS32(results[5].response._body._valuesAsArray, 0, 0);
+          let battery_capacity = decodeData.decodeU32(results[6].response._body._valuesAsArray, 0, 0);
 
           // OPERATIONAL STATUS
           if (this.getCapabilityValue('operational_status') != Homey.__('Off') && operational_code == 303) {

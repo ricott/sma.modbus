@@ -1,9 +1,7 @@
 'use strict';
 
 const Homey	= require('homey');
-//const HomeyAPI = require('athom-api');
 const { ManagerDrivers } = require('homey');
-
 
 class SummaryDriver extends Homey.Driver {
 
@@ -14,25 +12,22 @@ class SummaryDriver extends Homey.Driver {
 
   onPair (socket) {
     let devices = [];
-    let discoveryError;
 
     socket.on('list_devices', (data, callback) => {
 
-        let inverters = ManagerDrivers.getDriver('inverter').getDevices();
-        inverters.forEach(inverter => {
+      //We need to find an inverter and an energy meter for this to make sense
+      if (ManagerDrivers.getDriver('inverter').getDevices().length > 0 &&
+          ManagerDrivers.getDriver('energy').getDevices().length > 0) {
+
             devices.push({
-                name: inverter.getName() + ' Energy Meter',
-                data: {
-                  id: 99999999999999
-                },
-                settings: {
-                  inverterId: inverter.getData().id
-                }
-              });
-        });
+              name: 'SMA Summary',
+              data: {
+                id: 99999999999999
+              }
+            });
+      }
 
-        callback(null, devices);
-
+      callback(null, devices);
 
     });
   }
