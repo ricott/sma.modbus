@@ -390,7 +390,7 @@
 			},
 			"class": "sensor",
 			"capabilities": [
-        "measure_power.grid",
+        "measure_power",
         "measure_power.surplus",
         "measure_power.L1",
         "measure_current.L1",
@@ -400,7 +400,7 @@
         "measure_current.L3"
 			],
       "capabilitiesOptions": {
-				"measure_power.grid": {
+				"measure_power": {
           "title": {
             "en": "Grid power"
           }
@@ -440,6 +440,9 @@
             "en": "L3 current"
           }
         }
+      },
+      "energy": {
+        "cumulative": true
       },
 			"pair": [
         {

@@ -40,7 +40,7 @@ class EnergyDevice extends Homey.Device {
     this.energy.emSession.on('readings', readings => {
       this.energy.readings = readings;
 
-      this._updateProperty('measure_power.grid', readings.pregard);
+      this._updateProperty('measure_power', readings.pregard);
       this._updateProperty('measure_power.surplus', readings.psurplus);
 
       this._updateProperty('measure_power.L1', (readings.pregardL1 - readings.psurplusL1));

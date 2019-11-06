@@ -28,13 +28,13 @@ class SummaryDevice extends Homey.Device {
         let power_grid = 0;
         let surplus = 0;
         ManagerDrivers.getDriver('energy').getDevices().forEach(function(em) {
-            power_grid = power_grid + em.getCapabilityValue('measure_power.grid');
+            power_grid = power_grid + em.getCapabilityValue('measure_power');
             surplus = surplus + em.getCapabilityValue('measure_power.surplus');
         });
         //Will be negative if there is a surplus
         this._updateProperty('power_grid', (power_grid - surplus));
         this._updateProperty('power_self', ((power_pv + power_grid) - surplus));
-
+        
     }
 
     _initilializeTimers() {
