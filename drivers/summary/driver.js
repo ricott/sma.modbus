@@ -20,15 +20,17 @@ class SummaryDriver extends Homey.Driver {
           ManagerDrivers.getDriver('energy').getDevices().length > 0) {
 
             devices.push({
-              name: 'SMA Summary',
+              name: 'Energy Summary',
               data: {
                 id: 99999999999999
               }
             });
+            callback(null, devices);
+
+      } else {
+
+        callback(new Error('You need at least one inverter and one energy meter already registered in Homey to add an Energy Summary device'));
       }
-
-      callback(null, devices);
-
     });
   }
 }
