@@ -38,7 +38,7 @@ For Homey to be able to communicate with your inverter over the modbus protocol 
 
 ## Changelog
 ### v2.0.0 - 2019-10-20
-* New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA products.
+* New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters.
 * Inverters only show supported capabilities (new Homey v3 support)
 * Four new capabilities added on inverters that support it; condition, operational status, MPP A voltage and MPP B voltage
 * Device information added for inverters in device advanced settings section; Device type, Serial number, software version, max power, power limit and grid country standard.
