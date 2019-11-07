@@ -3,12 +3,12 @@
 	"sdk": 2,
   "brandColor": "#df001c",
 	"name": {
-		"en": "SMA Inverters",
-		"nl": "SMA Omvormers"
+		"en": "SMA Solar",
+		"nl": "SMA Solar"
 	},
 	"tags": {
-		"en": [ "SMA", "inverter", "solar", "sunny boy", "tripower", "pv", "emergy" ],
-		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy", "tripower", "pv", "energy" ]
+		"en": [ "SMA", "inverter", "solar", "sunny boy", "tripower", "pv", "energy", "energy meter", "home manager" ],
+		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy", "tripower", "pv", "energie", "energie meter", "home manager" ]
 	},
 	"version": "2.0.0",
 	"compatibility": ">=3.0.0",
