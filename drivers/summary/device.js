@@ -41,7 +41,7 @@ class SummaryDevice extends Homey.Device {
         });
         //Will be negative if there is a surplus
         this._updateProperty('power_grid', (power_grid - surplus));
-        this._updateProperty('power_self', ((power_pv + power_grid + battery_discharge) - surplus));
+        this._updateProperty('power_self', ((power_pv + power_grid + battery_discharge) - (surplus + battery_charge)));
     }
 
     _initilializeTimers() {
