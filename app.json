@@ -7,10 +7,10 @@
 		"nl": "SMA Solar"
 	},
 	"tags": {
-		"en": [ "SMA", "inverter", "solar", "sunny boy", "tripower", "pv", "energy", "energy meter", "home manager" ],
-		"nl": [ "SMA", "omvormer", "zonnepanelen", "sunny boy", "tripower", "pv", "energie", "energie meter", "home manager" ]
+		"en": [ "sma", "inverter", "solar", "sunny boy", "tripower", "pv", "energy", "energy meter", "home manager", "modbus" ],
+		"nl": [ "sma", "omvormer", "zonnepanelen", "sunny boy", "tripower", "pv", "energie", "energie meter", "home manager", "modbus" ]
 	},
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"compatibility": ">=3.0.0",
 	"author": {
     "name": "Richard Barkestam",
@@ -613,7 +613,14 @@
 				"small": "drivers/summary/assets/images/small.png"
 			},
 			"class": "sensor",
-			"capabilities": ["power_pv", "power_grid", "power_self"],
+			"capabilities": ["power_pv", "power_grid", "power_drawn.battery", "power_self"],
+      "capabilitiesOptions": {
+				"power_drawn.battery": {
+          "title": {
+            "en": "Battery power"
+          }
+        }
+      },
 			"pair": [
         {
           "id": "list_devices",

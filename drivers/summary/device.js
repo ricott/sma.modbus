@@ -19,6 +19,14 @@ class SummaryDevice extends Homey.Device {
 
     updateValues() {
 
+        let battery_charge = 0;
+        let battery_discharge = 0;
+        ManagerDrivers.getDriver('storage').getDevices().forEach(function(inverter) {
+            battery_charge = battery_charge + inverter.getCapabilityValue('measure_power.charge');
+            battery_discharge = battery_discharge + inverter.getCapabilityValue('measure_power.discharge')
+        });
+        this._updateProperty('power_drawn.battery', (battery_charge - battery_discharge));
+
         let power_pv = 0;
         ManagerDrivers.getDriver('inverter').getDevices().forEach(function(inverter) {
             power_pv = power_pv + inverter.getCapabilityValue('measure_power');
@@ -33,8 +41,7 @@ class SummaryDevice extends Homey.Device {
         });
         //Will be negative if there is a surplus
         this._updateProperty('power_grid', (power_grid - surplus));
-        this._updateProperty('power_self', ((power_pv + power_grid) - surplus));
-        
+        this._updateProperty('power_self', ((power_pv + power_grid + battery_discharge) - surplus));
     }
 
     _initilializeTimers() {

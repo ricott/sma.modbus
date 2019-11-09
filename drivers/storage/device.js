@@ -10,13 +10,21 @@ class SmaModbusStorageDevice extends Homey.Device {
 
   onInit() {
 
+    this.pollIntervals = [];
+    this.storage = {
+      name: this.getName(),
+      address: this.getSettings().address,
+      port: this.getSettings().port,
+      polling: this.getSettings().polling,
+    };
+
     let options = {
-      'host': this.getSetting('address'),
-      'port': this.getSetting('port'),
+      'host': this.storage.address,
+      'port': this.storage.port,
       'unitId': 3,
       'timeout': 5000,
       'autoReconnect': true,
-      'reconnectTimeout': this.getSetting('polling'),
+      'reconnectTimeout': this.storage.polling,
       'logLabel' : 'SMA Sunny Boy Storage',
       'logLevel': 'error',
       'logEnabled': false
@@ -27,11 +35,7 @@ class SmaModbusStorageDevice extends Homey.Device {
     socket.connect(options);
 
     socket.on('connect', () => {
-
       this.log('Connected ...');
-      if (!this.getAvailable()) {
-        this.setAvailable();
-      }
 
       this.pollingInterval = setInterval(() => {
         Promise.all([
@@ -114,7 +118,6 @@ class SmaModbusStorageDevice extends Homey.Device {
 
     socket.on('error', (err) => {
       this.log(err);
-      this.setUnavailable(err.err);
       socket.end();
     })
 
@@ -132,8 +135,39 @@ class SmaModbusStorageDevice extends Homey.Device {
   }
 
   onDeleted() {
+    this.log(`Deleting SMA storage '${this.getName()}' from Homey.`);
+
     clearInterval(this.pollingInterval);
   }
+
+  onRenamed (name) {
+    this.log(`Renaming SMA storage from '${this.storage.name}' to '${name}'`);
+    this.storage.name = name;
+  }
+
+  async onSettings(oldSettings, newSettings, changedKeysArr) {
+    let change = false;
+		if (changedKeysArr.indexOf("address") > -1) {
+			this.log('Address value was change to:', newSettings.address);
+      this.storage.address = newSettings.address;
+      change = true;
+		}
+    if (changedKeysArr.indexOf("port") > -1) {
+			this.log('Port value was change to:', newSettings.port);
+      this.storage.port = newSettings.port;
+      change = true;
+		}
+    if (changedKeysArr.indexOf("polling") > -1) {
+			this.log('Polling value was change to:', newSettings.polling);
+      this.storage.polling = newSettings.polling;
+      change = true;
+		}
+
+    if (change) {
+      //We need to re-initialize the SMA session since setting(s) are changed
+      //TODO 
+    }
+	}
 
 }
 
