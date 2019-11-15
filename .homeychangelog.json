@@ -1,4 +1,7 @@
 {
+  "2.0.2": {
+    "en": "New Homey app store adoption"
+  },
   "2.0.1": {
     "en": "Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability. Load balancing feature added Energy Meter. "
   },

@@ -9,7 +9,7 @@ As of version 2 of the app the following device types are supported
 - Energy Summary
 
 ## Inverters
-In the [support topic](https://community.athom.com/t/696) is a shortened list of supported inverters. The version 2 of the app tries to figure out which capabilities each inverter has using a mapping logic and will only show capabilities in Homey that the inverter supports. For instance some inverters doesn't support daily yield, then this capability wont be displayed in Homey for that inverter.
+In the [support topic](https://community.athom.com/t/696) is a shortened list of supported inverters. Version 2 of the app tries to figure out which capabilities each inverter has, using a mapping logic and will only show capabilities in Homey that the inverter supports. For instance, some inverters don't support daily yield, then this capability won't be displayed in Homey for that inverter.
 
 You can view a somewhat complete list of supported inverters in the second tab of this [Google sheets document](https://drive.google.com/file/d/1TF1kpXG1iz1xidIHFoD4WOr5wCsETIy7/view?usp=sharing). If you connect your inverter and you do not see all values appear in the Homey device, please use the support topic to ask for support for your type of inverter. The device type (e.g. STP 25000TL-30) of the inverter should always be possible to access, by default this is also used as the device name when you add a new inverter to Homey. Please include this information in any support request.
 
@@ -19,11 +19,12 @@ The most basic capability set that all inverters should support are; grid power,
 Shows operational status, battery, charge, discharge, power drawn, grid feed in and battery capacity of Sunny Boy Storage products using the modbus protocol.
 
 ## Energy Meter
-The Energy Meter device type supports both the Energy Meter and the Home Manager 2.0 products. Both products generate the same multicast datagrams required to access the built in meter information. This device type will be recognized in Homey as a smart meter and visualized properly on the energy tab.
-Can be used to load balance against main fuse. There are three settings for the device, main fuze (A), threshold (%) and available current offset(A). Each phase (L1, L2 and L3) can trigger a phase utilization alert if a phase is loaded more than threshold. There are two conditions to check for an individual phase's utilization or all phases. A global tag is published with current 'Available current' in Amp.
+The Energy Meter device type supports both the Energy Meter and the Home Manager 2.0 products. Both products generate the same multicast datagrams required to access the built-in meter information. This device type will be recognized in Homey as a smart meter and visualized properly on the energy tab.
+
+It can be used to load balance against the main fuse. There are three settings for the device, main fuze (A), threshold (%) and available current offset(A). Each phase (L1, L2, and L3) can trigger a phase utilization alert if a phase is loaded more than the threshold. There are two conditions to check for an individual phase's utilization or all phases. A global tag is published with currently 'Available current' in Amp.
 
 ## Energy Summary
-The Energy Summary is a virtual device that gathers information from inverter and energy meter devices registered in your Homey. It will only disply information from inverters and energy meter devices from this app. It shows three values; PV Power, Grid Power and Consumption.
+The Energy Summary is a virtual device that gathers information from inverter and energy meter devices registered in your Homey. It will only display information from inverters and energy meter devices from this app. It shows three values; PV Power, Grid Power, and Consumption.
 
 ## Support topic
 For support please use the official support topic on the forum [here](https://community.athom.com/t/696).
@@ -37,10 +38,12 @@ For Homey to be able to communicate with your inverter over the modbus protocol 
 * Now go into Homey and add a new device. Select the inverter device from the SMA Solar app. Your inverter should be found automatically assuming modbus port in app settings match the modbus port of the inverter (default 502).
 
 ## Changelog
-### v2.0.0
+### v2.0.2
+* New Homey app store adoption
+
+### v2.0.1
 * Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability.
 * Load balancing feature added Energy Meter
-* New Homey app store support
 
 ### v2.0.0
 * New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters.
