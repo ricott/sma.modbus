@@ -1,24 +1,55 @@
 {
-	"id": "sma.modbus",
-	"sdk": 2,
-  "brandColor": "#df001c",
-	"name": {
-		"en": "SMA Solar",
-		"nl": "SMA Solar"
-	},
-	"tags": {
-		"en": [ "sma", "inverter", "solar", "sunny boy", "tripower", "pv", "energy", "energy meter", "home manager", "modbus" ],
-		"nl": [ "sma", "omvormer", "zonnepanelen", "sunny boy", "tripower", "pv", "energie", "energie meter", "home manager", "modbus" ]
-	},
-	"version": "2.0.1",
-	"compatibility": ">=3.0.0",
-	"author": {
+  "id": "sma.modbus",
+  "sdk": 2,
+  "brandColor": "#015a93",
+  "name": {
+    "en": "SMA Solar",
+    "nl": "SMA Solar"
+  },
+  "tags": {
+    "en": [
+      "sma",
+      "inverter",
+      "solar",
+      "sunny boy",
+      "tripower",
+      "pv",
+      "energy",
+      "energy meter",
+      "home manager",
+      "modbus"
+    ],
+    "nl": [
+      "sma",
+      "omvormer",
+      "zonnepanelen",
+      "sunny boy",
+      "tripower",
+      "pv",
+      "energie",
+      "energie meter",
+      "home manager",
+      "modbus"
+    ]
+  },
+  "version": "2.0.1",
+  "compatibility": ">=3.0.0",
+  "author": {
     "name": "Richard Barkestam",
     "email": "richard@barkestam.se",
-		"website": "https://github.com/ricott/sma.modbus"
-	},
+    "website": "https://github.com/ricott/sma.modbus"
+  },
   "contributors": {
-    "developers": [{"name": "Richard Barkestam","email": "richard@barkestam.se"}, {"name": "Jelger Haanstra", "email": "homey@solidewebservices.com"}]
+    "developers": [
+      {
+        "name": "Richard Barkestam",
+        "email": "richard@barkestam.se"
+      },
+      {
+        "name": "Jelger Haanstra",
+        "email": "homey@solidewebservices.com"
+      }
+    ]
   },
   "contributing": {
     "donate": {
@@ -28,25 +59,22 @@
       }
     }
   },
-	"bugs": {
-		"url": "https://github.com/ricott/sma.modbus/issues"
-	},
+  "bugs": {
+    "url": "https://github.com/ricott/sma.modbus/issues"
+  },
+  "source": "https://github.com/ricott/sma.modbus",
   "homeyCommunityTopicId": 696,
-	"images": {
-		"large": "./assets/images/large.png",
-		"small": "./assets/images/small.png"
-	},
+  "images": {
+    "large": "./assets/images/large.png",
+    "small": "./assets/images/small.png"
+  },
   "category": "energy",
-  "permissions":[
-    "homey:manager:api"
-  ],
-	"description": {
-		"en": "Monitor SMA inverters over modbus protocol",
-		"nl": "Monitor SMA omvormers via modbus protocol"
-	},
-	"dependencies": {
-		"net": "*"
-	},
+  "description": {
+    "en": "Monitor your SMA Solar devices"
+  },
+  "dependencies": {
+    "net": "*"
+  },
   "capabilities": {
     "measure_yield": {
       "type": "number",
@@ -110,7 +138,7 @@
         "en": "Powergrid Feed In",
         "nl": "Vermogen netvoeding"
       },
-			"insights": true,
+      "insights": true,
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
@@ -140,7 +168,7 @@
       "title": {
         "en": "Grid power"
       },
-			"insights": false,
+      "insights": false,
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
@@ -155,7 +183,7 @@
       "title": {
         "en": "PV power"
       },
-			"insights": false,
+      "insights": false,
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
@@ -170,7 +198,7 @@
       "title": {
         "en": "Consumption"
       },
-			"insights": false,
+      "insights": false,
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
@@ -181,36 +209,36 @@
       }
     }
   },
-	"drivers": [
-		{
-			"id": "inverter",
-			"name": {
-				"en": "Inverter",
-				"nl": "Omvormer"
-			},
-			"images": {
-				"large": "drivers/inverter/assets/images/large.png",
-				"small": "drivers/inverter/assets/images/small.png"
-			},
-			"class": "solarpanel",
-			"capabilities": [
-				"operational_status.health",
-				"operational_status",
-				"measure_voltage.dcA",
-				"measure_voltage.dcB",
+  "drivers": [
+    {
+      "id": "inverter",
+      "name": {
+        "en": "Inverter",
+        "nl": "Omvormer"
+      },
+      "images": {
+        "large": "drivers/inverter/assets/images/large.png",
+        "small": "drivers/inverter/assets/images/small.png"
+      },
+      "class": "solarpanel",
+      "capabilities": [
+        "operational_status.health",
+        "operational_status",
+        "measure_voltage.dcA",
+        "measure_voltage.dcB",
         "measure_power",
-				"measure_voltage",
-				"meter_power",
+        "measure_voltage",
+        "meter_power",
         "measure_yield"
-			],
+      ],
       "capabilitiesOptions": {
-				"operational_status.health": {
+        "operational_status.health": {
           "title": {
             "en": "Condition",
             "nl": "Staat"
           }
         },
-				"measure_voltage.dcA": {
+        "measure_voltage.dcA": {
           "title": {
             "en": "MPP A (DC)",
             "nl": "MPP A (DC)"
@@ -222,7 +250,7 @@
             "nl": "MPP B (DC)"
           }
         },
-				"measure_power": {
+        "measure_power": {
           "title": {
             "en": "Grid power",
             "nl": "Netvermogen"
@@ -241,7 +269,7 @@
           }
         }
       },
-			"pair": [
+      "pair": [
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -253,48 +281,48 @@
           "id": "add_devices",
           "template": "add_devices"
         }
-			],
-			"settings": [
-				{
+      ],
+      "settings": [
+        {
           "type": "group",
           "label": {
             "en": "Inverter settings",
-						"nl": "Omvormer instellingen"
+            "nl": "Omvormer instellingen"
           },
           "children": [
-						{
-							"id": "address",
-							"type": "text",
-							"value": "0.0.0.0",
-							"label": {
-								"en": "IP Address",
-								"nl": "IP adres"
-							}
-						},
-						{
-							"id": "port",
-							"type": "number",
-							"value": 502,
-							"step": 1,
-							"label": {
-								"en": "Port",
-								"nl": "Poort"
-							}
-						},
-						{
-							"id": "polling",
-							"type": "number",
-							"value": 5,
-							"step": 1,
-							"attr": {
-								"min": 2,
-								"max": 3600
-							},
-							"label": {
-								"en": "Polling",
-								"nl": "Polling"
-							}
-						}
+            {
+              "id": "address",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP Address",
+                "nl": "IP adres"
+              }
+            },
+            {
+              "id": "port",
+              "type": "number",
+              "value": 502,
+              "step": 1,
+              "label": {
+                "en": "Port",
+                "nl": "Poort"
+              }
+            },
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 5,
+              "step": 1,
+              "attr": {
+                "min": 2,
+                "max": 3600
+              },
+              "label": {
+                "en": "Polling",
+                "nl": "Polling"
+              }
+            }
           ]
         },
         {
@@ -356,231 +384,7 @@
                 "en": "Grid country standard"
               },
               "value": ""
-            }            
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Debug",
-            "nl": "Debug"
-          },
-          "children": [
-            {
-              "id": "sma_last_error",
-              "type": "textarea",
-              "label": {
-                "en": "Most recent SMA Error",
-                "nl": "Meest recente SMA-fout"
-              },
-              "value": ""
             }
-          ]
-        }
-      ]
-		},
-    {
-			"id": "storage",
-			"name": {
-				"en": "Sunny Boy Storage",
-				"nl": "Sunny Boy Storage"
-			},
-			"images": {
-				"large": "drivers/storage/assets/images/large.jpg",
-				"small": "drivers/storage/assets/images/small.jpg"
-			},
-			"class": "sensor",
-			"capabilities": [
-        "operational_status",
-        "battery",
-        "measure_power.charge",
-        "measure_power.discharge",
-        "power_drawn",
-        "powergrid_feed_in",
-        "battery_capacity"
-			],
-      "capabilitiesOptions": {
-        "measure_power.charge": {
-          "title": {
-            "en": "Charge",
-            "nl": "Opladen"
-          }
-        },
-        "measure_power.discharge": {
-          "title": {
-            "en": "Discharge",
-            "nl": "Ontladen"
-          }
-        }
-      },
-			"pair": [
-				{
-					"id": "start"
-				}
-			],
-			"settings": [
-				{
-					"type": "group",
-					"label": {
-						"en": "Sunny Boy Storage settings",
-						"nl": "Sunny Boy Storage instellingen"
-					},
-					"children": [
-						{
-							"id": "address",
-							"type": "text",
-							"value": "0.0.0.0",
-							"label": {
-								"en": "IP Address",
-								"nl": "IP adres"
-							}
-						},
-						{
-							"id": "port",
-							"type": "number",
-							"value": 502,
-							"step": 1,
-							"label": {
-								"en": "Port",
-								"nl": "Poort"
-							}
-						},
-						{
-							"id": "polling",
-							"type": "number",
-							"value": 10,
-							"step": 1,
-							"attr": {
-								"min": 2,
-								"max": 3600
-							},
-							"label": {
-								"en": "Polling",
-								"nl": "Polling"
-							}
-						}
-					]
-				}
-			]
-		},
-    {
-			"id": "energy",
-			"name": {
-				"en": "Energy Meter"
-			},
-			"images": {
-				"large": "drivers/energy/assets/images/large.png",
-				"small": "drivers/energy/assets/images/small.png"
-			},
-			"class": "sensor",
-			"capabilities": [
-        "measure_power",
-        "measure_power.surplus",
-        "measure_power.L1",
-        "measure_current.L1",
-        "measure_power.L2",
-        "measure_current.L2",
-        "measure_power.L3",
-        "measure_current.L3"
-			],
-      "capabilitiesOptions": {
-				"measure_power": {
-          "title": {
-            "en": "Grid power"
-          }
-        },
-				"measure_power.surplus": {
-          "title": {
-            "en": "Grid feed-in"
-          }
-        },
-        "measure_power.L1": {
-          "title": {
-            "en": "L1 power"
-          }
-        },
-				"measure_current.L1": {
-          "title": {
-            "en": "L1 current"
-          }
-        },
-        "measure_power.L2": {
-          "title": {
-            "en": "L2 power"
-          }
-        },
-				"measure_current.L2": {
-          "title": {
-            "en": "L2 current"
-          }
-        },
-        "measure_power.L3": {
-          "title": {
-            "en": "L3 power"
-          }
-        },
-				"measure_current.L3": {
-          "title": {
-            "en": "L3 current"
-          }
-        }
-      },
-      "energy": {
-        "cumulative": true
-      },
-			"pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-			],
-			"settings": [
-				{
-          "type": "group",
-          "label": {
-            "en": "Emergy Meter settings",
-						"nl": "Omvormer instellingen"
-          },
-          "children": [
-						{
-							"id": "polling",
-							"type": "number",
-							"value": 5,
-							"step": 1,
-							"attr": {
-								"min": 2,
-								"max": 3600
-							},
-							"label": {
-								"en": "Polling",
-								"nl": "Polling"
-							}
-						}
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Information",
-            "nl": "Informatie"
-          },
-          "children": [
-            {
-              "id": "serialNo",
-              "type": "label",
-              "label": {
-                "en": "Serial number",
-                "nl": "Serienummer"
-              },
-              "value": ""
-            }     
           ]
         },
         {
@@ -604,24 +408,155 @@
       ]
     },
     {
-			"id": "summary",
-			"name": {
-				"en": "Energy summary"
-			},
-			"images": {
-				"large": "drivers/summary/assets/images/large.png",
-				"small": "drivers/summary/assets/images/small.png"
-			},
-			"class": "sensor",
-			"capabilities": ["power_pv", "power_grid", "power_drawn.battery", "power_self"],
+      "id": "storage",
+      "name": {
+        "en": "Sunny Boy Storage",
+        "nl": "Sunny Boy Storage"
+      },
+      "images": {
+        "large": "drivers/storage/assets/images/large.jpg",
+        "small": "drivers/storage/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "operational_status",
+        "battery",
+        "measure_power.charge",
+        "measure_power.discharge",
+        "power_drawn",
+        "powergrid_feed_in",
+        "battery_capacity"
+      ],
       "capabilitiesOptions": {
-				"power_drawn.battery": {
+        "measure_power.charge": {
           "title": {
-            "en": "Battery power"
+            "en": "Charge",
+            "nl": "Opladen"
+          }
+        },
+        "measure_power.discharge": {
+          "title": {
+            "en": "Discharge",
+            "nl": "Ontladen"
           }
         }
       },
-			"pair": [
+      "pair": [
+        {
+          "id": "start"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Sunny Boy Storage settings",
+            "nl": "Sunny Boy Storage instellingen"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP Address",
+                "nl": "IP adres"
+              }
+            },
+            {
+              "id": "port",
+              "type": "number",
+              "value": 502,
+              "step": 1,
+              "label": {
+                "en": "Port",
+                "nl": "Poort"
+              }
+            },
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 10,
+              "step": 1,
+              "attr": {
+                "min": 2,
+                "max": 3600
+              },
+              "label": {
+                "en": "Polling",
+                "nl": "Polling"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "energy",
+      "name": {
+        "en": "Energy Meter"
+      },
+      "images": {
+        "large": "drivers/energy/assets/images/large.png",
+        "small": "drivers/energy/assets/images/small.png"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_power",
+        "measure_power.surplus",
+        "measure_power.L1",
+        "measure_current.L1",
+        "measure_power.L2",
+        "measure_current.L2",
+        "measure_power.L3",
+        "measure_current.L3"
+      ],
+      "capabilitiesOptions": {
+        "measure_power": {
+          "title": {
+            "en": "Grid power"
+          }
+        },
+        "measure_power.surplus": {
+          "title": {
+            "en": "Grid feed-in"
+          }
+        },
+        "measure_power.L1": {
+          "title": {
+            "en": "L1 power"
+          }
+        },
+        "measure_current.L1": {
+          "title": {
+            "en": "L1 current"
+          }
+        },
+        "measure_power.L2": {
+          "title": {
+            "en": "L2 power"
+          }
+        },
+        "measure_current.L2": {
+          "title": {
+            "en": "L2 current"
+          }
+        },
+        "measure_power.L3": {
+          "title": {
+            "en": "L3 power"
+          }
+        },
+        "measure_current.L3": {
+          "title": {
+            "en": "L3 current"
+          }
+        }
+      },
+      "energy": {
+        "cumulative": true
+      },
+      "pair": [
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -633,41 +568,230 @@
           "id": "add_devices",
           "template": "add_devices"
         }
-			],
-			"settings": [
-				{
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Emergy Meter settings",
+            "nl": "Omvormer instellingen"
+          },
+          "children": [
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 5,
+              "step": 1,
+              "attr": {
+                "min": 2,
+                "max": 3600
+              },
+              "label": {
+                "en": "Poll interval",
+                "nl": "Polling"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Load balancing"
+          },
+          "children": [
+            {
+              "id": "mainFuse",
+              "type": "number",
+              "value": 20,
+              "step": 1,
+              "attr": {
+                "min": 1,
+                "max": 100
+              },
+              "label": {
+                "en": "Main fuse (A)"
+              },
+              "hint": {
+                "en": "Main fuse of your property, typically 16, 20, 25, 32 etc."
+              }
+            },
+            {
+              "id": "threshold",
+              "type": "number",
+              "value": 95,
+              "step": 1,
+              "attr": {
+                "min": 1,
+                "max": 120
+              },
+              "label": {
+                "en": "Trigger threshold (%)"
+              },
+              "hint": {
+                "en": "At what utilization in percentage should the phase utilization alert trigger fire"
+              }
+            },
+            {
+              "id": "offset",
+              "type": "number",
+              "value": 2,
+              "step": 1,
+              "attr": {
+                "min": 0,
+                "max": 100
+              },
+              "label": {
+                "en": "Available current offset (A)"
+              },
+              "hint": {
+                "en": "The available current is calculated from the most utilized phase vs main fuse. This offset field gives possibility to decrease available current to give some margin."
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Information",
+            "nl": "Informatie"
+          },
+          "children": [
+            {
+              "id": "serialNo",
+              "type": "label",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Debug",
+            "nl": "Debug"
+          },
+          "children": [
+            {
+              "id": "sma_last_error",
+              "type": "textarea",
+              "label": {
+                "en": "Most recent SMA Error",
+                "nl": "Meest recente SMA-fout"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "summary",
+      "name": {
+        "en": "Energy summary"
+      },
+      "images": {
+        "large": "drivers/summary/assets/images/large.png",
+        "small": "drivers/summary/assets/images/small.png"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "power_pv",
+        "power_grid",
+        "power_drawn.battery",
+        "power_self"
+      ],
+      "capabilitiesOptions": {
+        "power_drawn.battery": {
+          "title": {
+            "en": "Battery power"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
           "type": "group",
           "label": {
             "en": "Inverter settings",
-						"nl": "Omvormer instellingen"
+            "nl": "Omvormer instellingen"
           },
           "children": [
-						{
-							"id": "polling",
-							"type": "number",
-							"value": 5,
-							"step": 1,
-							"attr": {
-								"min": 2,
-								"max": 3600
-							},
-							"label": {
-								"en": "Polling",
-								"nl": "Polling"
-							}
-						}
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 5,
+              "step": 1,
+              "attr": {
+                "min": 2,
+                "max": 3600
+              },
+              "label": {
+                "en": "Polling",
+                "nl": "Polling"
+              }
+            }
           ]
         }
       ]
     }
-	],
+  ],
   "flow": {
     "triggers": [
       {
+        "id": "phase_threshold_triggered",
+        "title": {
+          "en": "Phase utilization alert"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=energy"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "phase",
+            "type": "string",
+            "title": {
+              "en": "Phase"
+            },
+            "example": {
+              "en": "L1"
+            }
+          },
+          {
+            "name": "percentageUtilized",
+            "type": "number",
+            "title": {
+              "en": "Utilized (%)"
+            },
+            "example": {
+              "en": "98"
+            }
+          }
+        ]
+      },
+      {
         "id": "inverter_status_changed",
         "title": {
-					"en": "Operational Status Changed",
-					"nl": "Operationele status gewijzigd"
+          "en": "Operational Status Changed",
+          "nl": "Operationele status gewijzigd"
         },
         "args": [
           {
@@ -685,17 +809,17 @@
               "nl": "Operationele status"
             },
             "example": {
-                "en": "MPP"
+              "en": "MPP"
             }
           }
         ]
       },
       {
-		    "id": "changedOperationalStatus",
-				"title": {
-					"en": "Operational Status Changed",
-					"nl": "Operationele status gewijzigd"
-				},
+        "id": "changedOperationalStatus",
+        "title": {
+          "en": "Operational Status Changed",
+          "nl": "Operationele status gewijzigd"
+        },
         "tokens": [
           {
             "name": "status",
@@ -707,8 +831,8 @@
             "example": "Battery Standby"
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -716,15 +840,15 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    },
+          }
+        ]
+      },
       {
-		    "id": "changedBattery",
-				"title": {
-					"en": "Battery Charge Changed",
-					"nl": "Batterij lading gewijzigd"
-				},
+        "id": "changedBattery",
+        "title": {
+          "en": "Battery Charge Changed",
+          "nl": "Batterij lading gewijzigd"
+        },
         "tokens": [
           {
             "name": "charge",
@@ -736,8 +860,8 @@
             "example": 66
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -745,15 +869,15 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    },
+          }
+        ]
+      },
       {
-		    "id": "changedBatteryCharging",
-				"title": {
-					"en": "Battery Charging Changed (W)",
-					"nl": "Batterij opladen gewijzigd (W)"
-				},
+        "id": "changedBatteryCharging",
+        "title": {
+          "en": "Battery Charging Changed (W)",
+          "nl": "Batterij opladen gewijzigd (W)"
+        },
         "tokens": [
           {
             "name": "charging",
@@ -765,8 +889,8 @@
             "example": 1337
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -774,15 +898,15 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    },
+          }
+        ]
+      },
       {
-		    "id": "changedBatteryDischarging",
-				"title": {
-					"en": "Battery Discharging Changed (W)",
-					"nl": "Batterij ontladen gewijzigd (W)"
-				},
+        "id": "changedBatteryDischarging",
+        "title": {
+          "en": "Battery Discharging Changed (W)",
+          "nl": "Batterij ontladen gewijzigd (W)"
+        },
         "tokens": [
           {
             "name": "discharging",
@@ -794,8 +918,8 @@
             "example": 187
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -803,15 +927,15 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    },
+          }
+        ]
+      },
       {
-		    "id": "changedPowerDrawn",
-				"title": {
-					"en": "Power Drawn Changed (W)",
-					"nl": "Stroom afname gewijzigd (W)"
-				},
+        "id": "changedPowerDrawn",
+        "title": {
+          "en": "Power Drawn Changed (W)",
+          "nl": "Stroom afname gewijzigd (W)"
+        },
         "tokens": [
           {
             "name": "drawn",
@@ -823,8 +947,8 @@
             "example": 303
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -832,15 +956,15 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    },
+          }
+        ]
+      },
       {
-		    "id": "changedPowerGridFeedin",
-				"title": {
-					"en": "Powergrid Feed In Changed (W)",
-					"nl": "Vermogen netvoeding gewijzigd (W)"
-				},
+        "id": "changedPowerGridFeedin",
+        "title": {
+          "en": "Powergrid Feed In Changed (W)",
+          "nl": "Vermogen netvoeding gewijzigd (W)"
+        },
         "tokens": [
           {
             "name": "feedin",
@@ -852,8 +976,8 @@
             "example": 42
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -861,15 +985,15 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    },
+          }
+        ]
+      },
       {
-		    "id": "changedBatteryCapacity",
-				"title": {
-					"en": "Battery Capacity Changed (%",
-					"nl": "Batterij capaciteit gewijzigd (%)"
-				},
+        "id": "changedBatteryCapacity",
+        "title": {
+          "en": "Battery Capacity Changed (%",
+          "nl": "Batterij capaciteit gewijzigd (%)"
+        },
         "tokens": [
           {
             "name": "capacity",
@@ -881,8 +1005,8 @@
             "example": 42
           }
         ],
-	      "args": [
-	        {
+        "args": [
+          {
             "name": "device",
             "type": "device",
             "placeholder": {
@@ -890,47 +1014,47 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
-	      ]
-	    }
+          }
+        ]
+      }
     ],
     "conditions": [
       {
-        "id":"isInverterDailyYield",
-        "title":{
-           "en":"Daily yield is !{{|not}} above"
+        "id": "isInverterDailyYield",
+        "title": {
+          "en": "Daily yield is !{{|not}} above"
         },
         "args": [
           {
             "name": "device",
             "type": "device",
-            "filter":"driver_id=inverter"
+            "filter": "driver_id=inverter"
           },
           {
             "name": "daily_yield",
             "type": "number",
             "title": {
-                "en": "Daily yield (kWh)"
+              "en": "Daily yield (kWh)"
             }
           }
         ]
       },
       {
-        "id":"isInverterStatus",
-        "title":{
-           "en":"Operational status !{{contains|doesn't contain}}"
+        "id": "isInverterStatus",
+        "title": {
+          "en": "Operational status !{{contains|doesn't contain}}"
         },
         "args": [
           {
             "name": "device",
             "type": "device",
-            "filter":"driver_id=inverter"
+            "filter": "driver_id=inverter"
           },
           {
             "name": "inverter_status",
             "type": "text",
             "title": {
-                "en": "Operational status"
+              "en": "Operational status"
             }
           }
         ]
@@ -991,9 +1115,73 @@
               "nl": "Selecteer  Sunny Boy Storage"
             },
             "filter": "driver_id=storage"
-	        }
+          }
+        ]
+      },
+      {
+        "id": "phaseUtilized",
+        "title": {
+          "en": "A phase utilized !{{above|below}}"
+        },
+        "args": [
+          {
+            "name": "phase",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "L1",
+                "label": {
+                  "en": "L1"
+                }
+              },
+              {
+                "id": "L2",
+                "label": {
+                  "en": "L2"
+                }
+              },
+              {
+                "id": "L3",
+                "label": {
+                  "en": "L3"
+                }
+              }
+            ]
+          },
+          {
+            "name": "utilization",
+            "type": "number",
+            "title": {
+              "en": "Utilization (%)"
+            }
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=energy"
+          }
+        ]
+      },
+      {
+        "id": "anyPhaseUtilized",
+        "title": {
+          "en": "Any phase utilized !{{above|below}}"
+        },
+        "args": [
+          {
+            "name": "utilization",
+            "type": "number",
+            "title": {
+              "en": "Utilization (%)"
+            }
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=energy"
+          }
         ]
       }
-	  ]
+    ]
   }
 }

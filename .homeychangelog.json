@@ -1,0 +1,8 @@
+{
+  "2.0.1": {
+    "en": "Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability. Load balancing feature added Energy Meter. "
+  },
+  "2.0.0": {
+    "en": "New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters. And tons more ..."
+  }
+}

@@ -8,10 +8,22 @@ class EnergyDevice extends Homey.Device {
   onInit() {
     this.log(`SMA energy meter initiated, '${this.getName()}'`);
 
+    this.phaseAlerts = {
+      L1: false,
+      L2: false,
+      L3: false
+    };
+
+    //TODO Current free Amps across phases
+    //Condition
+
     this.energy = {
       name: this.getName(),
       polling: this.getSettings().polling,
       serialNo: this.getData().id,
+      mainFuse: this.getSettings().mainFuse,
+      threshold: this.getSettings().threshold,
+      offset: this.getSettings().offset,
       properties: null,
       readings: null,
       emSession: null
@@ -21,6 +33,15 @@ class EnergyDevice extends Homey.Device {
     this.setSettings({ serialNo: String(this.energy.serialNo) })
       .catch(err => {
         this.error('Failed to update settings', err);
+      });
+
+    this.availCurrentToken = new Homey.FlowToken('availableCurrent', {
+      type: 'number',
+      title: 'Available current'
+    });
+    this.availCurrentToken.register()
+      .catch(err => {
+        this.log('Failed to register flow token', err);
       });
 
     this.setupEMSession();
@@ -50,6 +71,28 @@ class EnergyDevice extends Homey.Device {
       this._updateProperty('measure_power.L3', (readings.pregardL3 - readings.psurplusL3));
       this._updateProperty('measure_current.L3', readings.currentL3);
 
+      //Available current token, largest phase utilization vs main fuse vs offset
+      let currentL1 = readings.currentL1;
+      let currentL2 = readings.currentL2;
+      let currentL3 = readings.currentL3;
+      if (readings.psurplusL1 > 0) {
+        currentL1 = 0;
+      }
+      if (readings.psurplusL2 > 0) {
+        currentL2 = 0;
+      }
+      if (readings.psurplusL3 > 0) {
+        currentL3 = 0;
+      }
+
+      let availableCurrent = this.energy.mainFuse - Math.max(currentL1, currentL2, currentL3);
+      availableCurrent = availableCurrent - this.energy.offset;
+      if (availableCurrent < 0) {
+        availableCurrent = 0;
+      } else {
+        availableCurrent = parseFloat(availableCurrent.toFixed(0));
+      }
+      this.availCurrentToken.setValue(availableCurrent);
     });
 
     this.energy.emSession.on('error', error => {
@@ -84,7 +127,30 @@ class EnergyDevice extends Homey.Device {
       let oldValue = this.getCapabilityValue(key);
       if (oldValue !== null && oldValue != value) {
         this.setCapabilityValue(key, value);
-        //Placeholder for trigger logic
+
+        if (key === 'measure_current.L1' ||
+          key === 'measure_current.L2' ||
+          key === 'measure_current.L3') {
+
+          let phase = key.substring(key.indexOf('.') + 1);
+          let utilization = (value / this.energy.mainFuse) * 100;
+          if (utilization >= this.energy.threshold) {
+            if (this.phaseAlerts[phase] === false) {
+              //Only trigger if this is new threshold alert
+              utilization = parseFloat(utilization.toFixed(2));
+              this.phaseAlerts[phase] = true;
+              let tokens = {
+                phase: phase,
+                percentageUtilized: utilization
+              }
+              this.getDriver().triggerFlow('trigger.phase_threshold_triggered', tokens, this);
+            }
+          } else if (this.phaseAlerts[phase] === true) {
+            //Reset alert
+            this.log(`Resetting phase alert state for '${key}'`);
+            this.phaseAlerts[phase] = false;
+          }
+        }
 
       } else {
         this.setCapabilityValue(key, value);
@@ -108,11 +174,33 @@ class EnergyDevice extends Homey.Device {
     if (changedKeysArr.indexOf("polling") > -1) {
       this.log('Polling value was change to:', newSettings.polling);
       this.energy.polling = newSettings.polling;
+      this.energy.emSession.setRefreshInterval(this.energy.polling);
+    }
+
+    if (changedKeysArr.indexOf("offset") > -1) {
+      this.log('Offset value was change to:', newSettings.offset);
+      this.energy.offset = newSettings.offset;
+    }
+
+    if (changedKeysArr.indexOf("mainFuse") > -1) {
+      this.log('Main fuse value was change to:', newSettings.mainFuse);
+      this.energy.mainFuse = newSettings.mainFuse;
+      change = true;
+    }
+
+    if (changedKeysArr.indexOf("threshold") > -1) {
+      this.log('Threshold value was change to:', newSettings.threshold);
+      this.energy.threshold = newSettings.threshold;
       change = true;
     }
 
     if (change) {
-      this.energy.emSession.setRefreshInterval(this.energy.polling);
+      //Theshold changed, reset alerts
+      this.phaseAlerts = {
+        L1: false,
+        L2: false,
+        L3: false
+      };
     }
   }
 
