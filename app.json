@@ -36,8 +36,7 @@
   "compatibility": ">=3.0.0",
   "author": {
     "name": "Richard Barkestam",
-    "email": "richard@barkestam.se",
-    "website": "https://github.com/ricott/sma.modbus"
+    "email": "richard@barkestam.se"
   },
   "contributors": {
     "developers": [
