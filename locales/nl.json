@@ -6,7 +6,7 @@
   "pair": {
     "title": "SMA omvormer toevoegen",
     "nosettings": "Vul a.u.b. alle verplichte velden in.",
-    "intro": "Voer het IP adres, het poortnummer en de polling frequentie in van je SMA omvormer.",
+    "intro": "Voer het IP adres in van je SMA omvormer.",
     "address": "IP adres",
     "port": "Poort",
     "polling": "Polling frequentie",

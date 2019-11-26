@@ -18,18 +18,6 @@
       "energy meter",
       "home manager",
       "modbus"
-    ],
-    "nl": [
-      "sma",
-      "omvormer",
-      "zonnepanelen",
-      "sunny boy",
-      "tripower",
-      "pv",
-      "energie",
-      "energie meter",
-      "home manager",
-      "modbus"
     ]
   },
   "version": "2.0.2",
@@ -268,7 +256,10 @@
           }
         }
       },
-      "pair": [
+			"pair": [
+				{
+					"id": "settings"
+				},
         {
           "id": "list_devices",
           "template": "list_devices",
@@ -280,7 +271,7 @@
           "id": "add_devices",
           "template": "add_devices"
         }
-      ],
+			],
       "settings": [
         {
           "type": "group",

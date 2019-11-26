@@ -88,8 +88,8 @@ class EnergyDriver extends Homey.Driver {
       let emSession = new EnergyMeter({});
 
       emSession.on('readings', readings => {
-
         if (!devices.find((em) => em.data.id === readings.serialNo)) {
+          this.log(`Adding to devices: ${readings.serialNo}`);
           devices.push({
             name: `Energy Meter (${readings.serialNo})`,
             data: {

@@ -6,7 +6,7 @@
   "pair": {
     "title": "Add SMA Inverter",
     "nosettings": "Please fill in all the required fields.",
-    "intro": "Enter the IP address, port number and polling frequency of your SMA inverter.",
+    "intro": "Enter the IP address of your SMA inverter.",
     "address": "IP Address",
     "port": "Port",
     "polling": "Polling Frequency",
