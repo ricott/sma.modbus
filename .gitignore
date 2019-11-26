@@ -6,3 +6,5 @@
 
 #Secret environment variables
 /env.json
+
+*.code-workspace
