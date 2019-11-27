@@ -85,17 +85,9 @@ class InverterDriver extends Homey.Driver {
   onPair(socket) {
     let self = this;
     let devices = [];
-    //let discoveryError;
     let inverterProperties;
     let mode = 'discovery';
     let settings;
-
-    socket.on('showView', (viewId, callback) => {
-      if (viewId === 'settings' && mode === 'discovery') {
-        this.log('Showing settings for first time, lets do discovery');
-        socket.nextView();
-      }
-    });
 
     socket.on('settings', function (data, callback) {
       settings = data;
