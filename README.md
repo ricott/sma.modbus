@@ -38,6 +38,9 @@ For Homey to be able to communicate with your inverter over the modbus protocol 
 * Now go into Homey and add a new device. Select the inverter device from the SMA Solar app. Your inverter should be found automatically assuming modbus port in app settings match the modbus port of the inverter (default 502).
 
 ## Changelog
+### v2.0.3
+* Enhanced wizard for adding inverters which allows to manually add the IP address of the inverter if auto-discovery doesn't find any inverters.
+
 ### v2.0.2
 * New Homey app store adoption
 
