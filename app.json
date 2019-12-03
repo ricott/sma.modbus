@@ -811,6 +811,33 @@
         ]
       },
       {
+        "id": "inverter_condition_changed",
+        "title": {
+          "en": "Condition Changed",
+          "nl": "Staat gewijzigd"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=inverter"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "inverter_condition",
+            "type": "string",
+            "title": {
+              "en": "Condition",
+              "nl": "Staat"
+            },
+            "example": {
+              "en": "Ok"
+            }
+          }
+        ]
+      },
+      {
         "id": "changedOperationalStatus",
         "title": {
           "en": "Operational Status Changed",

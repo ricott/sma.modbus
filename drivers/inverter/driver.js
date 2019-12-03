@@ -23,7 +23,8 @@ class InverterDriver extends Homey.Driver {
 
     // Register device triggers
     let triggers = [
-      'inverter_status_changed'
+      'inverter_status_changed',
+      'inverter_condition_changed'
     ];
     this._registerFlow('trigger', triggers, Homey.FlowCardTriggerDevice);
 

@@ -155,6 +155,12 @@ class InverterDevice extends Homey.Device {
               inverter_status: value || 'n/a'
             }
             this.getDriver().triggerFlow('trigger.inverter_status_changed', tokens, this);
+
+          } else if (key === 'operational_status.health') {
+            let tokens = {
+              inverter_condition: value || 'n/a'
+            }
+            this.getDriver().triggerFlow('trigger.inverter_condition_changed', tokens, this);
           }
           
       } else {
