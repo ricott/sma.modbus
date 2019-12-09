@@ -1,4 +1,7 @@
 {
+  "2.0.4": {
+    "en": "Support for SB AV-40 inverters. New inverter condition trigger."
+  },
   "2.0.3": {
     "en": "Enhanced wizard for adding inverters which allows to manually add the IP address of the inverter if auto-discovery doesn't find any inverters."
   },
