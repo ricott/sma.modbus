@@ -14,9 +14,6 @@ class EnergyDevice extends Homey.Device {
       L3: false
     };
 
-    //TODO Current free Amps across phases
-    //Condition
-
     this.energy = {
       name: this.getName(),
       polling: this.getSettings().polling,
@@ -24,6 +21,7 @@ class EnergyDevice extends Homey.Device {
       mainFuse: this.getSettings().mainFuse,
       threshold: this.getSettings().threshold,
       offset: this.getSettings().offset,
+      softwareVersion: null,
       properties: null,
       readings: null,
       emSession: null
@@ -70,6 +68,14 @@ class EnergyDevice extends Homey.Device {
       this._updateProperty('measure_current.L2', readings.currentL2);
       this._updateProperty('measure_power.L3', (readings.pregardL3 - readings.psurplusL3));
       this._updateProperty('measure_current.L3', readings.currentL3);
+
+      if (this.energy.softwareVersion != readings.swVersion) {
+        this.energy.softwareVersion = readings.swVersion;
+        this.setSettings({ swVersion: this.energy.softwareVersion })
+          .catch(err => {
+            this.error('Failed to update settings', err);
+          });
+      }
 
       //Available current token, largest phase utilization vs main fuse vs offset
       let currentL1 = readings.currentL1;

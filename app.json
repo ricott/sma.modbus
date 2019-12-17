@@ -640,7 +640,7 @@
                 "en": "Available current offset (A)"
               },
               "hint": {
-                "en": "The available current is calculated from the most utilized phase vs main fuse. This offset field gives possibility to decrease available current to give some margin."
+                "en": "The available current is calculated from the most utilized phase vs main fuse. This offset parameter gives a possibility to decrease the available current to allow for some margin."
               }
             }
           ]
@@ -658,6 +658,15 @@
               "label": {
                 "en": "Serial number",
                 "nl": "Serienummer"
+              },
+              "value": ""
+            },
+            {
+              "id": "swVersion",
+              "type": "label",
+              "label": {
+                "en": "Software version",
+                "nl": "Software versie"
               },
               "value": ""
             }
