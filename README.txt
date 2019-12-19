@@ -25,6 +25,9 @@ It can be used to load balance against main fuse. There are three settings for t
 Energy Summary
 The Energy Summary is a virtual device that gathers information from inverter and energy meter devices registered in your Homey. It will only display information from inverters and energy meter devices from this app. It shows four values; PV Power, Grid Power, Battery Power, and Consumption.
 
+PVOutput
+Report your inverter(s) status to PVOutput.org. You need to have done the setup at PVOutput's site to setup a system and generate an API key before adding this device to your Homey.
+
 Enable modbus in your inverter/storage product
 For Homey to be able to communicate with your inverter over the modbus protocol this needs to be enabled on the inverter. You can enable modbus communication using the SMA Sunny Explorer, https://www.sma.de/en/products/monitoring-control/sunny-explorer.html software or the web interface on specific models (like the Sunny Boy 1.5 to Sunny Boy 5.0). For all other models download and install the SMA Sunny Explorer software, the installable is located under PC Software in the previous link. During installation, it may ask you to install the .NET framework 3.5 as well. Now follow these steps.
 * Start Sunny Explorer installer and choose to create a new install (or load a previous one if you used Sunny Explorer before) or start the web interface for the Sunny Boy 1.5 to Sunny Boy 5.0 models;

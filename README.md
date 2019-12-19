@@ -26,6 +26,9 @@ It can be used to load balance against the main fuse. There are three settings f
 ## Energy Summary
 The Energy Summary is a virtual device that gathers information from inverter and energy meter devices registered in your Homey. It will only display information from inverters and energy meter devices from this app. It shows three values; PV Power, Grid Power, and Consumption.
 
+## PVOutput
+Report your inverter(s) status to PVOutput.org. You need to have done the setup at PVOutput's site to setup a system and generate an API key before adding this device to your Homey.
+
 ## Support topic
 For support please use the official support topic on the forum [here](https://community.athom.com/t/696).
 
@@ -38,6 +41,9 @@ For Homey to be able to communicate with your inverter over the modbus protocol 
 * Now go into Homey and add a new device. Select the inverter device from the SMA Solar app. Your inverter should be found automatically assuming modbus port in app settings match the modbus port of the inverter (default 502).
 
 ## Changelog
+### v2.0.6
+* Added support for reporting inverter status to PVOutput.org.
+
 ### v2.0.5
 * Enhanced energy meter readings to use SMA obis identifiers
 

@@ -17,5 +17,16 @@
   "Standby": "Battery Standby",
   "Charge": "Battery Charging",
   "Discharge": "Battery Discharging",
-  "NA": "Information Not Available"
+  "NA": "Information Not Available",
+  "pvoutput": {
+    "pair": {
+      "title": "Add PVOutput account",
+      "intro": "Enter the API key and system id for your PVOutput account. PVOutput.org will be updated using the interval specified below, between the start and end reporting hours.",
+      "apikey": "API key",
+      "systemid": "System id",
+      "interval": "Interval (minutes)",
+      "start": "Start reporting (hour)",
+      "stop": "Stop reporting (hour)"
+    }
+  }
 }

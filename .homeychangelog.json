@@ -1,4 +1,7 @@
 {
+  "2.0.6": {
+    "en": "You can now report your inverter(s) status to PVOutput.org"
+  },
   "2.0.5": {
     "en": "Enhanced energy meter readings to use SMA obis identifiers"
   },

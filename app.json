@@ -20,7 +20,7 @@
       "modbus"
     ]
   },
-  "version": "2.0.5",
+  "version": "2.0.6",
   "compatibility": ">=3.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -194,6 +194,15 @@
         "en": "W",
         "nl": "W"
       }
+    },
+    "connected": {
+      "title": {
+        "en": "Connected"
+      },
+      "type": "boolean",
+      "getable": true,
+      "setable": false,
+      "icon": "/assets/connected.svg"
     }
   },
   "drivers": [
@@ -749,6 +758,125 @@
                 "en": "Polling",
                 "nl": "Polling"
               }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pvoutput",
+      "name": {
+        "en": "PVOutput.org"
+      },
+      "images": {
+        "large": "drivers/pvoutput/assets/images/large.png",
+        "small": "drivers/pvoutput/assets/images/small.png"
+      },
+      "class": "other",
+      "capabilities": [
+        "connected"
+      ],
+      "pair": [
+				{
+					"id": "settings"
+				},
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "PVOutput settings"
+          },
+          "children": [
+            {
+              "id": "interval",
+              "type": "number",
+              "value": 5,
+              "step": 1,
+              "attr": {
+                "min": 1,
+                "max": 1440
+              },
+              "label": {
+                "en": "Update interval (minutes)"
+              },
+              "hint": {
+                "en": "How frequently should PVOutput be updated"
+              }
+            },
+            {
+              "id": "start_reporting",
+              "type": "dropdown",
+              "value": "0500",
+              "label": {
+                "en": "Start reporting (hour of day)"
+              },
+              "hint": {
+                "en": "From what hour should PVOutput be updated"
+              },
+              "values": [
+                { "id": "0000", "label": { "en": "00:00" }},
+                { "id": "0100", "label": { "en": "01:00" }},
+                { "id": "0200", "label": { "en": "02:00" }},
+                { "id": "0300", "label": { "en": "03:00" }},
+                { "id": "0400", "label": { "en": "04:00" }},
+                { "id": "0500", "label": { "en": "05:00" }},
+                { "id": "0600", "label": { "en": "06:00" }},
+                { "id": "0700", "label": { "en": "07:00" }},
+                { "id": "0800", "label": { "en": "08:00" }},
+                { "id": "0900", "label": { "en": "09:00" }}
+              ]
+            },
+            {
+              "id": "stop_reporting",
+              "type": "dropdown",
+              "value": "2200",
+              "label": {
+                "en": "Stop reporting (hour of day)"
+              },
+              "hint": {
+                "en": "To what hour should PVOutput be updated"
+              },
+              "values": [
+                { "id": "1500", "label": { "en": "15:00" }},
+                { "id": "1600", "label": { "en": "16:00" }},
+                { "id": "1700", "label": { "en": "17:00" }},
+                { "id": "1800", "label": { "en": "18:00" }},
+                { "id": "1900", "label": { "en": "19:00" }},
+                { "id": "2000", "label": { "en": "20:00" }},
+                { "id": "2100", "label": { "en": "21:00" }},
+                { "id": "2200", "label": { "en": "22:00" }},
+                { "id": "2300", "label": { "en": "23:00" }},
+                { "id": "0000", "label": { "en": "00:00" }}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Debug",
+            "nl": "Debug"
+          },
+          "children": [
+            {
+              "id": "last_error",
+              "type": "textarea",
+              "label": {
+                "en": "Most recent PVOutput error"
+              },
+              "value": ""
             }
           ]
         }

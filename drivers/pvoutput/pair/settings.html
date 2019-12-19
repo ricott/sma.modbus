@@ -1,0 +1,132 @@
+<script type="text/javascript">
+    Homey.setTitle(__('pvoutput.pair.title'));
+    $(function () {
+        $('#connect').click(function () {
+            $('.sma-error').hide();
+            var inputapikey = $('#apikey').val();
+            var inputsystemid = $('#systemid').val();
+            var inputinterval = $('#interval').val();
+            var inputstart = $('#start').val();
+            var inputstop = $('#stop').val();
+
+            if (inputapikey != '' && inputsystemid != '' && inputinterval != '') {
+                var settings = {
+                    apikey: inputapikey,
+                    systemid: inputsystemid,
+                    interval: inputinterval,
+                    start_reporting: inputstart,
+                    stop_reporting: inputstop
+                };
+                Homey.emit('settings', settings, function (err, result) {
+                    console.log(result);
+                    if (results) {
+                        Homey.done();
+                    } else {
+                        $('.sma-error').show();
+                        $('.sma-error-msg').html('Failed to connect to the inverter!');
+                    }
+                });
+            } else {
+                $('.sma-error').show();
+                $('.sma-error-msg').html(__('pair.nosettings'));
+            }
+        });
+    })
+</script>
+
+<style type="text/css">
+    .form-group {
+        width: 100%;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .form-group label {
+        display: block;
+    }
+
+    .sma-status,
+    .sma-info {
+        display: none;
+    }
+
+    .sma-info {
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .sma-info .info-label {
+        min-width: 150px;
+        font-weight: 700;
+    }
+
+    .buttons,
+    .messages {
+        padding-top: 14px;
+    }
+
+    .button:disabled {
+        color: #ccc;
+    }
+
+    .button:enabled {
+        background-color: #00c139 !important;
+        color: #fff;
+    }
+</style>
+
+<p data-i18n="pvoutput.pair.intro">Enter the API key and system id for your PVOutput account. PVOutput.org will be updated using the interval specified below, between the start and end reporting hours.</p>
+<div class="sma-pairing">
+    <div class="form-group">
+        <label for="apikey" data-i18n="pvoutput.pair.apikey">API key</label>
+        <input type="text" class="form-control" id="apikey" required>
+    </div>
+    <div class="form-group">
+        <label for="systemid" data-i18n="pvoutput.pair.systemid">System id</label>
+        <input type="text" class="form-control" id="systemid" required>
+    </div>
+    <div class="form-group">
+        <label for="interval" data-i18n="pvoutput.pair.interval">Interval (minutes)</label>
+        <input type="text" class="form-control" id="interval" placeholder="5" value="5" required>
+    </div>
+    <div class="form-group">
+        <label for="start" data-i18n="pvoutput.pair.start">Start reporting (hour)</label>
+        <select id="start">
+            <option value="0000">00:00</option>
+            <option value="0100">01:00</option>
+            <option value="0200">02:00</option>
+            <option value="0300">03:00</option>
+            <option value="0400">04:00</option>
+            <option value="0500" selected="selected">05:00</option>
+            <option value="0600">06:00</option>
+            <option value="0700">07:00</option>
+            <option value="0800">08:00</option>
+            <option value="0900">09:00</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="stop" data-i18n="pvoutput.pair.stop">Stop reporting (hour)</label>
+        <select id="stop">
+            <option value="1500">15:00</option>
+            <option value="1600">16:00</option>
+            <option value="1700">17:00</option>
+            <option value="1800">18:00</option>
+            <option value="1900">19:00</option>
+            <option value="2000" selected="selected">20:00</option>
+            <option value="2100">21:00</option>
+            <option value="2200">22:00</option>
+            <option value="2300">23:00</option>
+            <option value="2359">23:59</option>
+        </select>
+    </div>
+    <div class="form-group buttons">
+        <button id="connect" class="button" data-i18n="pair.connect">Connect</button>
+    </div>
+</div>
+
+<div class="messages">
+    <p class="sma-status sma-error" style="color: #ff6300;">
+        <i class="fa fa-times"></i> 
+        <span class="sma-error-msg"></span>
+    </p>
+</div>
