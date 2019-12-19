@@ -769,8 +769,8 @@
         "en": "PVOutput.org"
       },
       "images": {
-        "large": "drivers/pvoutput/assets/images/large.png",
-        "small": "drivers/pvoutput/assets/images/small.png"
+        "large": "drivers/pvoutput/assets/images/large.jpg",
+        "small": "drivers/pvoutput/assets/images/small.jpg"
       },
       "class": "other",
       "capabilities": [
