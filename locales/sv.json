@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "title": "SMA Modbus inställningar",
+    "subtitle": "Ange port, standard är 502."
+  },
+  "pair": {
+    "title": "Lägg till en SMA växelriktare",
+    "nosettings": "Var vänlig fyll i alla obligatoriska fält",
+    "intro": "Ange IP adressen för din SMA växelriktare",
+    "address": "IP Adress",
+    "port": "Port",
+    "polling": "Uppdateringsfrekvens",
+    "connect": "Anslut"
+  },
+  "Unreachable": "Onåbar",
+  "Off": "Av",
+  "Standby": "Batteri standby",
+  "Charge": "Batteriladdning",
+  "Discharge": "Batteriurladdning",
+  "NA": "Information är inte tillgänglig",
+  "pvoutput": {
+    "pair": {
+      "title": "Lägg till PVOutput konto",
+      "intro": "Ange API nyckeln och system id för ditt PVOutput konto. PVOutput.org kommer att uppdateras med den frekvens som är specificerad nedan. Mellan start och slut rapporteringstimmarna.",
+      "apikey": "API nyckel",
+      "systemid": "System id",
+      "interval": "Uppdateringsintervall (minuter)",
+      "start": "Börja rapportera (timme)",
+      "stop": "Sluta rapportera (timme)"
+    }
+  }
+}

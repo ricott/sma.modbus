@@ -1,4 +1,7 @@
 {
+  "2.0.8": {
+    "en": "Filter out unknown condition status for inverter device type. Added Swedish language support"
+  },
   "2.0.7": {
     "en": "PVOutput date bug solved"
   },
