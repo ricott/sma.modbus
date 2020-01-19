@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const UINT16_MIN = 0x0000;
+const UINT16_MAX = 0xFFFF;
+const REGISTER_MAX = UINT16_MAX;
+const REGISTER_MIN = UINT16_MIN;
+const COIL_MIN = 0x00;
+const COIL_MAX = 0x01;
+const ERROR_CODE_THRESHOLD = 0x80;
+exports.LIMITS = {
+    COIL_MAX,
+    COIL_MIN,
+    ERROR_CODE_THRESHOLD,
+    REGISTER_MAX,
+    REGISTER_MIN,
+    UINT16_MAX,
+    UINT16_MIN
+};

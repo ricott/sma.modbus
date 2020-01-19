@@ -1,0 +1,1 @@
+{"version":3,"file":"modbus-rtu-server.d.ts","sourceRoot":"","sources":["../src/modbus-rtu-server.ts"],"names":[],"mappings":"AAEA,OAAO,YAAY,EAAE,EAAE,oBAAoB,EAAE,MAAM,oBAAoB,CAAA;AAIvE,OAAO,KAAK,UAAU,MAAM,YAAY,CAAA;AAExC,MAAM,CAAC,OAAO,OAAO,eAAgB,SAAQ,YAAY;IAChD,OAAO,EAAE,GAAG,CAAA;IACZ,IAAI,EAAE,GAAG,CAAA;gBAEH,MAAM,EAAE,UAAU,EAAE,OAAO,CAAC,EAAE,OAAO,CAAC,oBAAoB,CAAC;CASzE"}

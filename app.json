@@ -19,7 +19,7 @@
       "modbus"
     ]
   },
-  "version": "2.0.8",
+  "version": "2.0.9",
   "compatibility": ">=3.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -221,6 +221,22 @@
       "getable": true,
       "setable": false,
       "icon": "/assets/connected.svg"
+    },
+    "frequency": {
+      "type": "number",
+      "title": {
+        "en": "Frequency",
+        "sv": "Frekvens"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/frequency.svg",
+      "units": {
+        "en": "Hz",
+        "sv": "Hz"
+      }
     }
   },
   "drivers": [
@@ -560,7 +576,8 @@
         "measure_power.L2",
         "measure_current.L2",
         "measure_power.L3",
-        "measure_current.L3"
+        "measure_current.L3",
+        "frequency"
       ],
       "capabilitiesOptions": {
         "measure_power": {

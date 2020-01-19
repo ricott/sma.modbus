@@ -1,0 +1,66 @@
+import ModbusTCPClient from './modbus-tcp-client.js';
+import ModbusRTUClient from './modbus-rtu-client.js';
+import ModbusTCPServer from './modbus-tcp-server.js';
+import ModbusRTUServer from './modbus-rtu-server.js';
+import * as Codes from './codes';
+import * as Errors from './errors';
+import * as Requests from './request';
+import * as Responses from './response';
+import UserRequest from './user-request.js';
+export declare const client: {
+    RTU: typeof ModbusRTUClient;
+    TCP: typeof ModbusTCPClient;
+};
+export declare const server: {
+    RTU: typeof ModbusRTUServer;
+    TCP: typeof ModbusTCPServer;
+};
+export declare const requests: {
+    UserRequest: typeof UserRequest;
+    ExceptionRequestBody: typeof Requests.ExceptionRequestBody;
+    isExceptionRequestBody: typeof Errors.isExceptionRequestBody;
+    ReadCoilsRequestBody: typeof Requests.ReadCoilsRequestBody;
+    isReadCoilsRequestBody: typeof Requests.isReadCoilsRequestBody;
+    ReadDiscreteInputsRequestBody: typeof Requests.ReadDiscreteInputsRequestBody;
+    isReadDiscreteInputsRequestBody: typeof Requests.isReadDiscreteInputsRequestBody;
+    ReadHoldingRegistersRequestBody: typeof Requests.ReadHoldingRegistersRequestBody;
+    isReadHoldingRegistersRequestBody: typeof Requests.isReadHoldingRegistersRequestBody;
+    ReadInputRegistersRequestBody: typeof Requests.ReadInputRegistersRequestBody;
+    isReadInputRegistersRequestBody: typeof Requests.isReadInputRegistersRequestBody;
+    ModbusRequestBody: typeof Requests.ModbusRequestBody;
+    isModbusRequestBody: typeof Requests.isModbusRequestBody;
+    RequestFactory: typeof Requests.RequestFactory;
+    WriteMultipleCoilsRequestBody: typeof Requests.WriteMultipleCoilsRequestBody;
+    isWriteMultipleCoilsRequestBody: typeof Requests.isWriteMultipleCoilsRequestBody;
+    WriteMultipleRegistersRequestBody: typeof Requests.WriteMultipleRegistersRequestBody;
+    isWriteMultipleRegistersRequestBody: typeof Requests.isWriteMultipleRegistersRequestBody;
+    WriteSingleCoilRequestBody: typeof Requests.WriteSingleCoilRequestBody;
+    isWriteSingleCoilRequestBody: typeof Requests.isWriteSingleCoilRequestBody;
+    WriteSingleRegisterRequestBody: typeof Requests.WriteSingleRegisterRequestBody;
+    isWriteSingleRegisterRequestBody: typeof Requests.isWriteSingleRegisterRequestBody;
+};
+export declare const responses: typeof Responses;
+export declare const codes: typeof Codes;
+export declare const errors: typeof Errors;
+export declare const limits: {
+    readonly COIL_MAX: 1;
+    readonly COIL_MIN: 0;
+    readonly ERROR_CODE_THRESHOLD: 128;
+    readonly REGISTER_MAX: 65535;
+    readonly REGISTER_MIN: 0;
+    readonly UINT16_MAX: 65535;
+    readonly UINT16_MIN: 0;
+};
+export { default as ModbusAbstractRequest } from './abstract-request';
+export { default as ModbusAbstractResponse } from './abstract-response';
+export { default as MBClientRequestHandler } from './client-request-handler';
+export { default as ModbusClientResponseHandler } from './client-response-handler';
+export { default as ModbusClient } from './modbus-client';
+export * from './request-response-map';
+export { default as ModbusTCPRequest } from './tcp-request';
+export { default as ModbusTCPResponse } from './tcp-response';
+export { UserRequestError } from './user-request-error';
+export { default as UserRequest, ModbusRequest, IUserRequestResolve as UserRequestResolve, PromiseUserRequest } from './user-request';
+export { UserRequestMetrics } from './user-request-metrics';
+export { ModbusTCPClient, ModbusRTUClient, ModbusTCPServer, ModbusRTUServer };
+//# sourceMappingURL=modbus.d.ts.map

@@ -42,7 +42,19 @@ class EnergyDevice extends Homey.Device {
         this.log('Failed to register flow token', err);
       });
 
+    this.upgradeDevice();
+
     this.setupEMSession();
+  }
+
+  upgradeDevice() {
+    this.log('Upgrading existing device');
+    //v2.0.9 added frequency capability, lets add it existing devices
+    let capability = 'frequency';
+    if (!this.hasCapability(capability)) {
+      this.log(`Adding missing capability '${capability}'`);
+      this.addCapability(capability);
+    }
   }
 
   setupEMSession() {
@@ -68,6 +80,7 @@ class EnergyDevice extends Homey.Device {
       this._updateProperty('measure_current.L2', readings.currentL2);
       this._updateProperty('measure_power.L3', (readings.pregardL3 - readings.psurplusL3));
       this._updateProperty('measure_current.L3', readings.currentL3);
+      this._updateProperty('frequency', readings.frequency);
 
       if (this.energy.softwareVersion != readings.swVersion) {
         this.energy.softwareVersion = readings.swVersion;
