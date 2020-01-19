@@ -1,4 +1,7 @@
 {
+  "2.0.9": {
+    "en": "Added frequency capability to Energy Meter / Home Manager devices"
+  },
   "2.0.8": {
     "en": "Filter out unknown condition status for inverter device type. Added Swedish language support"
   },
