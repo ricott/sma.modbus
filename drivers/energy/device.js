@@ -33,28 +33,31 @@ class EnergyDevice extends Homey.Device {
         this.error('Failed to update settings', err);
       });
 
-    this.availCurrentToken = new Homey.FlowToken('availableCurrent', {
-      type: 'number',
-      title: 'Available current'
-    });
-    this.availCurrentToken.register()
-      .catch(err => {
-        this.log('Failed to register flow token', err);
-      });
-
     this.upgradeDevice();
+    this.registerFlowTokens();
 
     this.setupEMSession();
   }
 
   upgradeDevice() {
     this.log('Upgrading existing device');
-    //v2.0.9 added frequency capability, lets add it existing devices
+    //v2.0.9 added frequency capability, lets add it to existing devices
     let capability = 'frequency';
     if (!this.hasCapability(capability)) {
       this.log(`Adding missing capability '${capability}'`);
       this.addCapability(capability);
     }
+  }
+
+  registerFlowTokens() {
+    this.availCurrentToken = new Homey.FlowToken(`${this.energy.serialNo}.availableCurrent`, {
+      type: 'number',
+      title: `${this.energy.name} Available current`
+    });
+    this.availCurrentToken.register()
+      .catch(err => {
+        this.log('Failed to register flow token', err);
+      });
   }
 
   setupEMSession() {
