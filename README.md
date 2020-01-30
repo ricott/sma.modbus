@@ -7,6 +7,7 @@ As of version 2 of the app the following device types are supported
 - Sunny Boy Storage
 - Energy Meter (incl. Home Manager 2)
 - Energy Summary
+- PVOutput.org
 
 ## Inverters
 In the [support topic](https://community.athom.com/t/696) is a shortened list of supported inverters. Version 2 of the app tries to figure out which capabilities each inverter has, using a mapping logic and will only show capabilities in Homey that the inverter supports. For instance, some inverters don't support daily yield, then this capability won't be displayed in Homey for that inverter.
