@@ -8,3 +8,6 @@
 /env.json
 
 *.code-workspace
+
+#node_modules no longer needed in git since app is published locally
+node_modules
