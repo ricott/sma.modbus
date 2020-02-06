@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Consumption",
+    "sv": "Konsumtion"
+  },
+  "insights": false,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/house.svg",
+  "units": {
+    "en": "W",
+    "nl": "W",
+    "sv": "W"
+  }
+}

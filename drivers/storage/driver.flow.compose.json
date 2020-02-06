@@ -1,0 +1,209 @@
+{
+  "triggers": [
+    {
+      "id": "changedOperationalStatus",
+      "title": {
+        "en": "Operational Status Changed",
+        "nl": "Operationele status gewijzigd",
+        "sv": "Operationell status ändrad"
+      },
+      "tokens": [
+        {
+          "name": "status",
+          "type": "string",
+          "title": {
+            "en": "Operational Status",
+            "nl": "Operationele status",
+            "sv": "Operationell status"
+          },
+          "example": "Battery Standby"
+        }
+      ],
+      "args": []
+    },
+    {
+      "id": "changedBattery",
+      "title": {
+        "en": "Battery Charge Changed",
+        "nl": "Batterij lading gewijzigd",
+        "sv": "Batteriladdning ändrad"
+      },
+      "tokens": [
+        {
+          "name": "charge",
+          "type": "number",
+          "title": {
+            "en": "Battery Charge (%)",
+            "nl": "Batterij lading (%)",
+            "sv": "Batteriladdning (%)"
+          },
+          "example": 66
+        }
+      ],
+      "args": []
+    },
+    {
+      "id": "changedBatteryCharging",
+      "title": {
+        "en": "Battery Charging Changed (W)",
+        "nl": "Batterij opladen gewijzigd (W)",
+        "sv": "Batteriladdning ändrad (W)"
+      },
+      "tokens": [
+        {
+          "name": "charging",
+          "type": "number",
+          "title": {
+            "en": "Battery Charging (W)",
+            "nl": "Batterij opladen (W)",
+            "sv": "Batteriladdning effekt (W)"
+          },
+          "example": 1337
+        }
+      ],
+      "args": []
+    },
+    {
+      "id": "changedBatteryDischarging",
+      "title": {
+        "en": "Battery Discharging Changed (W)",
+        "nl": "Batterij ontladen gewijzigd (W)",
+        "sv": "Batteriurladdning ändrad (W)"
+      },
+      "tokens": [
+        {
+          "name": "discharging",
+          "type": "number",
+          "title": {
+            "en": "Battery Discharging (W)",
+            "nl": "Batterij ontladen (W)",
+            "sv": "Urladdning (W)"
+          },
+          "example": 187
+        }
+      ],
+      "args": []
+    },
+    {
+      "id": "changedPowerDrawn",
+      "title": {
+        "en": "Power Drawn Changed (W)",
+        "nl": "Stroom afname gewijzigd (W)",
+        "sv": "Effekt uttagen ändrad (W)"
+      },
+      "tokens": [
+        {
+          "name": "drawn",
+          "type": "number",
+          "title": {
+            "en": "Power Drawn (W)",
+            "nl": "Stroom afname (W)",
+            "sv": "Effekt uttagen (W)"
+          },
+          "example": 303
+        }
+      ],
+      "args": []
+    },
+    {
+      "id": "changedPowerGridFeedin",
+      "title": {
+        "en": "Powergrid Feed In Changed (W)",
+        "nl": "Vermogen netvoeding gewijzigd (W)",
+        "sv": "Inmatning elnät ändrad (W)"
+      },
+      "tokens": [
+        {
+          "name": "feedin",
+          "type": "number",
+          "title": {
+            "en": "Powergrid Feed In (W)",
+            "nl": "Vermogen netvoeding (W)",
+            "sv": "Inmatning elnät (W)"
+          },
+          "example": 42
+        }
+      ],
+      "args": []
+    },
+    {
+      "id": "changedBatteryCapacity",
+      "title": {
+        "en": "Battery Capacity Changed (%",
+        "nl": "Batterij capaciteit gewijzigd (%)",
+        "sv": "Batterladdning ändrad (%)"
+      },
+      "tokens": [
+        {
+          "name": "capacity",
+          "type": "number",
+          "title": {
+            "en": "Battery Capacity (%)",
+            "nl": "Batterij capaciteit (%)",
+            "sv": "Batteriladdning (%)"
+          },
+          "example": 42
+        }
+      ],
+      "args": []
+    }
+  ],
+  "conditions": [
+    {
+      "id": "isOperationalStatus",
+      "title": {
+        "en": "Operation status !{{is|is not}}",
+        "nl": "Operationele status !{{is|is niet}}",
+        "sv": "Operationell status !{{är|är inte}}"
+      },
+      "args": [
+        {
+          "name": "status",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "303",
+              "label": {
+                "en": "Off",
+                "nl": "Uit",
+                "sv": "Off"
+              }
+            },
+            {
+              "id": "2291",
+              "label": {
+                "en": "Battery Standby",
+                "nl": "Batterij standby",
+                "sv": "Batteri standby"
+              }
+            },
+            {
+              "id": "2292",
+              "label": {
+                "en": "Battery Charging",
+                "nl": "Batterij opladen",
+                "sv": "Batteri laddas"
+              }
+            },
+            {
+              "id": "2293",
+              "label": {
+                "en": "Battery Discharging",
+                "nl": "Batterij ontladen",
+                "sv": "Batteri urladdas"
+              }
+            },
+            {
+              "id": "16777213",
+              "label": {
+                "en": "Information Not Available",
+                "nl": "Informatie Niet Beschikbaar",
+                "sv": "Information inte tillgänglig"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

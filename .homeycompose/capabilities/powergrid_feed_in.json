@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Powergrid Feed In",
+    "nl": "Vermogen netvoeding",
+    "sv": "Inmatning elnät"
+  },
+  "insights": true,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/powergrid_feed_in.svg",
+  "units": {
+    "en": "W",
+    "nl": "W",
+    "sv": "W"
+  }
+}

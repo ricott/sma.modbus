@@ -19,7 +19,7 @@
       "modbus"
     ]
   },
-  "version": "2.0.9",
+  "version": "2.1.0",
   "compatibility": ">=3.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -62,503 +62,475 @@
   "dependencies": {
     "net": "*"
   },
-  "capabilities": {
-    "measure_yield": {
-      "type": "number",
-      "title": {
-        "en": "Total Yield",
-        "nl": "Totale opbrengst",
-        "sv": "Total produktion"
+  "flow": {
+    "triggers": [
+      {
+        "id": "phase_threshold_triggered",
+        "title": {
+          "en": "Phase utilization alert",
+          "sv": "Fasöverbelastning"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=energy"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "phase",
+            "type": "string",
+            "title": {
+              "en": "Phase",
+              "sv": "Fas"
+            },
+            "example": {
+              "en": "L1"
+            }
+          },
+          {
+            "name": "percentageUtilized",
+            "type": "number",
+            "title": {
+              "en": "Utilized (%)",
+              "sv": "Utnyttjad (%)"
+            },
+            "example": {
+              "en": "98"
+            }
+          }
+        ]
       },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/total_yield.svg",
-      "units": {
-        "en": "MWh",
-        "nl": "MWh",
-        "sv": "MWh"
+      {
+        "id": "inverter_status_changed",
+        "title": {
+          "en": "Operational Status Changed",
+          "nl": "Operationele status gewijzigd",
+          "sv": "Operationell status ändrad"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "inverter_status",
+            "type": "string",
+            "title": {
+              "en": "Operational Status",
+              "nl": "Operationele status",
+              "sv": "Operationell status"
+            },
+            "example": {
+              "en": "MPP"
+            }
+          }
+        ]
+      },
+      {
+        "id": "inverter_condition_changed",
+        "title": {
+          "en": "Condition Changed",
+          "nl": "Staat gewijzigd",
+          "sv": "Tillstånd ändrad"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "inverter_condition",
+            "type": "string",
+            "title": {
+              "en": "Condition",
+              "nl": "Staat",
+              "sv": "Tillstånd"
+            },
+            "example": {
+              "en": "Ok"
+            }
+          }
+        ]
+      },
+      {
+        "id": "changedOperationalStatus",
+        "title": {
+          "en": "Operational Status Changed",
+          "nl": "Operationele status gewijzigd",
+          "sv": "Operationell status ändrad"
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Operational Status",
+              "nl": "Operationele status",
+              "sv": "Operationell status"
+            },
+            "example": "Battery Standby"
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
+      },
+      {
+        "id": "changedBattery",
+        "title": {
+          "en": "Battery Charge Changed",
+          "nl": "Batterij lading gewijzigd",
+          "sv": "Batteriladdning ändrad"
+        },
+        "tokens": [
+          {
+            "name": "charge",
+            "type": "number",
+            "title": {
+              "en": "Battery Charge (%)",
+              "nl": "Batterij lading (%)",
+              "sv": "Batteriladdning (%)"
+            },
+            "example": 66
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
+      },
+      {
+        "id": "changedBatteryCharging",
+        "title": {
+          "en": "Battery Charging Changed (W)",
+          "nl": "Batterij opladen gewijzigd (W)",
+          "sv": "Batteriladdning ändrad (W)"
+        },
+        "tokens": [
+          {
+            "name": "charging",
+            "type": "number",
+            "title": {
+              "en": "Battery Charging (W)",
+              "nl": "Batterij opladen (W)",
+              "sv": "Batteriladdning effekt (W)"
+            },
+            "example": 1337
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
+      },
+      {
+        "id": "changedBatteryDischarging",
+        "title": {
+          "en": "Battery Discharging Changed (W)",
+          "nl": "Batterij ontladen gewijzigd (W)",
+          "sv": "Batteriurladdning ändrad (W)"
+        },
+        "tokens": [
+          {
+            "name": "discharging",
+            "type": "number",
+            "title": {
+              "en": "Battery Discharging (W)",
+              "nl": "Batterij ontladen (W)",
+              "sv": "Urladdning (W)"
+            },
+            "example": 187
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
+      },
+      {
+        "id": "changedPowerDrawn",
+        "title": {
+          "en": "Power Drawn Changed (W)",
+          "nl": "Stroom afname gewijzigd (W)",
+          "sv": "Effekt uttagen ändrad (W)"
+        },
+        "tokens": [
+          {
+            "name": "drawn",
+            "type": "number",
+            "title": {
+              "en": "Power Drawn (W)",
+              "nl": "Stroom afname (W)",
+              "sv": "Effekt uttagen (W)"
+            },
+            "example": 303
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
+      },
+      {
+        "id": "changedPowerGridFeedin",
+        "title": {
+          "en": "Powergrid Feed In Changed (W)",
+          "nl": "Vermogen netvoeding gewijzigd (W)",
+          "sv": "Inmatning elnät ändrad (W)"
+        },
+        "tokens": [
+          {
+            "name": "feedin",
+            "type": "number",
+            "title": {
+              "en": "Powergrid Feed In (W)",
+              "nl": "Vermogen netvoeding (W)",
+              "sv": "Inmatning elnät (W)"
+            },
+            "example": 42
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
+      },
+      {
+        "id": "changedBatteryCapacity",
+        "title": {
+          "en": "Battery Capacity Changed (%",
+          "nl": "Batterij capaciteit gewijzigd (%)",
+          "sv": "Batterladdning ändrad (%)"
+        },
+        "tokens": [
+          {
+            "name": "capacity",
+            "type": "number",
+            "title": {
+              "en": "Battery Capacity (%)",
+              "nl": "Batterij capaciteit (%)",
+              "sv": "Batteriladdning (%)"
+            },
+            "example": 42
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          }
+        ]
       }
-    },
-    "operational_status": {
-      "type": "string",
-      "title": {
-        "en": "Operational Status",
-        "nl": "Operationele status",
-        "sv": "Operationell status"
+    ],
+    "conditions": [
+      {
+        "id": "phaseUtilized",
+        "title": {
+          "en": "A phase utilized !{{above|below}}",
+          "sv": "En fas är utnyttjad !{{över|under}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=energy"
+          },
+          {
+            "name": "phase",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "L1",
+                "label": {
+                  "en": "L1",
+                  "sv": "L1"
+                }
+              },
+              {
+                "id": "L2",
+                "label": {
+                  "en": "L2",
+                  "sv": "L2"
+                }
+              },
+              {
+                "id": "L3",
+                "label": {
+                  "en": "L3",
+                  "sv": "L3"
+                }
+              }
+            ]
+          },
+          {
+            "name": "utilization",
+            "type": "number",
+            "title": {
+              "en": "Utilization (%)",
+              "sv": "Utnyttjad (%)"
+            }
+          }
+        ]
       },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/operational_status.svg"
-    },
-    "battery": {
-      "type": "number",
-      "title": {
-        "en": "Battery Charge",
-        "nl": "Batterij lading",
-        "sv": "Batteriladdning"
+      {
+        "id": "anyPhaseUtilized",
+        "title": {
+          "en": "Any phase utilized !{{above|below}}",
+          "sv": "Någon fas är utnyttjad !{{över|under}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=energy"
+          },
+          {
+            "name": "utilization",
+            "type": "number",
+            "title": {
+              "en": "Utilization (%)",
+              "sv": "Utnyttjad (%)"
+            }
+          }
+        ]
       },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/battery.svg",
-      "units": {
-        "en": "%",
-        "nl": "%",
-        "sv": "%"
+      {
+        "id": "isInverterDailyYield",
+        "title": {
+          "en": "Daily yield is !{{|not}} above",
+          "sv": "Dagens produktion är !{{|inte}} mer än"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          },
+          {
+            "name": "daily_yield",
+            "type": "number",
+            "title": {
+              "en": "Daily yield (kWh)",
+              "sv": "Dagens produktion (kWh)"
+            }
+          }
+        ]
+      },
+      {
+        "id": "isInverterStatus",
+        "title": {
+          "en": "Operational status !{{contains|doesn't contain}}",
+          "sv": "Operationell status innehåller !{{|inte}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          },
+          {
+            "name": "inverter_status",
+            "type": "text",
+            "title": {
+              "en": "Operational status",
+              "sv": "Operationell status"
+            }
+          }
+        ]
+      },
+      {
+        "id": "isOperationalStatus",
+        "title": {
+          "en": "Operation status !{{is|is not}}",
+          "nl": "Operationele status !{{is|is niet}}",
+          "sv": "Operationell status !{{är|är inte}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=storage"
+          },
+          {
+            "name": "status",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "303",
+                "label": {
+                  "en": "Off",
+                  "nl": "Uit",
+                  "sv": "Off"
+                }
+              },
+              {
+                "id": "2291",
+                "label": {
+                  "en": "Battery Standby",
+                  "nl": "Batterij standby",
+                  "sv": "Batteri standby"
+                }
+              },
+              {
+                "id": "2292",
+                "label": {
+                  "en": "Battery Charging",
+                  "nl": "Batterij opladen",
+                  "sv": "Batteri laddas"
+                }
+              },
+              {
+                "id": "2293",
+                "label": {
+                  "en": "Battery Discharging",
+                  "nl": "Batterij ontladen",
+                  "sv": "Batteri urladdas"
+                }
+              },
+              {
+                "id": "16777213",
+                "label": {
+                  "en": "Information Not Available",
+                  "nl": "Informatie Niet Beschikbaar",
+                  "sv": "Information inte tillgänglig"
+                }
+              }
+            ]
+          }
+        ]
       }
-    },
-    "power_drawn": {
-      "type": "number",
-      "title": {
-        "en": "Power Drawn",
-        "nl": "Stroom afname",
-        "sv": "Effekt uttagen"
-      },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/power_drawn.svg",
-      "units": {
-        "en": "W",
-        "nl": "W",
-        "sv": "W"
-      }
-    },
-    "powergrid_feed_in": {
-      "type": "number",
-      "title": {
-        "en": "Powergrid Feed In",
-        "nl": "Vermogen netvoeding",
-        "sv": "Inmatning elnät"
-      },
-      "insights": true,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/powergrid_feed_in.svg",
-      "units": {
-        "en": "W",
-        "nl": "W",
-        "sv": "W"
-      }
-    },
-    "battery_capacity": {
-      "type": "number",
-      "title": {
-        "en": "Battery Capacity",
-        "nl": "Batterij capaciteit",
-        "sv": "Batteriladdning"
-      },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/battery_capacity.svg",
-      "units": {
-        "en": "%",
-        "nl": "%",
-        "sv": "%"
-      }
-    },
-    "power_grid": {
-      "type": "number",
-      "title": {
-        "en": "Grid power",
-        "sv": "Elnät"
-      },
-      "insights": false,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/grid.svg",
-      "units": {
-        "en": "W",
-        "nl": "W",
-        "sv": "W"
-      }
-    },
-    "power_pv": {
-      "type": "number",
-      "title": {
-        "en": "PV power",
-        "sv": "Solceller"
-      },
-      "insights": false,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/sun2.svg",
-      "units": {
-        "en": "W",
-        "nl": "W",
-        "sv": "W"
-      }
-    },
-    "power_self": {
-      "type": "number",
-      "title": {
-        "en": "Consumption",
-        "sv": "Konsumtion"
-      },
-      "insights": false,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/house.svg",
-      "units": {
-        "en": "W",
-        "nl": "W",
-        "sv": "W"
-      }
-    },
-    "connected": {
-      "title": {
-        "en": "Connected",
-        "sv": "Uppkopplad"
-      },
-      "type": "boolean",
-      "getable": true,
-      "setable": false,
-      "icon": "/assets/connected.svg"
-    },
-    "frequency": {
-      "type": "number",
-      "title": {
-        "en": "Frequency",
-        "sv": "Frekvens"
-      },
-      "insights": true,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/frequency.svg",
-      "units": {
-        "en": "Hz",
-        "sv": "Hz"
-      }
-    }
+    ]
   },
   "drivers": [
     {
-      "id": "inverter",
-      "name": {
-        "en": "Inverter",
-        "nl": "Omvormer",
-        "sv": "Växelriktare"
-      },
-      "images": {
-        "large": "drivers/inverter/assets/images/large.png",
-        "small": "drivers/inverter/assets/images/small.png"
-      },
-      "class": "solarpanel",
-      "capabilities": [
-        "operational_status.health",
-        "operational_status",
-        "measure_voltage.dcA",
-        "measure_voltage.dcB",
-        "measure_power",
-        "measure_voltage",
-        "meter_power",
-        "measure_yield"
-      ],
-      "capabilitiesOptions": {
-        "operational_status.health": {
-          "title": {
-            "en": "Condition",
-            "nl": "Staat",
-            "sv": "Tillstånd"
-          }
-        },
-        "measure_voltage.dcA": {
-          "title": {
-            "en": "MPP A (DC)",
-            "nl": "MPP A (DC)",
-            "sv": "MPP A (DC)"
-          }
-        },
-        "measure_voltage.dcB": {
-          "title": {
-            "en": "MPP B (DC)",
-            "nl": "MPP B (DC)",
-            "sv": "MPP B (DC)"
-          }
-        },
-        "measure_power": {
-          "title": {
-            "en": "Grid power",
-            "nl": "Netvermogen",
-            "sv": "Effekt (AC)"
-          }
-        },
-        "measure_voltage": {
-          "title": {
-            "en": "Grid voltage (L1)",
-            "nl": "Netspanning (L1)",
-            "sv": "Nätspänning (L1)"
-          }
-        },
-        "meter_power": {
-          "title": {
-            "en": "Daily Yield",
-            "nl": "Dagelijkse opbrengst",
-            "sv": "Dagens produktion"
-          }
-        }
-      },
-			"pair": [
-				{
-					"id": "start",
-          "navigation": {
-            "next": "list_devices"
-          }
-				},
-				{
-					"id": "settings"
-				},
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-			],
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "Inverter settings",
-            "nl": "Omvormer instellingen",
-            "sv": "Inställningar för växelriktare"
-          },
-          "children": [
-            {
-              "id": "address",
-              "type": "text",
-              "value": "0.0.0.0",
-              "label": {
-                "en": "IP Address",
-                "nl": "IP adres",
-                "sv": "IP Adress"
-              }
-            },
-            {
-              "id": "port",
-              "type": "number",
-              "value": 502,
-              "step": 1,
-              "label": {
-                "en": "Port",
-                "nl": "Poort",
-                "sv": "Port"
-              }
-            },
-            {
-              "id": "polling",
-              "type": "number",
-              "value": 5,
-              "step": 1,
-              "attr": {
-                "min": 2,
-                "max": 3600
-              },
-              "label": {
-                "en": "Polling",
-                "nl": "Polling",
-                "sv": "Uppdateringsfrekvens"
-              }
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Information",
-            "nl": "Informatie",
-            "sv": "Information"
-          },
-          "children": [
-            {
-              "id": "deviceType",
-              "type": "label",
-              "label": {
-                "en": "Device type",
-                "nl": "Soort apparaat",
-                "sv": "Enhet"
-              },
-              "value": ""
-            },
-            {
-              "id": "serialNo",
-              "type": "label",
-              "label": {
-                "en": "Serial number",
-                "nl": "Serienummer",
-                "sv": "Serienummer"
-              },
-              "value": ""
-            },
-            {
-              "id": "swVersion",
-              "type": "label",
-              "label": {
-                "en": "Software version",
-                "nl": "Software versie",
-                "sv": "Mjukvaruversion"
-              },
-              "value": ""
-            },
-            {
-              "id": "maxPower",
-              "type": "label",
-              "label": {
-                "en": "Max power (W)",
-                "nl": "Max vermogen (W)",
-                "sv": "Max effekt (W)"
-              },
-              "value": ""
-            },
-            {
-              "id": "activePowerLimit",
-              "type": "label",
-              "label": {
-                "en": "Active power limit (W)",
-                "nl": "Actief vermogen limiet (W)",
-                "sv": "Inställd effekt (W)"
-              },
-              "value": ""
-            },
-            {
-              "id": "gridCountry",
-              "type": "label",
-              "label": {
-                "en": "Grid country standard",
-                "sv": "Elnät, landskod"
-              },
-              "value": ""
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Debug",
-            "nl": "Debug",
-            "sv": "Felsökning"
-          },
-          "children": [
-            {
-              "id": "sma_last_error",
-              "type": "textarea",
-              "label": {
-                "en": "Most recent SMA Error",
-                "nl": "Meest recente SMA-fout",
-                "sv": "Senaste SMA felmeddelandet"
-              },
-              "value": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "storage",
-      "name": {
-        "en": "Sunny Boy Storage",
-        "nl": "Sunny Boy Storage",
-        "sv": "Sunny Boy Storage"
-      },
-      "images": {
-        "large": "drivers/storage/assets/images/large.jpg",
-        "small": "drivers/storage/assets/images/small.jpg"
-      },
-      "class": "sensor",
-      "capabilities": [
-        "operational_status",
-        "battery",
-        "measure_power.charge",
-        "measure_power.discharge",
-        "power_drawn",
-        "powergrid_feed_in",
-        "battery_capacity"
-      ],
-      "capabilitiesOptions": {
-        "measure_power.charge": {
-          "title": {
-            "en": "Charge",
-            "nl": "Opladen",
-            "sv": "Laddning"
-          }
-        },
-        "measure_power.discharge": {
-          "title": {
-            "en": "Discharge",
-            "nl": "Ontladen",
-            "sv": "Urladdning"
-          }
-        }
-      },
-      "pair": [
-        {
-          "id": "start"
-        }
-      ],
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "Sunny Boy Storage settings",
-            "nl": "Sunny Boy Storage instellingen",
-            "sv": "Sunny Boy Storage inställningar"
-          },
-          "children": [
-            {
-              "id": "address",
-              "type": "text",
-              "value": "0.0.0.0",
-              "label": {
-                "en": "IP Address",
-                "nl": "IP adres",
-                "sv": "IP adress"
-              }
-            },
-            {
-              "id": "port",
-              "type": "number",
-              "value": 502,
-              "step": 1,
-              "label": {
-                "en": "Port",
-                "nl": "Poort",
-                "sv": "Port"
-              }
-            },
-            {
-              "id": "polling",
-              "type": "number",
-              "value": 10,
-              "step": 1,
-              "attr": {
-                "min": 2,
-                "max": 3600
-              },
-              "label": {
-                "en": "Polling",
-                "nl": "Polling",
-                "sv": "Uppdateringsfrekvens"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "energy",
       "name": {
         "en": "Energy Meter",
         "sv": "Elmätare"
@@ -784,10 +756,557 @@
             }
           ]
         }
-      ]
+      ],
+      "id": "energy"
     },
     {
-      "id": "summary",
+      "name": {
+        "en": "Inverter",
+        "nl": "Omvormer",
+        "sv": "Växelriktare"
+      },
+      "images": {
+        "large": "drivers/inverter/assets/images/large.png",
+        "small": "drivers/inverter/assets/images/small.png"
+      },
+      "class": "solarpanel",
+      "capabilities": [
+        "operational_status.health",
+        "operational_status",
+        "measure_voltage.dcA",
+        "measure_voltage.dcB",
+        "measure_power",
+        "measure_voltage",
+        "meter_power",
+        "measure_yield"
+      ],
+      "capabilitiesOptions": {
+        "operational_status.health": {
+          "title": {
+            "en": "Condition",
+            "nl": "Staat",
+            "sv": "Tillstånd"
+          }
+        },
+        "measure_voltage.dcA": {
+          "title": {
+            "en": "MPP A (DC)",
+            "nl": "MPP A (DC)",
+            "sv": "MPP A (DC)"
+          }
+        },
+        "measure_voltage.dcB": {
+          "title": {
+            "en": "MPP B (DC)",
+            "nl": "MPP B (DC)",
+            "sv": "MPP B (DC)"
+          }
+        },
+        "measure_power": {
+          "title": {
+            "en": "Grid power",
+            "nl": "Netvermogen",
+            "sv": "Effekt (AC)"
+          }
+        },
+        "measure_voltage": {
+          "title": {
+            "en": "Grid voltage (L1)",
+            "nl": "Netspanning (L1)",
+            "sv": "Nätspänning (L1)"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Daily Yield",
+            "nl": "Dagelijkse opbrengst",
+            "sv": "Dagens produktion"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "settings"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Inverter settings",
+            "nl": "Omvormer instellingen",
+            "sv": "Inställningar för växelriktare"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP Address",
+                "nl": "IP adres",
+                "sv": "IP Adress"
+              }
+            },
+            {
+              "id": "port",
+              "type": "number",
+              "value": 502,
+              "step": 1,
+              "label": {
+                "en": "Port",
+                "nl": "Poort",
+                "sv": "Port"
+              }
+            },
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 5,
+              "step": 1,
+              "attr": {
+                "min": 2,
+                "max": 3600
+              },
+              "label": {
+                "en": "Polling",
+                "nl": "Polling",
+                "sv": "Uppdateringsfrekvens"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Information",
+            "nl": "Informatie",
+            "sv": "Information"
+          },
+          "children": [
+            {
+              "id": "deviceType",
+              "type": "label",
+              "label": {
+                "en": "Device type",
+                "nl": "Soort apparaat",
+                "sv": "Enhet"
+              },
+              "value": ""
+            },
+            {
+              "id": "serialNo",
+              "type": "label",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer",
+                "sv": "Serienummer"
+              },
+              "value": ""
+            },
+            {
+              "id": "swVersion",
+              "type": "label",
+              "label": {
+                "en": "Software version",
+                "nl": "Software versie",
+                "sv": "Mjukvaruversion"
+              },
+              "value": ""
+            },
+            {
+              "id": "maxPower",
+              "type": "label",
+              "label": {
+                "en": "Max power (W)",
+                "nl": "Max vermogen (W)",
+                "sv": "Max effekt (W)"
+              },
+              "value": ""
+            },
+            {
+              "id": "activePowerLimit",
+              "type": "label",
+              "label": {
+                "en": "Active power limit (W)",
+                "nl": "Actief vermogen limiet (W)",
+                "sv": "Inställd effekt (W)"
+              },
+              "value": ""
+            },
+            {
+              "id": "gridCountry",
+              "type": "label",
+              "label": {
+                "en": "Grid country standard",
+                "sv": "Elnät, landskod"
+              },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Debug",
+            "nl": "Debug",
+            "sv": "Felsökning"
+          },
+          "children": [
+            {
+              "id": "sma_last_error",
+              "type": "textarea",
+              "label": {
+                "en": "Most recent SMA Error",
+                "nl": "Meest recente SMA-fout",
+                "sv": "Senaste SMA felmeddelandet"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "id": "inverter"
+    },
+    {
+      "name": {
+        "en": "PVOutput.org",
+        "nl": "PVOutput.org",
+        "sv": "PVOutput.org"
+      },
+      "images": {
+        "large": "drivers/pvoutput/assets/images/large.jpg",
+        "small": "drivers/pvoutput/assets/images/small.jpg"
+      },
+      "class": "other",
+      "capabilities": [
+        "connected"
+      ],
+      "pair": [
+        {
+          "id": "settings"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "PVOutput settings",
+            "sv": "PVOutput inställningar"
+          },
+          "children": [
+            {
+              "id": "interval",
+              "type": "number",
+              "value": 5,
+              "step": 1,
+              "attr": {
+                "min": 1,
+                "max": 1440
+              },
+              "label": {
+                "en": "Update interval (minutes)",
+                "sv": "Uppdateringsfrekvens (minuter)"
+              },
+              "hint": {
+                "en": "How frequently should PVOutput be updated",
+                "sv": "Hur frekvent skall PVOutput uppdateras"
+              }
+            },
+            {
+              "id": "start_reporting",
+              "type": "dropdown",
+              "value": "0500",
+              "label": {
+                "en": "Start reporting (hour of day)",
+                "sv": "Börja rapportera (timme på dagen)"
+              },
+              "hint": {
+                "en": "From what hour should PVOutput be updated",
+                "sv": "Från vilken timme på dagen skall PVOutput börjar uppdateras"
+              },
+              "values": [
+                {
+                  "id": "0000",
+                  "label": {
+                    "en": "00:00"
+                  }
+                },
+                {
+                  "id": "0100",
+                  "label": {
+                    "en": "01:00"
+                  }
+                },
+                {
+                  "id": "0200",
+                  "label": {
+                    "en": "02:00"
+                  }
+                },
+                {
+                  "id": "0300",
+                  "label": {
+                    "en": "03:00"
+                  }
+                },
+                {
+                  "id": "0400",
+                  "label": {
+                    "en": "04:00"
+                  }
+                },
+                {
+                  "id": "0500",
+                  "label": {
+                    "en": "05:00"
+                  }
+                },
+                {
+                  "id": "0600",
+                  "label": {
+                    "en": "06:00"
+                  }
+                },
+                {
+                  "id": "0700",
+                  "label": {
+                    "en": "07:00"
+                  }
+                },
+                {
+                  "id": "0800",
+                  "label": {
+                    "en": "08:00"
+                  }
+                },
+                {
+                  "id": "0900",
+                  "label": {
+                    "en": "09:00"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "stop_reporting",
+              "type": "dropdown",
+              "value": "2200",
+              "label": {
+                "en": "Stop reporting (hour of day)",
+                "sv": "Sluta rapportera (timme på dagen)"
+              },
+              "hint": {
+                "en": "To what hour should PVOutput be updated",
+                "sv": "Till vilken timme på dagen skall PVOutput uppdateras"
+              },
+              "values": [
+                {
+                  "id": "1500",
+                  "label": {
+                    "en": "15:00"
+                  }
+                },
+                {
+                  "id": "1600",
+                  "label": {
+                    "en": "16:00"
+                  }
+                },
+                {
+                  "id": "1700",
+                  "label": {
+                    "en": "17:00"
+                  }
+                },
+                {
+                  "id": "1800",
+                  "label": {
+                    "en": "18:00"
+                  }
+                },
+                {
+                  "id": "1900",
+                  "label": {
+                    "en": "19:00"
+                  }
+                },
+                {
+                  "id": "2000",
+                  "label": {
+                    "en": "20:00"
+                  }
+                },
+                {
+                  "id": "2100",
+                  "label": {
+                    "en": "21:00"
+                  }
+                },
+                {
+                  "id": "2200",
+                  "label": {
+                    "en": "22:00"
+                  }
+                },
+                {
+                  "id": "2300",
+                  "label": {
+                    "en": "23:00"
+                  }
+                },
+                {
+                  "id": "0000",
+                  "label": {
+                    "en": "00:00"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Debug",
+            "nl": "Debug",
+            "sv": "Felsökning"
+          },
+          "children": [
+            {
+              "id": "last_error",
+              "type": "textarea",
+              "label": {
+                "en": "Most recent PVOutput error",
+                "sv": "Senaste PVOutput felmeddelandet"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "id": "pvoutput"
+    },
+    {
+      "name": {
+        "en": "Sunny Boy Storage",
+        "nl": "Sunny Boy Storage",
+        "sv": "Sunny Boy Storage"
+      },
+      "images": {
+        "large": "drivers/storage/assets/images/large.jpg",
+        "small": "drivers/storage/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "operational_status",
+        "battery",
+        "measure_power.charge",
+        "measure_power.discharge",
+        "power_drawn",
+        "powergrid_feed_in",
+        "battery_capacity"
+      ],
+      "capabilitiesOptions": {
+        "measure_power.charge": {
+          "title": {
+            "en": "Charge",
+            "nl": "Opladen",
+            "sv": "Laddning"
+          }
+        },
+        "measure_power.discharge": {
+          "title": {
+            "en": "Discharge",
+            "nl": "Ontladen",
+            "sv": "Urladdning"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "start"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Sunny Boy Storage settings",
+            "nl": "Sunny Boy Storage instellingen",
+            "sv": "Sunny Boy Storage inställningar"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP Address",
+                "nl": "IP adres",
+                "sv": "IP adress"
+              }
+            },
+            {
+              "id": "port",
+              "type": "number",
+              "value": 502,
+              "step": 1,
+              "label": {
+                "en": "Port",
+                "nl": "Poort",
+                "sv": "Port"
+              }
+            },
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 10,
+              "step": 1,
+              "attr": {
+                "min": 2,
+                "max": 3600
+              },
+              "label": {
+                "en": "Polling",
+                "nl": "Polling",
+                "sv": "Uppdateringsfrekvens"
+              }
+            }
+          ]
+        }
+      ],
+      "id": "storage"
+    },
+    {
       "name": {
         "en": "Energy summary",
         "sv": "Energisammanställning"
@@ -850,644 +1369,185 @@
             }
           ]
         }
-      ]
-    },
-    {
-      "id": "pvoutput",
-      "name": {
-        "en": "PVOutput.org",
-        "nl": "PVOutput.org",
-        "sv": "PVOutput.org"
-      },
-      "images": {
-        "large": "drivers/pvoutput/assets/images/large.jpg",
-        "small": "drivers/pvoutput/assets/images/small.jpg"
-      },
-      "class": "other",
-      "capabilities": [
-        "connected"
       ],
-      "pair": [
-				{
-					"id": "settings"
-				},
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-      ],
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "PVOutput settings",
-            "sv": "PVOutput inställningar"
-          },
-          "children": [
-            {
-              "id": "interval",
-              "type": "number",
-              "value": 5,
-              "step": 1,
-              "attr": {
-                "min": 1,
-                "max": 1440
-              },
-              "label": {
-                "en": "Update interval (minutes)",
-                "sv": "Uppdateringsfrekvens (minuter)"
-              },
-              "hint": {
-                "en": "How frequently should PVOutput be updated",
-                "sv": "Hur frekvent skall PVOutput uppdateras"
-              }
-            },
-            {
-              "id": "start_reporting",
-              "type": "dropdown",
-              "value": "0500",
-              "label": {
-                "en": "Start reporting (hour of day)",
-                "sv": "Börja rapportera (timme på dagen)"
-              },
-              "hint": {
-                "en": "From what hour should PVOutput be updated",
-                "sv": "Från vilken timme på dagen skall PVOutput börjar uppdateras"
-              },
-              "values": [
-                { "id": "0000", "label": { "en": "00:00" }},
-                { "id": "0100", "label": { "en": "01:00" }},
-                { "id": "0200", "label": { "en": "02:00" }},
-                { "id": "0300", "label": { "en": "03:00" }},
-                { "id": "0400", "label": { "en": "04:00" }},
-                { "id": "0500", "label": { "en": "05:00" }},
-                { "id": "0600", "label": { "en": "06:00" }},
-                { "id": "0700", "label": { "en": "07:00" }},
-                { "id": "0800", "label": { "en": "08:00" }},
-                { "id": "0900", "label": { "en": "09:00" }}
-              ]
-            },
-            {
-              "id": "stop_reporting",
-              "type": "dropdown",
-              "value": "2200",
-              "label": {
-                "en": "Stop reporting (hour of day)",
-                "sv": "Sluta rapportera (timme på dagen)"
-              },
-              "hint": {
-                "en": "To what hour should PVOutput be updated",
-                "sv": "Till vilken timme på dagen skall PVOutput uppdateras"
-              },
-              "values": [
-                { "id": "1500", "label": { "en": "15:00" }},
-                { "id": "1600", "label": { "en": "16:00" }},
-                { "id": "1700", "label": { "en": "17:00" }},
-                { "id": "1800", "label": { "en": "18:00" }},
-                { "id": "1900", "label": { "en": "19:00" }},
-                { "id": "2000", "label": { "en": "20:00" }},
-                { "id": "2100", "label": { "en": "21:00" }},
-                { "id": "2200", "label": { "en": "22:00" }},
-                { "id": "2300", "label": { "en": "23:00" }},
-                { "id": "0000", "label": { "en": "00:00" }}
-              ]
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Debug",
-            "nl": "Debug",
-            "sv": "Felsökning"
-          },
-          "children": [
-            {
-              "id": "last_error",
-              "type": "textarea",
-              "label": {
-                "en": "Most recent PVOutput error",
-                "sv": "Senaste PVOutput felmeddelandet"
-              },
-              "value": ""
-            }
-          ]
-        }
-      ]
+      "id": "summary"
     }
   ],
-  "flow": {
-    "triggers": [
-      {
-        "id": "phase_threshold_triggered",
-        "title": {
-          "en": "Phase utilization alert",
-          "sv": "Fasöverbelastning"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=energy"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "phase",
-            "type": "string",
-            "title": {
-              "en": "Phase",
-              "sv": "Fas"
-            },
-            "example": {
-              "en": "L1"
-            }
-          },
-          {
-            "name": "percentageUtilized",
-            "type": "number",
-            "title": {
-              "en": "Utilized (%)",
-              "sv": "Utnyttjad (%)"
-            },
-            "example": {
-              "en": "98"
-            }
-          }
-        ]
+  "capabilities": {
+    "battery": {
+      "type": "number",
+      "title": {
+        "en": "Battery Charge",
+        "nl": "Batterij lading",
+        "sv": "Batteriladdning"
       },
-      {
-        "id": "inverter_status_changed",
-        "title": {
-          "en": "Operational Status Changed",
-          "nl": "Operationele status gewijzigd",
-          "sv": "Operationell status ändrad"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=inverter"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "inverter_status",
-            "type": "string",
-            "title": {
-              "en": "Operational Status",
-              "nl": "Operationele status",
-              "sv": "Operationell status"
-            },
-            "example": {
-              "en": "MPP"
-            }
-          }
-        ]
-      },
-      {
-        "id": "inverter_condition_changed",
-        "title": {
-          "en": "Condition Changed",
-          "nl": "Staat gewijzigd",
-          "sv": "Tillstånd ändrad"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=inverter"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "inverter_condition",
-            "type": "string",
-            "title": {
-              "en": "Condition",
-              "nl": "Staat",
-              "sv": "Tillstånd"
-            },
-            "example": {
-              "en": "Ok"
-            }
-          }
-        ]
-      },
-      {
-        "id": "changedOperationalStatus",
-        "title": {
-          "en": "Operational Status Changed",
-          "nl": "Operationele status gewijzigd",
-          "sv": "Operationell status ändrad"
-        },
-        "tokens": [
-          {
-            "name": "status",
-            "type": "string",
-            "title": {
-              "en": "Operational Status",
-              "nl": "Operationele status",
-              "sv": "Operationell status"
-            },
-            "example": "Battery Standby"
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "changedBattery",
-        "title": {
-          "en": "Battery Charge Changed",
-          "nl": "Batterij lading gewijzigd",
-          "sv": "Batteriladdning ändrad"
-        },
-        "tokens": [
-          {
-            "name": "charge",
-            "type": "number",
-            "title": {
-              "en": "Battery Charge (%)",
-              "nl": "Batterij lading (%)",
-              "sv": "Batteriladdning (%)"
-            },
-            "example": 66
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "changedBatteryCharging",
-        "title": {
-          "en": "Battery Charging Changed (W)",
-          "nl": "Batterij opladen gewijzigd (W)",
-          "sv": "Batteriladdning ändrad (W)"
-        },
-        "tokens": [
-          {
-            "name": "charging",
-            "type": "number",
-            "title": {
-              "en": "Battery Charging (W)",
-              "nl": "Batterij opladen (W)",
-              "sv": "Batteriladdning effekt (W)"
-            },
-            "example": 1337
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "changedBatteryDischarging",
-        "title": {
-          "en": "Battery Discharging Changed (W)",
-          "nl": "Batterij ontladen gewijzigd (W)",
-          "sv": "Batteriurladdning ändrad (W)"
-        },
-        "tokens": [
-          {
-            "name": "discharging",
-            "type": "number",
-            "title": {
-              "en": "Battery Discharging (W)",
-              "nl": "Batterij ontladen (W)",
-              "sv": "Urladdning (W)"
-            },
-            "example": 187
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "changedPowerDrawn",
-        "title": {
-          "en": "Power Drawn Changed (W)",
-          "nl": "Stroom afname gewijzigd (W)",
-          "sv": "Effekt uttagen ändrad (W)"
-        },
-        "tokens": [
-          {
-            "name": "drawn",
-            "type": "number",
-            "title": {
-              "en": "Power Drawn (W)",
-              "nl": "Stroom afname (W)",
-              "sv": "Effekt uttagen (W)"
-            },
-            "example": 303
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "changedPowerGridFeedin",
-        "title": {
-          "en": "Powergrid Feed In Changed (W)",
-          "nl": "Vermogen netvoeding gewijzigd (W)",
-          "sv": "Inmatning elnät ändrad (W)"
-        },
-        "tokens": [
-          {
-            "name": "feedin",
-            "type": "number",
-            "title": {
-              "en": "Powergrid Feed In (W)",
-              "nl": "Vermogen netvoeding (W)",
-              "sv": "Inmatning elnät (W)"
-            },
-            "example": 42
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "changedBatteryCapacity",
-        "title": {
-          "en": "Battery Capacity Changed (%",
-          "nl": "Batterij capaciteit gewijzigd (%)",
-          "sv": "Batterladdning ändrad (%)"
-        },
-        "tokens": [
-          {
-            "name": "capacity",
-            "type": "number",
-            "title": {
-              "en": "Battery Capacity (%)",
-              "nl": "Batterij capaciteit (%)",
-              "sv": "Batteriladdning (%)"
-            },
-            "example": 42
-          }
-        ],
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/battery.svg",
+      "units": {
+        "en": "%",
+        "nl": "%",
+        "sv": "%"
       }
-    ],
-    "conditions": [
-      {
-        "id": "isInverterDailyYield",
-        "title": {
-          "en": "Daily yield is !{{|not}} above",
-          "sv": "Dagens produktion är !{{|inte}} mer än"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=inverter"
-          },
-          {
-            "name": "daily_yield",
-            "type": "number",
-            "title": {
-              "en": "Daily yield (kWh)",
-              "sv": "Dagens produktion (kWh)"
-            }
-          }
-        ]
+    },
+    "battery_capacity": {
+      "type": "number",
+      "title": {
+        "en": "Battery Capacity",
+        "nl": "Batterij capaciteit",
+        "sv": "Batteriladdning"
       },
-      {
-        "id": "isInverterStatus",
-        "title": {
-          "en": "Operational status !{{contains|doesn't contain}}",
-          "sv": "Operationell status innehåller !{{|inte}}"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=inverter"
-          },
-          {
-            "name": "inverter_status",
-            "type": "text",
-            "title": {
-              "en": "Operational status",
-              "sv": "Operationell status"
-            }
-          }
-        ]
-      },
-      {
-        "id": "isOperationalStatus",
-        "title": {
-          "en": "Operation status !{{is|is not}}",
-          "nl": "Operationele status !{{is|is niet}}",
-          "sv": "Operationell status !{{är|är inte}}"
-        },
-        "args": [
-          {
-            "name": "status",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "303",
-                "label": {
-                  "en": "Off",
-                  "nl": "Uit",
-                  "sv": "Off"
-                }
-              },
-              {
-                "id": "2291",
-                "label": {
-                  "en": "Battery Standby",
-                  "nl": "Batterij standby",
-                  "sv": "Batteri standby"
-                }
-              },
-              {
-                "id": "2292",
-                "label": {
-                  "en": "Battery Charging",
-                  "nl": "Batterij opladen",
-                  "sv": "Batteri laddas"
-                }
-              },
-              {
-                "id": "2293",
-                "label": {
-                  "en": "Battery Discharging",
-                  "nl": "Batterij ontladen",
-                  "sv": "Batteri urladdas"
-                }
-              },
-              {
-                "id": "16777213",
-                "label": {
-                  "en": "Information Not Available",
-                  "nl": "Informatie Niet Beschikbaar",
-                  "sv": "Information inte tillgänglig"
-                }
-              }
-            ]
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": {
-              "en": "Select Sunny Boy Storage",
-              "nl": "Selecteer  Sunny Boy Storage",
-              "sv": "Välj Sunny Boy Storage"
-            },
-            "filter": "driver_id=storage"
-          }
-        ]
-      },
-      {
-        "id": "phaseUtilized",
-        "title": {
-          "en": "A phase utilized !{{above|below}}",
-          "sv": "En fas är utnyttjad !{{över|under}}"
-        },
-        "args": [
-          {
-            "name": "phase",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "L1",
-                "label": {
-                  "en": "L1",
-                  "sv": "L1"
-                }
-              },
-              {
-                "id": "L2",
-                "label": {
-                  "en": "L2",
-                  "sv": "L2"
-                }
-              },
-              {
-                "id": "L3",
-                "label": {
-                  "en": "L3",
-                  "sv": "L3"
-                }
-              }
-            ]
-          },
-          {
-            "name": "utilization",
-            "type": "number",
-            "title": {
-              "en": "Utilization (%)",
-              "sv": "Utnyttjad (%)"
-            }
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=energy"
-          }
-        ]
-      },
-      {
-        "id": "anyPhaseUtilized",
-        "title": {
-          "en": "Any phase utilized !{{above|below}}",
-          "sv": "Någon fas är utnyttjad !{{över|under}}"
-        },
-        "args": [
-          {
-            "name": "utilization",
-            "type": "number",
-            "title": {
-              "en": "Utilization (%)",
-              "sv": "Utnyttjad (%)"
-            }
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=energy"
-          }
-        ]
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/battery_capacity.svg",
+      "units": {
+        "en": "%",
+        "nl": "%",
+        "sv": "%"
       }
-    ]
+    },
+    "connected": {
+      "title": {
+        "en": "Connected",
+        "sv": "Uppkopplad"
+      },
+      "type": "boolean",
+      "getable": true,
+      "setable": false,
+      "icon": "/assets/connected.svg"
+    },
+    "frequency": {
+      "type": "number",
+      "title": {
+        "en": "Frequency",
+        "sv": "Frekvens"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/frequency.svg",
+      "units": {
+        "en": "Hz",
+        "sv": "Hz"
+      }
+    },
+    "measure_yield": {
+      "type": "number",
+      "title": {
+        "en": "Total Yield",
+        "nl": "Totale opbrengst",
+        "sv": "Total produktion"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/total_yield.svg",
+      "units": {
+        "en": "MWh",
+        "nl": "MWh",
+        "sv": "MWh"
+      }
+    },
+    "operational_status": {
+      "type": "string",
+      "title": {
+        "en": "Operational Status",
+        "nl": "Operationele status",
+        "sv": "Operationell status"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/operational_status.svg"
+    },
+    "power_drawn": {
+      "type": "number",
+      "title": {
+        "en": "Power Drawn",
+        "nl": "Stroom afname",
+        "sv": "Effekt uttagen"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/power_drawn.svg",
+      "units": {
+        "en": "W",
+        "nl": "W",
+        "sv": "W"
+      }
+    },
+    "power_grid": {
+      "type": "number",
+      "title": {
+        "en": "Grid power",
+        "sv": "Elnät"
+      },
+      "insights": false,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/grid.svg",
+      "units": {
+        "en": "W",
+        "nl": "W",
+        "sv": "W"
+      }
+    },
+    "power_pv": {
+      "type": "number",
+      "title": {
+        "en": "PV power",
+        "sv": "Solceller"
+      },
+      "insights": false,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/sun2.svg",
+      "units": {
+        "en": "W",
+        "nl": "W",
+        "sv": "W"
+      }
+    },
+    "power_self": {
+      "type": "number",
+      "title": {
+        "en": "Consumption",
+        "sv": "Konsumtion"
+      },
+      "insights": false,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/house.svg",
+      "units": {
+        "en": "W",
+        "nl": "W",
+        "sv": "W"
+      }
+    },
+    "powergrid_feed_in": {
+      "type": "number",
+      "title": {
+        "en": "Powergrid Feed In",
+        "nl": "Vermogen netvoeding",
+        "sv": "Inmatning elnät"
+      },
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/powergrid_feed_in.svg",
+      "units": {
+        "en": "W",
+        "nl": "W",
+        "sv": "W"
+      }
+    }
   }
 }

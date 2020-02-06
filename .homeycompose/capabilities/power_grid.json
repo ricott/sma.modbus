@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Grid power",
+    "sv": "Elnät"
+  },
+  "insights": false,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/grid.svg",
+  "units": {
+    "en": "W",
+    "nl": "W",
+    "sv": "W"
+  }
+}

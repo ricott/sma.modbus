@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Battery Capacity",
+    "nl": "Batterij capaciteit",
+    "sv": "Batteriladdning"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/battery_capacity.svg",
+  "units": {
+    "en": "%",
+    "nl": "%",
+    "sv": "%"
+  }
+}

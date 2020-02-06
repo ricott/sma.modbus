@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Total Yield",
+    "nl": "Totale opbrengst",
+    "sv": "Total produktion"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/total_yield.svg",
+  "units": {
+    "en": "MWh",
+    "nl": "MWh",
+    "sv": "MWh"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "sma.modbus",
+  "sdk": 2,
+  "brandColor": "#015a93",
+  "name": {
+    "en": "SMA Solar"
+  },
+  "tags": {
+    "en": [
+      "sma",
+      "inverter",
+      "solar",
+      "sunny boy",
+      "tripower",
+      "pv",
+      "energy",
+      "energy meter",
+      "home manager",
+      "modbus"
+    ]
+  },
+  "version": "2.1.0",
+  "compatibility": ">=3.0.0",
+  "author": {
+    "name": "Richard Barkestam",
+    "email": "richard@barkestam.se"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Richard Barkestam",
+        "email": "richard@barkestam.se"
+      },
+      {
+        "name": "Jelger Haanstra",
+        "email": "homey@solidewebservices.com"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "RBarkestam",
+        "currency": "EUR"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/ricott/sma.modbus/issues"
+  },
+  "source": "https://github.com/ricott/sma.modbus",
+  "homeyCommunityTopicId": 696,
+  "images": {
+    "large": "./assets/images/large.png",
+    "small": "./assets/images/small.png"
+  },
+  "category": "energy",
+  "description": {
+    "en": "Monitor your SMA Solar devices",
+    "sv": "Övervaka dina SMA solar enheter"
+  },
+  "dependencies": {
+    "net": "*"
+  }
+}

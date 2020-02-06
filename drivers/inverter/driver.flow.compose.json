@@ -1,0 +1,86 @@
+{
+  "triggers": [
+    {
+      "id": "inverter_status_changed",
+      "title": {
+        "en": "Operational Status Changed",
+        "nl": "Operationele status gewijzigd",
+        "sv": "Operationell status ändrad"
+      },
+      "args": [],
+      "tokens": [
+        {
+          "name": "inverter_status",
+          "type": "string",
+          "title": {
+            "en": "Operational Status",
+            "nl": "Operationele status",
+            "sv": "Operationell status"
+          },
+          "example": {
+            "en": "MPP"
+          }
+        }
+      ]
+    },
+    {
+      "id": "inverter_condition_changed",
+      "title": {
+        "en": "Condition Changed",
+        "nl": "Staat gewijzigd",
+        "sv": "Tillstånd ändrad"
+      },
+      "args": [],
+      "tokens": [
+        {
+          "name": "inverter_condition",
+          "type": "string",
+          "title": {
+            "en": "Condition",
+            "nl": "Staat",
+            "sv": "Tillstånd"
+          },
+          "example": {
+            "en": "Ok"
+          }
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "isInverterDailyYield",
+      "title": {
+        "en": "Daily yield is !{{|not}} above",
+        "sv": "Dagens produktion är !{{|inte}} mer än"
+      },
+      "args": [
+        {
+          "name": "daily_yield",
+          "type": "number",
+          "title": {
+            "en": "Daily yield (kWh)",
+            "sv": "Dagens produktion (kWh)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "isInverterStatus",
+      "title": {
+        "en": "Operational status !{{contains|doesn't contain}}",
+        "sv": "Operationell status innehåller !{{|inte}}"
+      },
+      "args": [
+        {
+          "name": "inverter_status",
+          "type": "text",
+          "title": {
+            "en": "Operational status",
+            "sv": "Operationell status"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Connected",
+    "sv": "Uppkopplad"
+  },
+  "type": "boolean",
+  "getable": true,
+  "setable": false,
+  "icon": "/assets/connected.svg"
+}

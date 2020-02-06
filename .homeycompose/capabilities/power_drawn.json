@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Power Drawn",
+    "nl": "Stroom afname",
+    "sv": "Effekt uttagen"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/power_drawn.svg",
+  "units": {
+    "en": "W",
+    "nl": "W",
+    "sv": "W"
+  }
+}

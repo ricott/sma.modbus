@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "PV power",
+    "sv": "Solceller"
+  },
+  "insights": false,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/sun2.svg",
+  "units": {
+    "en": "W",
+    "nl": "W",
+    "sv": "W"
+  }
+}

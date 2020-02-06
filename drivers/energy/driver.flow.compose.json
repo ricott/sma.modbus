@@ -1,0 +1,99 @@
+{
+  "triggers": [
+    {
+      "id": "phase_threshold_triggered",
+      "title": {
+        "en": "Phase utilization alert",
+        "sv": "Fasöverbelastning"
+      },
+      "args": [],
+      "tokens": [
+        {
+          "name": "phase",
+          "type": "string",
+          "title": {
+            "en": "Phase",
+            "sv": "Fas"
+          },
+          "example": {
+            "en": "L1"
+          }
+        },
+        {
+          "name": "percentageUtilized",
+          "type": "number",
+          "title": {
+            "en": "Utilized (%)",
+            "sv": "Utnyttjad (%)"
+          },
+          "example": {
+            "en": "98"
+          }
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "phaseUtilized",
+      "title": {
+        "en": "A phase utilized !{{above|below}}",
+        "sv": "En fas är utnyttjad !{{över|under}}"
+      },
+      "args": [
+        {
+          "name": "phase",
+          "type": "dropdown",
+          "values": [
+            {
+              "id": "L1",
+              "label": {
+                "en": "L1",
+                "sv": "L1"
+              }
+            },
+            {
+              "id": "L2",
+              "label": {
+                "en": "L2",
+                "sv": "L2"
+              }
+            },
+            {
+              "id": "L3",
+              "label": {
+                "en": "L3",
+                "sv": "L3"
+              }
+            }
+          ]
+        },
+        {
+          "name": "utilization",
+          "type": "number",
+          "title": {
+            "en": "Utilization (%)",
+            "sv": "Utnyttjad (%)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "anyPhaseUtilized",
+      "title": {
+        "en": "Any phase utilized !{{above|below}}",
+        "sv": "Någon fas är utnyttjad !{{över|under}}"
+      },
+      "args": [
+        {
+          "name": "utilization",
+          "type": "number",
+          "title": {
+            "en": "Utilization (%)",
+            "sv": "Utnyttjad (%)"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Battery Charge",
+    "nl": "Batterij lading",
+    "sv": "Batteriladdning"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/battery.svg",
+  "units": {
+    "en": "%",
+    "nl": "%",
+    "sv": "%"
+  }
+}

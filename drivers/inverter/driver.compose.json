@@ -1,0 +1,225 @@
+{
+  "name": {
+    "en": "Inverter",
+    "nl": "Omvormer",
+    "sv": "Växelriktare"
+  },
+  "images": {
+    "large": "drivers/inverter/assets/images/large.png",
+    "small": "drivers/inverter/assets/images/small.png"
+  },
+  "class": "solarpanel",
+  "capabilities": [
+    "operational_status.health",
+    "operational_status",
+    "measure_voltage.dcA",
+    "measure_voltage.dcB",
+    "measure_power",
+    "measure_voltage",
+    "meter_power",
+    "measure_yield"
+  ],
+  "capabilitiesOptions": {
+    "operational_status.health": {
+      "title": {
+        "en": "Condition",
+        "nl": "Staat",
+        "sv": "Tillstånd"
+      }
+    },
+    "measure_voltage.dcA": {
+      "title": {
+        "en": "MPP A (DC)",
+        "nl": "MPP A (DC)",
+        "sv": "MPP A (DC)"
+      }
+    },
+    "measure_voltage.dcB": {
+      "title": {
+        "en": "MPP B (DC)",
+        "nl": "MPP B (DC)",
+        "sv": "MPP B (DC)"
+      }
+    },
+    "measure_power": {
+      "title": {
+        "en": "Grid power",
+        "nl": "Netvermogen",
+        "sv": "Effekt (AC)"
+      }
+    },
+    "measure_voltage": {
+      "title": {
+        "en": "Grid voltage (L1)",
+        "nl": "Netspanning (L1)",
+        "sv": "Nätspänning (L1)"
+      }
+    },
+    "meter_power": {
+      "title": {
+        "en": "Daily Yield",
+        "nl": "Dagelijkse opbrengst",
+        "sv": "Dagens produktion"
+      }
+    }
+  },
+  "pair": [
+    {
+      "id": "start",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "settings"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Inverter settings",
+        "nl": "Omvormer instellingen",
+        "sv": "Inställningar för växelriktare"
+      },
+      "children": [
+        {
+          "id": "address",
+          "type": "text",
+          "value": "0.0.0.0",
+          "label": {
+            "en": "IP Address",
+            "nl": "IP adres",
+            "sv": "IP Adress"
+          }
+        },
+        {
+          "id": "port",
+          "type": "number",
+          "value": 502,
+          "step": 1,
+          "label": {
+            "en": "Port",
+            "nl": "Poort",
+            "sv": "Port"
+          }
+        },
+        {
+          "id": "polling",
+          "type": "number",
+          "value": 5,
+          "step": 1,
+          "attr": {
+            "min": 2,
+            "max": 3600
+          },
+          "label": {
+            "en": "Polling",
+            "nl": "Polling",
+            "sv": "Uppdateringsfrekvens"
+          }
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Information",
+        "nl": "Informatie",
+        "sv": "Information"
+      },
+      "children": [
+        {
+          "id": "deviceType",
+          "type": "label",
+          "label": {
+            "en": "Device type",
+            "nl": "Soort apparaat",
+            "sv": "Enhet"
+          },
+          "value": ""
+        },
+        {
+          "id": "serialNo",
+          "type": "label",
+          "label": {
+            "en": "Serial number",
+            "nl": "Serienummer",
+            "sv": "Serienummer"
+          },
+          "value": ""
+        },
+        {
+          "id": "swVersion",
+          "type": "label",
+          "label": {
+            "en": "Software version",
+            "nl": "Software versie",
+            "sv": "Mjukvaruversion"
+          },
+          "value": ""
+        },
+        {
+          "id": "maxPower",
+          "type": "label",
+          "label": {
+            "en": "Max power (W)",
+            "nl": "Max vermogen (W)",
+            "sv": "Max effekt (W)"
+          },
+          "value": ""
+        },
+        {
+          "id": "activePowerLimit",
+          "type": "label",
+          "label": {
+            "en": "Active power limit (W)",
+            "nl": "Actief vermogen limiet (W)",
+            "sv": "Inställd effekt (W)"
+          },
+          "value": ""
+        },
+        {
+          "id": "gridCountry",
+          "type": "label",
+          "label": {
+            "en": "Grid country standard",
+            "sv": "Elnät, landskod"
+          },
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Debug",
+        "nl": "Debug",
+        "sv": "Felsökning"
+      },
+      "children": [
+        {
+          "id": "sma_last_error",
+          "type": "textarea",
+          "label": {
+            "en": "Most recent SMA Error",
+            "nl": "Meest recente SMA-fout",
+            "sv": "Senaste SMA felmeddelandet"
+          },
+          "value": ""
+        }
+      ]
+    }
+  ]
+}
