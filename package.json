@@ -7,10 +7,11 @@
     "crypto": "0.0.3",
     "events": "^3.1.0",
     "http.min": "^2.0.1",
-    "jsmodbus": "^4.0.1"
+    "jsmodbus": "^4.0.2",
+    "npm-check-updates": "^4.0.2"
   },
   "devDependencies": {
-    "homey": "^2.1.0"
+    "homey": "^2.1.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
