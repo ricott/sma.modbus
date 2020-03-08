@@ -31,30 +31,22 @@
     },
     "measure_voltage.dcA": {
       "title": {
-        "en": "MPP A (DC)",
-        "nl": "MPP A (DC)",
-        "sv": "MPP A (DC)"
+        "en": "MPP A (DC)"
       }
     },
     "measure_voltage.dcB": {
       "title": {
-        "en": "MPP B (DC)",
-        "nl": "MPP B (DC)",
-        "sv": "MPP B (DC)"
+        "en": "MPP B (DC)"
       }
     },
     "measure_power.dcA": {
       "title": {
-        "en": "MPP A (DC)",
-        "nl": "MPP A (DC)",
-        "sv": "MPP A (DC)"
+        "en": "MPP A (DC)"
       }
     },
     "measure_power.dcB": {
       "title": {
-        "en": "MPP B (DC)",
-        "nl": "MPP B (DC)",
-        "sv": "MPP B (DC)"
+        "en": "MPP B (DC)"
       }
     },
     "measure_power": {
@@ -147,11 +139,19 @@
           }
         },
         {
-          "id": "mpp-a",
+          "id": "mpp_a_name",
           "type": "text",
           "value": "MPP A (DC)",
           "label": {
-            "en": "MPP Name"
+            "en": "MPP A Name"
+          }
+        },
+        {
+          "id": "mpp_b_name",
+          "type": "text",
+          "value": "MPP B (DC)",
+          "label": {
+            "en": "MPP B Name"
           }
         }
       ]

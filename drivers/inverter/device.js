@@ -29,6 +29,8 @@ class InverterDevice extends Homey.Device {
       address: this.getSettings().address,
       port: this.getSettings().port,
       polling: this.getSettings().polling,
+      mppAName: this.getSettings().mpp_a_name,
+      mppBName: this.getSettings().mpp_b_name,
       properties: null,
       readings: null,
       smaApi: null
@@ -97,6 +99,7 @@ class InverterDevice extends Homey.Device {
 
       //When properties are read we have the device type needed to know capabilities
       this.setupCapabilities();
+      this.assignCapabilityNames();
     });
 
     this.inverter.smaApi.on('error', error => {
@@ -122,8 +125,24 @@ class InverterDevice extends Homey.Device {
     });
   }
 
+  assignCapabilityNames() {
+    this.log('Assigning new capability names');
+    if (this.hasCapability('measure_voltage.dcA')) {
+      this.setCapabilityOptions('measure_voltage.dcA', {title: { en: this.inverter.mppAName}});
+    }
+    if (this.hasCapability('measure_power.dcA')) {
+      this.setCapabilityOptions('measure_power.dcA', {title: { en: this.inverter.mppAName}});
+    }
+    if (this.hasCapability('measure_voltage.dcB')) {
+      this.setCapabilityOptions('measure_voltage.dcB', {title: { en: this.inverter.mppBName}});
+    }
+    if (this.hasCapability('measure_power.dcB')) {
+      this.setCapabilityOptions('measure_power.dcB', {title: { en: this.inverter.mppBName}});
+    }
+  }
+
   setupCapabilities() {
-    this.log('Setting up capabilities')
+    this.log('Setting up capabilities');
     let capabilities = this.inverter.smaApi.getDeviceCapabilities();
     let capabilityKeys = Object.values(capabilities);
 
@@ -188,26 +207,42 @@ class InverterDevice extends Homey.Device {
   }
 
   async onSettings(oldSettings, newSettings, changedKeysArr) {
-    let change = false;
+    let changeConn = false;
+    let changeLabel = false;
 		if (changedKeysArr.indexOf("address") > -1) {
 			this.log('Address value was change to:', newSettings.address);
       this.inverter.address = newSettings.address;
-      change = true;
+      changeConn = true;
 		}
     if (changedKeysArr.indexOf("port") > -1) {
 			this.log('Port value was change to:', newSettings.port);
       this.inverter.port = newSettings.port;
-      change = true;
+      changeConn = true;
 		}
     if (changedKeysArr.indexOf("polling") > -1) {
 			this.log('Polling value was change to:', newSettings.polling);
       this.inverter.polling = newSettings.polling;
-      change = true;
+      changeConn = true;
 		}
 
-    if (change) {
+    if (changedKeysArr.indexOf("mpp_a_name") > -1) {
+			this.log('MPP A name was change to:', newSettings.mpp_a_name);
+      this.inverter.mppAName = newSettings.mpp_a_name;
+      changeLabel = true;
+		}
+    if (changedKeysArr.indexOf("mpp_b_name") > -1) {
+			this.log('MPP B name was change to:', newSettings.mpp_b_name);
+      this.inverter.mppBName = newSettings.mpp_b_name;
+      changeLabel = true;
+		}
+
+    if (changeConn) {
       //We need to re-initialize the SMA session since setting(s) are changed
       this.reinitializeSMASession();
+    }
+
+    if (changeLabel) {
+      this.assignCapabilityNames();
     }
 	}
 

@@ -1,4 +1,7 @@
 {
+  "2.1.0": {
+    "en": "Added MPP A and B power capabilities to Inverter devices that supports it"
+  },
   "2.0.9": {
     "en": "Added frequency capability to Energy Meter / Home Manager devices"
   },
