@@ -10,7 +10,9 @@ const deviceCapabilitesList = ['measure_power',
                               'operational_status.health',
                               'operational_status',
                               'measure_voltage.dcA',
-                              'measure_voltage.dcB'];
+                              'measure_voltage.dcB',
+                              'measure_power.dcA',
+                              'measure_power.dcB'];
 
 class InverterDevice extends Homey.Device {
 
@@ -76,6 +78,8 @@ class InverterDevice extends Homey.Device {
       }
       this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
       this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
+      this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
+      this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
     });
 
     this.inverter.smaApi.on('properties', properties => {

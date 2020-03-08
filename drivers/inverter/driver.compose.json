@@ -14,6 +14,8 @@
     "operational_status",
     "measure_voltage.dcA",
     "measure_voltage.dcB",
+    "measure_power.dcA",
+    "measure_power.dcB",
     "measure_power",
     "measure_voltage",
     "meter_power",
@@ -35,6 +37,20 @@
       }
     },
     "measure_voltage.dcB": {
+      "title": {
+        "en": "MPP B (DC)",
+        "nl": "MPP B (DC)",
+        "sv": "MPP B (DC)"
+      }
+    },
+    "measure_power.dcA": {
+      "title": {
+        "en": "MPP A (DC)",
+        "nl": "MPP A (DC)",
+        "sv": "MPP A (DC)"
+      }
+    },
+    "measure_power.dcB": {
       "title": {
         "en": "MPP B (DC)",
         "nl": "MPP B (DC)",
@@ -128,6 +144,14 @@
             "en": "Polling",
             "nl": "Polling",
             "sv": "Uppdateringsfrekvens"
+          }
+        },
+        {
+          "id": "mpp-a",
+          "type": "text",
+          "value": "MPP A (DC)",
+          "label": {
+            "en": "MPP Name"
           }
         }
       ]
