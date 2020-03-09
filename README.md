@@ -42,6 +42,9 @@ For Homey to be able to communicate with your inverter over the modbus protocol 
 * Now go into Homey and add a new device. Select the inverter device from the SMA Solar app. Your inverter should be found automatically assuming modbus port in app settings match the modbus port of the inverter (default 502).
 
 ## Changelog
+### v2.1.1
+* Added MPP A and B power capabilities to the summary device
+
 ### v2.1.0
 * Added MPP A and B power capabilities to Inverter devices that supports it
 * Added possiblity to name MPP A and B capabilities via device settings

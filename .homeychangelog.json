@@ -1,4 +1,7 @@
 {
+  "2.1.1": {
+    "en": "Added MPP A and B power capabilities to the summary device"
+  },
   "2.1.0": {
     "en": "Added MPP A and B power capabilities to Inverter devices that supports it"
   },
