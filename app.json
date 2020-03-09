@@ -1344,7 +1344,9 @@
         "power_pv",
         "power_grid",
         "power_drawn.battery",
-        "power_self"
+        "power_self",
+        "power_pv.dcA",
+        "power_pv.dcB"
       ],
       "capabilitiesOptions": {
         "power_drawn.battery": {
@@ -1390,6 +1392,28 @@
                 "nl": "Polling",
                 "sv": "Uppdateringsfrekvens"
               }
+            },
+            {
+              "id": "show_mpp",
+              "type": "radio",
+              "label": {
+                "en": "Show MPP information"
+              },
+              "value": "no",
+              "values": [
+                {
+                  "id": "yes",
+                  "label": {
+                    "en": "Yes"
+                  }
+                },
+                {
+                  "id": "no",
+                  "label": {
+                    "en": "No"
+                  }
+                }
+              ]
             }
           ]
         }
