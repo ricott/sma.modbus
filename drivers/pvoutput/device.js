@@ -71,15 +71,13 @@ class PVOutputDevice extends Homey.Device {
       ManagerDrivers.getDriver('inverter').getDevices().forEach(function (inverter) {
         numberOfInverters++;
         power_pv = power_pv + inverter.getCapabilityValue('measure_power');
-        yield_pv = yield_pv + inverter.getCapabilityValue('meter_power');
+        yield_pv = yield_pv + inverter.getCurrentDailyYield();
         voltage_pv = voltage_pv + inverter.getCapabilityValue('measure_voltage');
       });
       //Lets get average voltage
       if (numberOfInverters > 1) {
         voltage_pv = Number(voltage_pv / numberOfInverters).toFixed(2);
       }
-      //yield_pv is in kWh, lets make it Wh
-      yield_pv = yield_pv * 1000;
 
       let self = this;
       this.pvoutput.session.publishStatus({

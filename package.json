@@ -10,7 +10,7 @@
     "jsmodbus": "^4.0.2"
   },
   "devDependencies": {
-    "homey": "^2.3.0"
+    "homey": "^2.3.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

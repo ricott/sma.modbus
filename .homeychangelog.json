@@ -1,4 +1,7 @@
 {
+  "2.1.3": {
+    "en": "More accurate daily yield reported to PVOutput.org"
+  },
   "2.1.2": {
     "en": "Added manually calculated daily yield for inverters that miss this functionality"
   },

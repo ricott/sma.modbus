@@ -33,6 +33,7 @@ class InverterDevice extends Homey.Device {
       mppAName: this.getSettings().mpp_a_name,
       mppBName: this.getSettings().mpp_b_name,
       manualDailyYield: false,
+      currentDailyYield: 0,
       properties: null,
       readings: null,
       smaApi: null
@@ -71,6 +72,7 @@ class InverterDevice extends Homey.Device {
       if (this.inverter.manualDailyYield) {
         dailyYield = this.calculateDailyYield(readings.totalYield);
       }
+      this.inverter.currentDailyYield = dailyYield;
       this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
 
       this._updateProperty('measure_power', readings.acPowerTotal || 0);
@@ -134,6 +136,10 @@ class InverterDevice extends Homey.Device {
           this.error('Failed to update settings', err);
         });
     });
+  }
+
+  getCurrentDailyYield() {
+    return this.inverter.currentDailyYield;
   }
 
   resetAtMidnight() {
