@@ -72,6 +72,9 @@ class InverterDevice extends Homey.Device {
       if (this.inverter.manualDailyYield) {
         dailyYield = this.calculateDailyYield(readings.totalYield);
       }
+      //Fishy values coming for at least one user with negative daily yield
+      //Lets make sure it is not negative
+      dailyYield = Math.max(dailyYield, 0.0);
       this.inverter.currentDailyYield = dailyYield;
       this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
 
