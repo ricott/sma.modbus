@@ -1,4 +1,7 @@
 {
+  "2.1.5": {
+    "en": "Eliminated a bug which caused app to crash"
+  },
   "2.1.4": {
     "en": "Filter out negative daily yield values"
   },
