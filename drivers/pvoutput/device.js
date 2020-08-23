@@ -3,6 +3,7 @@
 const Homey = require('homey');
 const { ManagerDrivers } = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
+const utility = require('../../lib/util.js');
 //Encryption settings
 const crypto = require('crypto');
 const crypto_algorithm = 'aes-256-ctr';
@@ -99,18 +100,18 @@ class PVOutputDevice extends Homey.Device {
               });
           }
         });
-    }/* else {
-      this.log(`Current time outside reporting hours, start '${this.pvoutput.start_reporting}', stop '${this.pvoutput.stop_reporting}'`);
-    }*/
+    }
   }
 
   shouldAddStatus() {
     let timestamp = new Date();
-    let time = Number(`${timestamp.getHours()}${timestamp.getMinutes()}`);
+    let time = Number(`${timestamp.getHours()}${utility.pad(timestamp.getMinutes(), 2)}`);
     //this.log(`Current time '${time}', start reporting '${this.pvoutput.start_reporting}', stop reporting '${this.pvoutput.stop_reporting}'`);
     if (time > this.pvoutput.start_reporting && time < this.pvoutput.stop_reporting) {
+      //this.log('Logging to pvoutput');
       return true;
     } else {
+      //this.log('Outside defined time window, no pvoutput logging');
       return false;
     }
   }

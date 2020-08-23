@@ -1,4 +1,7 @@
 {
+  "2.1.6": {
+    "en": "Fixed PVOutput bug which caused missing reports"
+  },
   "2.1.5": {
     "en": "Eliminated a bug which caused app to crash"
   },
