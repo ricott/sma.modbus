@@ -6,7 +6,7 @@
 Minimal simple HTTP client with promises.  
 Supports HTTP, HTTPS and common methods GET, POST, PUT, PATCH, DELETE.  
 Includes timeout, query string, form data, JSON helpers.  
-No dependencies, under 100 SLOC.
+No dependencies, under 100 SLOC, 100% code coverage.
 
 ## Install
 

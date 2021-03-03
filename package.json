@@ -4,19 +4,19 @@
   "description": "Monitor SMA SunnyBoy inverters over modbus protocol",
   "main": "app.js",
   "dependencies": {
-    "events": "^3.2.0",
-    "http.min": "^2.0.1",
-    "jsmodbus": "^4.0.4"
+    "events": "^3.3.0",
+    "http.min": "^2.1.0",
+    "jsmodbus": "^4.0.5"
   },
   "devDependencies": {
-    "homey": "^2.9.2"
+    "homey": "^2.9.7"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jghaanstra/sma.modbus.git"
+    "url": "git+https://github.com/ricott/sma.modbus.git"
   },
   "keywords": [
     "SMA",
@@ -24,10 +24,10 @@
     "solar",
     "sunnyboy"
   ],
-  "author": "Jelger Haanstra",
+  "author": "Richard Barkestam",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jghaanstra/sma.modbus/issues"
+    "url": "https://github.com/ricott/sma.modbus/issues"
   },
-  "homepage": "https://github.com/jghaanstra/sma.modbus"
+  "homepage": "https://github.com/ricott/sma.modbus"
 }

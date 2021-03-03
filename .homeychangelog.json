@@ -1,4 +1,7 @@
 {
+  "2.1.7": {
+    "en": "Package updates and energy meter improvements"
+  },
   "2.1.6": {
     "en": "Fixed PVOutput bug which caused missing reports"
   },

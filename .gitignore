@@ -9,6 +9,9 @@
 
 *.code-workspace
 
+#Credentials used for mocha tests
+/test/config.js
+
 #node_modules no longer needed in git since app is published locally
 #homey dev dependencies also adds tons of modules ....
 node_modules
