@@ -4,7 +4,12 @@
   "sdk": 2,
   "brandColor": "#015a93",
   "name": {
-    "en": "SMA Solar"
+    "en": "SMA Energy",
+    "sv": "SMA Energy"
+  },
+  "description": {
+    "en": "My home. My energy. Our climate.",
+    "sv": "Mitt hem. Min energi. Vårt klimat."
   },
   "tags": {
     "en": [
@@ -18,9 +23,22 @@
       "energy meter",
       "home manager",
       "modbus"
+    ],
+    "sv": [
+      "sma",
+      "växelriktare",
+      "sol",
+      "solceller",
+      "sunny boy",
+      "tripower",
+      "energi",
+      "batteri",
+      "el",
+      "elmätare",
+      "modbus"
     ]
   },
-  "version": "2.1.7",
+  "version": "2.1.8",
   "compatibility": ">=3.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -56,10 +74,6 @@
     "small": "./assets/images/small.png"
   },
   "category": "energy",
-  "description": {
-    "en": "My home. My energy. Our climate.",
-    "sv": "Mitt hem. Min energi. Vårt klimat."
-  },
   "dependencies": {
     "net": "*"
   },
