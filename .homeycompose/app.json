@@ -56,8 +56,8 @@
   },
   "category": "energy",
   "description": {
-    "en": "Monitor your SMA Solar devices",
-    "sv": "Övervaka dina SMA solar enheter"
+    "en": "My home. My energy. Our climate.",
+    "sv": "Mitt hem. Min energi. Vårt klimat."
   },
   "dependencies": {
     "net": "*"

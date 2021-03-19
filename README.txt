@@ -1,4 +1,5 @@
-This Homey app allows you to monitor your SMA solar devices using the modbus and speedwire protocols.
+Monitor the energy production and consumption of your house by connecting directly to your SMA equipment via your home network.
+Use your SMA Energy Meter or Home Manager 2 as a smart meter in Homey Energy. Take action when you have a surplus (exporting energy). Report your energy production to PVOutput.org.
 
 Supported devices
 - Inverters
@@ -22,4 +23,4 @@ The Energy Summary is a virtual device that gathers information from inverter an
 PVOutput
 Report your inverter(s) status to PVOutput.org.
 
-For support with any device type please use the community provided in section below
+For more information about the app and the possibility to get support please visit the forum link in the section below.

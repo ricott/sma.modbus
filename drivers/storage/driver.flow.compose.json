@@ -3,9 +3,13 @@
     {
       "id": "changedOperationalStatus",
       "title": {
-        "en": "Operational Status Changed",
+        "en": "Operational status changed",
         "nl": "Operationele status gewijzigd",
         "sv": "Operationell status ändrad"
+      },
+      "titleFormatted": {
+        "en": "Operational status changed to [[status]]",
+        "sv": "Operationell status ändrades till [[status]]"
       },
       "tokens": [
         {
@@ -18,15 +22,18 @@
           },
           "example": "Battery Standby"
         }
-      ],
-      "args": []
+      ]
     },
     {
       "id": "changedBattery",
       "title": {
-        "en": "Battery Charge Changed",
+        "en": "Battery charge changed",
         "nl": "Batterij lading gewijzigd",
         "sv": "Batteriladdning ändrad"
+      },
+      "titleFormatted": {
+        "en": "Battery charge changed to [[charge]]%",
+        "sv": "Batteriladdning ändrades till [[charge]]%"
       },
       "tokens": [
         {
@@ -39,15 +46,18 @@
           },
           "example": 66
         }
-      ],
-      "args": []
+      ]
     },
     {
       "id": "changedBatteryCharging",
       "title": {
-        "en": "Battery Charging Changed (W)",
+        "en": "Battery charging changed (W)",
         "nl": "Batterij opladen gewijzigd (W)",
         "sv": "Batteriladdning ändrad (W)"
+      },
+      "titleFormatted": {
+        "en": "Battery charging changed to [[charging]]W",
+        "sv": "Batteriladdning ändrades till [[charging]]W"
       },
       "tokens": [
         {
@@ -60,15 +70,18 @@
           },
           "example": 1337
         }
-      ],
-      "args": []
+      ]
     },
     {
       "id": "changedBatteryDischarging",
       "title": {
-        "en": "Battery Discharging Changed (W)",
+        "en": "Battery discharging changed (W)",
         "nl": "Batterij ontladen gewijzigd (W)",
         "sv": "Batteriurladdning ändrad (W)"
+      },
+      "titleFormatted": {
+        "en": "Battery discharging changed to [[discharging]]W",
+        "sv": "Batteriurladdning ändrades till [[discharging]]W"
       },
       "tokens": [
         {
@@ -81,15 +94,18 @@
           },
           "example": 187
         }
-      ],
-      "args": []
+      ]
     },
     {
       "id": "changedPowerDrawn",
       "title": {
-        "en": "Power Drawn Changed (W)",
+        "en": "Power drawn changed (W)",
         "nl": "Stroom afname gewijzigd (W)",
         "sv": "Effekt uttagen ändrad (W)"
+      },
+      "titleFormatted": {
+        "en": "Power drawn changed to [[drawn]]W",
+        "sv": "Effekt uttagen ändrades till [[drawn]]W"
       },
       "tokens": [
         {
@@ -102,15 +118,18 @@
           },
           "example": 303
         }
-      ],
-      "args": []
+      ]
     },
     {
       "id": "changedPowerGridFeedin",
       "title": {
-        "en": "Powergrid Feed In Changed (W)",
+        "en": "Powergrid feed in changed (W)",
         "nl": "Vermogen netvoeding gewijzigd (W)",
         "sv": "Inmatning elnät ändrad (W)"
+      },
+      "titleFormatted": {
+        "en": "Powergrid feed in changed [[feedin]]W",
+        "sv": "Inmatning elnät ändrad [[feedin]]W"
       },
       "tokens": [
         {
@@ -123,15 +142,18 @@
           },
           "example": 42
         }
-      ],
-      "args": []
+      ]
     },
     {
       "id": "changedBatteryCapacity",
       "title": {
-        "en": "Battery Capacity Changed (%",
+        "en": "Battery capacity changed (%)",
         "nl": "Batterij capaciteit gewijzigd (%)",
         "sv": "Batterladdning ändrad (%)"
+      },
+      "titleFormatted": {
+        "en": "Battery capacity changed to [[capacity]]%",
+        "sv": "Batterladdning ändrades till [[capacity]]%"
       },
       "tokens": [
         {
@@ -144,17 +166,21 @@
           },
           "example": 42
         }
-      ],
-      "args": []
+      ]
     }
   ],
   "conditions": [
     {
       "id": "isOperationalStatus",
       "title": {
-        "en": "Operation status !{{is|is not}}",
+        "en": "Operational status !{{is|is not}}",
         "nl": "Operationele status !{{is|is niet}}",
         "sv": "Operationell status !{{är|är inte}}"
+      },
+      "titleFormatted": {
+        "en": "Operational status !{{is|is not}} [[status]]",
+        "nl": "Operationele status !{{is|is niet}} [[status]]",
+        "sv": "Operationell status !{{är|är inte}} [[status]]"
       },
       "args": [
         {

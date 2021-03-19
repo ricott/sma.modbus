@@ -57,8 +57,8 @@
   },
   "category": "energy",
   "description": {
-    "en": "Monitor your SMA Solar devices",
-    "sv": "Övervaka dina SMA solar enheter"
+    "en": "My home. My energy. Our climate.",
+    "sv": "Mitt hem. Min energi. Vårt klimat."
   },
   "dependencies": {
     "net": "*"
@@ -70,6 +70,10 @@
         "title": {
           "en": "Phase utilization alert",
           "sv": "Fasöverbelastning"
+        },
+        "titleFormatted": {
+          "en": "Phase [[phase]] is utilized to [[percentageUtilized]]%",
+          "sv": "Fas [[phase]] är utnyttjad till [[percentageUtilized]]%"
         },
         "args": [
           {
@@ -110,13 +114,10 @@
           "nl": "Operationele status gewijzigd",
           "sv": "Operationell status ändrad"
         },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=inverter"
-          }
-        ],
+        "titleFormatted": {
+          "en": "Operational status changed to [[inverter_status]]",
+          "sv": "Operationell status ändrades till [[inverter_status]]"
+        },
         "tokens": [
           {
             "name": "inverter_status",
@@ -130,22 +131,26 @@
               "en": "MPP"
             }
           }
-        ]
-      },
-      {
-        "id": "inverter_condition_changed",
-        "title": {
-          "en": "Condition Changed",
-          "nl": "Staat gewijzigd",
-          "sv": "Tillstånd ändrad"
-        },
+        ],
         "args": [
           {
             "type": "device",
             "name": "device",
             "filter": "driver_id=inverter"
           }
-        ],
+        ]
+      },
+      {
+        "id": "inverter_condition_changed",
+        "title": {
+          "en": "Condition changed",
+          "nl": "Staat gewijzigd",
+          "sv": "Tillstånd ändrad"
+        },
+        "titleFormatted": {
+          "en": "Condition changed to [[inverter_condition]]",
+          "sv": "Tillstånd ändrades till [[inverter_condition]]"
+        },
         "tokens": [
           {
             "name": "inverter_condition",
@@ -159,14 +164,25 @@
               "en": "Ok"
             }
           }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          }
         ]
       },
       {
         "id": "changedOperationalStatus",
         "title": {
-          "en": "Operational Status Changed",
+          "en": "Operational status changed",
           "nl": "Operationele status gewijzigd",
           "sv": "Operationell status ändrad"
+        },
+        "titleFormatted": {
+          "en": "Operational status changed to [[status]]",
+          "sv": "Operationell status ändrades till [[status]]"
         },
         "tokens": [
           {
@@ -191,9 +207,13 @@
       {
         "id": "changedBattery",
         "title": {
-          "en": "Battery Charge Changed",
+          "en": "Battery charge changed",
           "nl": "Batterij lading gewijzigd",
           "sv": "Batteriladdning ändrad"
+        },
+        "titleFormatted": {
+          "en": "Battery charge changed to [[charge]]%",
+          "sv": "Batteriladdning ändrades till [[charge]]%"
         },
         "tokens": [
           {
@@ -218,9 +238,13 @@
       {
         "id": "changedBatteryCharging",
         "title": {
-          "en": "Battery Charging Changed (W)",
+          "en": "Battery charging changed (W)",
           "nl": "Batterij opladen gewijzigd (W)",
           "sv": "Batteriladdning ändrad (W)"
+        },
+        "titleFormatted": {
+          "en": "Battery charging changed to [[charging]]W",
+          "sv": "Batteriladdning ändrades till [[charging]]W"
         },
         "tokens": [
           {
@@ -245,9 +269,13 @@
       {
         "id": "changedBatteryDischarging",
         "title": {
-          "en": "Battery Discharging Changed (W)",
+          "en": "Battery discharging changed (W)",
           "nl": "Batterij ontladen gewijzigd (W)",
           "sv": "Batteriurladdning ändrad (W)"
+        },
+        "titleFormatted": {
+          "en": "Battery discharging changed to [[discharging]]W",
+          "sv": "Batteriurladdning ändrades till [[discharging]]W"
         },
         "tokens": [
           {
@@ -272,9 +300,13 @@
       {
         "id": "changedPowerDrawn",
         "title": {
-          "en": "Power Drawn Changed (W)",
+          "en": "Power drawn changed (W)",
           "nl": "Stroom afname gewijzigd (W)",
           "sv": "Effekt uttagen ändrad (W)"
+        },
+        "titleFormatted": {
+          "en": "Power drawn changed to [[drawn]]W",
+          "sv": "Effekt uttagen ändrades till [[drawn]]W"
         },
         "tokens": [
           {
@@ -299,9 +331,13 @@
       {
         "id": "changedPowerGridFeedin",
         "title": {
-          "en": "Powergrid Feed In Changed (W)",
+          "en": "Powergrid feed in changed (W)",
           "nl": "Vermogen netvoeding gewijzigd (W)",
           "sv": "Inmatning elnät ändrad (W)"
+        },
+        "titleFormatted": {
+          "en": "Powergrid feed in changed [[feedin]]W",
+          "sv": "Inmatning elnät ändrad [[feedin]]W"
         },
         "tokens": [
           {
@@ -326,9 +362,13 @@
       {
         "id": "changedBatteryCapacity",
         "title": {
-          "en": "Battery Capacity Changed (%",
+          "en": "Battery capacity changed (%)",
           "nl": "Batterij capaciteit gewijzigd (%)",
           "sv": "Batterladdning ändrad (%)"
+        },
+        "titleFormatted": {
+          "en": "Battery capacity changed to [[capacity]]%",
+          "sv": "Batterladdning ändrades till [[capacity]]%"
         },
         "tokens": [
           {
@@ -357,6 +397,10 @@
         "title": {
           "en": "A phase utilized !{{above|below}}",
           "sv": "En fas är utnyttjad !{{över|under}}"
+        },
+        "titleFormatted": {
+          "en": "Phase [[phase]] is utilized !{{above|below}} [[utilization]]%",
+          "sv": "Fas [[phase]] är utnyttjad !{{över|under}} [[utilization]]%"
         },
         "args": [
           {
@@ -407,6 +451,10 @@
           "en": "Any phase utilized !{{above|below}}",
           "sv": "Någon fas är utnyttjad !{{över|under}}"
         },
+        "titleFormatted": {
+          "en": "Any phase is utilized !{{above|below}} [[utilization]]%",
+          "sv": "Någon fas är utnyttjad !{{över|under}} [[utilization]]%"
+        },
         "args": [
           {
             "type": "device",
@@ -428,6 +476,10 @@
         "title": {
           "en": "Daily yield is !{{|not}} above",
           "sv": "Dagens produktion är !{{|inte}} mer än"
+        },
+        "titleFormatted": {
+          "en": "Daily yield is !{{|not}} above [[daily_yield]]",
+          "sv": "Dagens produktion är !{{|inte}} mer än [[daily_yield]]"
         },
         "args": [
           {
@@ -451,6 +503,10 @@
           "en": "Operational status !{{contains|doesn't contain}}",
           "sv": "Operationell status innehåller !{{|inte}}"
         },
+        "titleFormatted": {
+          "en": "Operational status !{{contains|doesn't contain}} [[inverter_status]]",
+          "sv": "Operationell status innehåller !{{|inte}} [[inverter_status]]"
+        },
         "args": [
           {
             "type": "device",
@@ -470,9 +526,14 @@
       {
         "id": "isOperationalStatus",
         "title": {
-          "en": "Operation status !{{is|is not}}",
+          "en": "Operational status !{{is|is not}}",
           "nl": "Operationele status !{{is|is niet}}",
           "sv": "Operationell status !{{är|är inte}}"
+        },
+        "titleFormatted": {
+          "en": "Operational status !{{is|is not}} [[status]]",
+          "nl": "Operationele status !{{is|is niet}} [[status]]",
+          "sv": "Operationell status !{{är|är inte}} [[status]]"
         },
         "args": [
           {

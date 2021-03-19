@@ -6,6 +6,10 @@
         "en": "Phase utilization alert",
         "sv": "Fasöverbelastning"
       },
+      "titleFormatted": {
+        "en": "Phase [[phase]] is utilized to [[percentageUtilized]]%",
+        "sv": "Fas [[phase]] är utnyttjad till [[percentageUtilized]]%"
+      },
       "args": [],
       "tokens": [
         {
@@ -39,6 +43,10 @@
       "title": {
         "en": "A phase utilized !{{above|below}}",
         "sv": "En fas är utnyttjad !{{över|under}}"
+      },
+      "titleFormatted": {
+        "en": "Phase [[phase]] is utilized !{{above|below}} [[utilization]]%",
+        "sv": "Fas [[phase]] är utnyttjad !{{över|under}} [[utilization]]%"
       },
       "args": [
         {
@@ -83,6 +91,10 @@
       "title": {
         "en": "Any phase utilized !{{above|below}}",
         "sv": "Någon fas är utnyttjad !{{över|under}}"
+      },
+      "titleFormatted": {
+        "en": "Any phase is utilized !{{above|below}} [[utilization]]%",
+        "sv": "Någon fas är utnyttjad !{{över|under}} [[utilization]]%"
       },
       "args": [
         {

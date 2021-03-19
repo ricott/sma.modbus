@@ -7,7 +7,10 @@
         "nl": "Operationele status gewijzigd",
         "sv": "Operationell status ändrad"
       },
-      "args": [],
+      "titleFormatted": {
+        "en": "Operational status changed to [[inverter_status]]",
+        "sv": "Operationell status ändrades till [[inverter_status]]"
+      },
       "tokens": [
         {
           "name": "inverter_status",
@@ -26,11 +29,14 @@
     {
       "id": "inverter_condition_changed",
       "title": {
-        "en": "Condition Changed",
+        "en": "Condition changed",
         "nl": "Staat gewijzigd",
         "sv": "Tillstånd ändrad"
       },
-      "args": [],
+      "titleFormatted": {
+        "en": "Condition changed to [[inverter_condition]]",
+        "sv": "Tillstånd ändrades till [[inverter_condition]]"
+      },
       "tokens": [
         {
           "name": "inverter_condition",
@@ -54,6 +60,10 @@
         "en": "Daily yield is !{{|not}} above",
         "sv": "Dagens produktion är !{{|inte}} mer än"
       },
+      "titleFormatted": {
+        "en": "Daily yield is !{{|not}} above [[daily_yield]]",
+        "sv": "Dagens produktion är !{{|inte}} mer än [[daily_yield]]"
+      },
       "args": [
         {
           "name": "daily_yield",
@@ -70,6 +80,10 @@
       "title": {
         "en": "Operational status !{{contains|doesn't contain}}",
         "sv": "Operationell status innehåller !{{|inte}}"
+      },
+      "titleFormatted": {
+        "en": "Operational status !{{contains|doesn't contain}} [[inverter_status]]",
+        "sv": "Operationell status innehåller !{{|inte}} [[inverter_status]]"
       },
       "args": [
         {
