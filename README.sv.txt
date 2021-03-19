@@ -1,5 +1,5 @@
 Övervaka produktionen och konsumptionen av energi för ditt hus genom att koppla din SMA utrustning till din Homey via ditt lokala nätverk.
-använd din SMA Energy Meter eller Home Manager 2 som en smart meter i Homey Energi. Starta ett flöde när du exporterar energi. Rapportera din energiproduktion till PVOutput.org.
+Använd din SMA Energy Meter eller Home Manager 2 som en smart meter i Homey Energi. Starta ett flöde när du exporterar energi. Rapportera din energiproduktion till PVOutput.org.
 
 Enheter som stöds
 - Växelriktare

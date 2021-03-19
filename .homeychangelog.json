@@ -1,7 +1,11 @@
 {
+  "2.1.8": {
+    "en": "Swedish language improvements",
+    "sv": "Förbättrad översättning till svenska"
+  },
   "2.1.7": {
     "en": "Swedish language improvements",
-    "sv": "Förbättrade svenska översättningar"
+    "sv": "Förbättrad översättning till svenska"
   },
   "2.1.6": {
     "en": "Fixed PVOutput bug which caused missing reports"
