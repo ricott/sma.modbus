@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.1.8",
+  "version": "2.1.9",
   "compatibility": ">=3.0.0",
   "author": {
     "name": "Richard Barkestam",
