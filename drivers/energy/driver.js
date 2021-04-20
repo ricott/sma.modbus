@@ -114,7 +114,7 @@ class EnergyDriver extends Homey.Driver {
         }
 
       }).catch(reason => {
-        console.log('Timeout error', reason);
+        this.log('Timeout error', reason);
       });
 
     });

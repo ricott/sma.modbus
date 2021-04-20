@@ -31,7 +31,8 @@ class InverterDriver extends Homey.Driver {
     //Register conditions
     triggers = [
       'isInverterDailyYield',
-      'isInverterStatus'
+      'isInverterStatus',
+      'power_condition'
     ];
     this._registerFlow('condition', triggers, Homey.FlowCardCondition);
 
@@ -61,6 +62,19 @@ class InverterDriver extends Homey.Driver {
         }
       });
 
+    this.flowCards['condition.power_condition']
+      .registerRunListener((args, state, callback) => {
+        this.log('Flow condition.power_condition');
+        let power = args.device.getCapabilityValue('measure_power');
+        this.log(`- inverter.power: ${power}`);
+        this.log(`- parameter power: '${args.power}'`);
+
+        if (power < args.power) {
+          return true;
+        } else {
+          return false;
+        }
+      });
   }
 
   _registerFlow(type, keys, cls) {
@@ -132,7 +146,7 @@ class InverterDriver extends Homey.Driver {
               port: Number(Homey.ManagerSettings.get('port'))
             }
           });
-  
+
           callback(null, devices);
         }
       } else {
