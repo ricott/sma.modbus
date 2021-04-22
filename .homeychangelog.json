@@ -1,4 +1,8 @@
 {
+  "2.2.0": {
+    "en": "Added missing operational status values",
+    "sv": "Lade till saknade statuskoder"
+  },
   "2.1.9": {
     "en": "New inverter power condition",
     "sv": "Nytt villkor för effekt"
