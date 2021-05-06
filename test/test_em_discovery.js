@@ -3,7 +3,7 @@
 const EnergyMeter = require('../lib/sma_em.js');
 
 let devices = [];
-let emSession = new EnergyMeter({});
+let emSession = new EnergyMeter({debug: true});
 
 emSession.on('readings', readings => {
     if (!devices.find((em) => em.data.id === readings.serialNo)) {
