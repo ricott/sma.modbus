@@ -1,4 +1,8 @@
 {
+  "2.2.1": {
+    "en": "Improved discovery for energy meter devices",
+    "sv": "Förbättrad upptäckt av elmätare"
+  },
   "2.2.0": {
     "en": "Added missing operational status values",
     "sv": "Lade till saknade statuskoder"
