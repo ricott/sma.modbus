@@ -1,14 +1,14 @@
 'use strict';
 
-const Homey = require('homey');
+const { Device } = require('homey');
 const modbus = require('jsmodbus');
 const net = require('net');
 const decodeData = require('../../lib/decodeData.js');
 const socket = new net.Socket();
 
-class SmaModbusStorageDevice extends Homey.Device {
+class SmaModbusStorageDevice extends Device {
 
-  onInit() {
+  async onInit() {
 
     this.pollIntervals = [];
     this.storage = {
@@ -25,7 +25,7 @@ class SmaModbusStorageDevice extends Homey.Device {
       'timeout': 5000,
       'autoReconnect': true,
       'reconnectTimeout': this.storage.polling,
-      'logLabel' : 'SMA Sunny Boy Storage',
+      'logLabel': 'SMA Sunny Boy Storage',
       'logLevel': 'error',
       'logEnabled': false
     }
@@ -56,57 +56,94 @@ class SmaModbusStorageDevice extends Homey.Device {
           let battery_capacity = decodeData.decodeU32(results[6].response._body._valuesAsArray, 0, 0);
 
           // OPERATIONAL STATUS
-          if (this.getCapabilityValue('operational_status') != Homey.__('Off') && operational_code == 303) {
-            this.setCapabilityValue('operational_status', Homey.__('Off'));
-            Homey.ManagerFlow.getCard('trigger', 'changedOperationalStatus').trigger(this, { status: Homey.__('Off') }, {});
-          } else if (this.getCapabilityValue('operational_status') != Homey.__('Standby') && operational_code == 2291) {
-            this.setCapabilityValue('operational_status', Homey.__('Standby'));
-            Homey.ManagerFlow.getCard('trigger', 'changedOperationalStatus').trigger(this, { status: Homey.__('Standby') }, {});
-          } else if (this.getCapabilityValue('operational_status') != Homey.__('Charge') && operational_code == 2292) {
-            this.setCapabilityValue('operational_status', Homey.__('Charge'));
-            Homey.ManagerFlow.getCard('trigger', 'changedOperationalStatus').trigger(this, { status: Homey.__('Charge') }, {});
-          } else if (this.getCapabilityValue('operational_status') != Homey.__('Discharge') && operational_code == 2293) {
-            this.setCapabilityValue('operational_status', Homey.__('Discharge'));
-            Homey.ManagerFlow.getCard('trigger', 'changedOperationalStatus').trigger(this, { status: Homey.__('Discharge') }, {});
-          } else if (this.getCapabilityValue('operational_status') != Homey.__('NA') && operational_code == 16777213) {
-            this.setCapabilityValue('operational_status', Homey.__('NA'));
-            Homey.ManagerFlow.getCard('trigger', 'changedOperationalStatus').trigger(this, { status: Homey.__('NA') }, {});
+          if (this.getCapabilityValue('operational_status') != this.homey.__('Off') && operational_code == 303) {
+            this.setCapabilityValue('operational_status', this.homey.__('Off'));
+            let tokens = {
+              status: this.homey.__('Off')
+            }
+            this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+
+          } else if (this.getCapabilityValue('operational_status') != this.homey.__('Standby') && operational_code == 2291) {
+            this.setCapabilityValue('operational_status', this.homey.__('Standby'));
+            let tokens = {
+              status: this.homey.__('Standby')
+            }
+            this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+
+          } else if (this.getCapabilityValue('operational_status') != this.homey.__('Charge') && operational_code == 2292) {
+            this.setCapabilityValue('operational_status', this.homey.__('Charge'));
+            let tokens = {
+              status: this.homey.__('Charge')
+            }
+            this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+
+          } else if (this.getCapabilityValue('operational_status') != this.homey.__('Discharge') && operational_code == 2293) {
+            this.setCapabilityValue('operational_status', this.homey.__('Discharge'));
+            let tokens = {
+              status: this.homey.__('Discharge')
+            }
+            this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+
+          } else if (this.getCapabilityValue('operational_status') != this.homey.__('NA') && operational_code == 16777213) {
+            this.setCapabilityValue('operational_status', this.homey.__('NA'));
+            let tokens = {
+              status: this.homey.__('NA')
+            }
+            this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
           }
 
           // BATTERY
           if (this.getCapabilityValue('battery') != battery) {
             this.setCapabilityValue('battery', battery);
-            Homey.ManagerFlow.getCard('trigger', 'changedBattery').trigger(this, { charge: battery }, {});
+            let tokens = {
+              charge: battery
+            }
+            this.driver.triggerDeviceFlow('changedBattery', tokens, this);
           }
 
           // MEASURE_POWER: CHARGE
           if (this.getCapabilityValue('measure_power.charge') != charge) {
             this.setCapabilityValue('measure_power.charge', charge);
-            Homey.ManagerFlow.getCard('trigger', 'changedBatteryCharging').trigger(this, { charging: charge }, {});
+            let tokens = {
+              charging: charge
+            }
+            this.driver.triggerDeviceFlow('changedBatteryCharging', tokens, this);
           }
 
           // MEASURE_POWER: DISCHARGE
           if (this.getCapabilityValue('measure_power.discharge') != discharge) {
             this.setCapabilityValue('measure_power.discharge', discharge);
-            Homey.ManagerFlow.getCard('trigger', 'changedBatteryDischarging').trigger(this, { discharging: discharge }, {});
+            let tokens = {
+              discharging: discharge
+            }
+            this.driver.triggerDeviceFlow('changedBatteryDischarging', tokens, this);
           }
 
           // POWER DRAWN
           if (this.getCapabilityValue('power_drawn') != power_drawn) {
             this.setCapabilityValue('power_drawn', power_drawn);
-            Homey.ManagerFlow.getCard('trigger', 'changedPowerDrawn').trigger(this, { drawn: power_drawn }, {});
+            let tokens = {
+              drawn: power_drawn
+            }
+            this.driver.triggerDeviceFlow('changedPowerDrawn', tokens, this);
           }
 
           // POWERGRID FEED IN
           if (this.getCapabilityValue('powergrid_feed_in') != powergrid_feed_in) {
             this.setCapabilityValue('powergrid_feed_in', powergrid_feed_in);
-            Homey.ManagerFlow.getCard('trigger', 'changedPowerGridFeedin').trigger(this, { feedin: powergrid_feed_in }, {});
+            let tokens = {
+              feedin: powergrid_feed_in
+            }
+            this.driver.triggerDeviceFlow('changedPowerGridFeedin', tokens, this);
           }
 
           // BATTERY CAPACITY
           if (this.getCapabilityValue('battery_capacity') != battery_capacity) {
             this.setCapabilityValue('battery_capacity', battery_capacity);
-            Homey.ManagerFlow.getCard('trigger', 'changedBatteryCapacity').trigger(this, { capacity: battery_capacity }, {});
+            let tokens = {
+              capacity: battery_capacity
+            }
+            this.driver.triggerDeviceFlow('changedBatteryCapacity', tokens, this);
           }
 
         }).catch((err) => {
@@ -136,38 +173,37 @@ class SmaModbusStorageDevice extends Homey.Device {
 
   onDeleted() {
     this.log(`Deleting SMA storage '${this.getName()}' from Homey.`);
-
     clearInterval(this.pollingInterval);
   }
 
-  onRenamed (name) {
+  onRenamed(name) {
     this.log(`Renaming SMA storage from '${this.storage.name}' to '${name}'`);
     this.storage.name = name;
   }
 
-  async onSettings(oldSettings, newSettings, changedKeysArr) {
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
     let change = false;
-		if (changedKeysArr.indexOf("address") > -1) {
-			this.log('Address value was change to:', newSettings.address);
+    if (changedKeys.indexOf("address") > -1) {
+      this.log('Address value was change to:', newSettings.address);
       this.storage.address = newSettings.address;
       change = true;
-		}
-    if (changedKeysArr.indexOf("port") > -1) {
-			this.log('Port value was change to:', newSettings.port);
+    }
+    if (changedKeys.indexOf("port") > -1) {
+      this.log('Port value was change to:', newSettings.port);
       this.storage.port = newSettings.port;
       change = true;
-		}
-    if (changedKeysArr.indexOf("polling") > -1) {
-			this.log('Polling value was change to:', newSettings.polling);
+    }
+    if (changedKeys.indexOf("polling") > -1) {
+      this.log('Polling value was change to:', newSettings.polling);
       this.storage.polling = newSettings.polling;
       change = true;
-		}
+    }
 
     if (change) {
       //We need to re-initialize the SMA session since setting(s) are changed
       //TODO 
     }
-	}
+  }
 
 }
 

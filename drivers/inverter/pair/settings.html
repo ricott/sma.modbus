@@ -8,11 +8,12 @@
                 var settings = {
                     address: inputaddress
                 };
-                Homey.emit('settings', settings, function (err, result) {
+                Homey.emit('settings', settings).then(function (result) {
                     console.log(result);
-                    if (results) {
-                        Homey.done();
-                    } else {
+                    //if (results) {
+                    //    Homey.done();
+                    //} else {
+                    if (!result) {
                         $('.sma-error').show();
                         $('.sma-error-msg').html('Failed to connect to the inverter!');
                     }

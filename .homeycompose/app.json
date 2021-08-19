@@ -1,6 +1,6 @@
 {
   "id": "sma.modbus",
-  "sdk": 2,
+  "sdk": 3,
   "brandColor": "#015a93",
   "name": {
     "en": "SMA Energy",
@@ -37,8 +37,8 @@
       "modbus"
     ]
   },
-  "version": "2.2.2",
-  "compatibility": ">=3.0.0",
+  "version": "2.3.0",
+  "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
     "email": "richard@barkestam.se"

@@ -5,11 +5,9 @@
   "main": "app.js",
   "dependencies": {
     "events": "^3.3.0",
+    "homey-log": "^2.0.1",
     "http.min": "^2.1.0",
     "jsmodbus": "^4.0.6"
-  },
-  "devDependencies": {
-    "homey": "^2.19.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

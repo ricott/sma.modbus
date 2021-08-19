@@ -1,44 +1,34 @@
 'use strict';
 
-const Homey = require('homey');
+const { Driver } = require('homey');
 const { ManagerDrivers } = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
 
-class PVOutputDriver extends Homey.Driver {
+class PVOutputDriver extends Driver {
 
-  onInit() {
+  async onInit() {
     this.log('SMA PVOutput driver has been initialized');
-    this.flowCards = {};
-    this._registerFlows();
   }
 
-  _registerFlows() {
-    this.log('Registering flows');
-
-  }
-
-  onPair(socket) {
+  async onPair(session) {
     let devices = [];
     let settings;
 
-    socket.on('settings', function (data, callback) {
+    session.setHandler('settings', async (data) => {
       settings = data;
-      callback(null, true);
-      // Show the next view
-      socket.nextView();
+      session.nextView();
     });
 
-    socket.on('list_devices', (data, callback) => {
+    session.setHandler('list_devices', async (data) => {
       //Check that we have an inverter registered as a device
       //Validate pvoutput account by looking up system
       if (ManagerDrivers.getDriver('inverter').getDevices().length > 0) {
-
         let client = new PVOutputClient({
           apikey: settings.apikey,
           systemId: settings.systemid
         });
 
-        client.getSystem()
+        return client.getSystem()
           .then(function (result) {
             if (result.statusCode === 200) {
               devices.push({
@@ -55,13 +45,13 @@ class PVOutputDriver extends Homey.Driver {
                   apikey: settings.apikey
                 }
               });
-              callback(null, devices);
+              return devices;
             } else {
-              callback(new Error(result.response));
+              throw new Error(result.response);
             }
           });
       } else {
-        callback(new Error('You need at least one inverter already registered in Homey to add a PVOutput device'));
+        throw new Error('You need at least one inverter already registered in Homey to add a PVOutput device');
       }
     });
   }

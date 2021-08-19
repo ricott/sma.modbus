@@ -1,17 +1,17 @@
 'use strict';
 
-const Homey = require('homey');
+const { Driver } = require('homey');
 const discovery = require('../../lib/deviceDiscovery.js');
 const SMA = require('../../lib/sma.js');
 
-class InverterDriver extends Homey.Driver {
+class InverterDriver extends Driver {
 
-  onInit() {
+  async onInit() {
     this.log('SMA Inverter driver has been initialized');
 
     //First time app starts, set default port to 502.
-    if (!Homey.ManagerSettings.get('port')) {
-      Homey.ManagerSettings.set('port', 502);
+    if (!this.homey.settings.get('port')) {
+      this.homey.settings.set('port', 502);
     }
 
     this.flowCards = {};
@@ -22,68 +22,60 @@ class InverterDriver extends Homey.Driver {
     this.log('Registering flows');
 
     // Register device triggers
-    let triggers = [
-      'inverter_status_changed',
-      'inverter_condition_changed'
-    ];
-    this._registerFlow('trigger', triggers, Homey.FlowCardTriggerDevice);
+    this.flowCards['inverter_status_changed'] = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
+    this.flowCards['inverter_condition_changed'] = this.homey.flow.getDeviceTriggerCard('inverter_condition_changed');
 
     //Register conditions
-    triggers = [
-      'isInverterDailyYield',
-      'isInverterStatus',
-      'power_condition'
-    ];
-    this._registerFlow('condition', triggers, Homey.FlowCardCondition);
+    this.flowCards['isInverterDailyYield'] =
+      this.homey.flow.getConditionCard('isInverterDailyYield')
+        .registerRunListener(async (args, state) => {
+          this.log(`[${args.device.getName()}] Condition 'isInverterDailyYield' triggered`);
+          this.log(`[${args.device.getName()}] - inverter.dailyYield: ${args.device.getCapabilityValue('meter_power')}`);
+          this.log(`[${args.device.getName()}] - parameter yield: '${args.daily_yield}'`);
 
-    this.flowCards['condition.isInverterDailyYield']
-      .registerRunListener((args, state, callback) => {
-        this.log('Flow condition.isInverterDailyYield');
-        this.log(`- inverter.dailyYield: ${args.device.getCapabilityValue('meter_power')}`);
-        this.log(`- parameter yield: '${args.daily_yield}'`);
+          if (args.device.getCapabilityValue('meter_power') > args.daily_yield) {
+            return true;
+          } else {
+            return false;
+          }
+        });
 
-        if (args.device.getCapabilityValue('meter_power') > args.daily_yield) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+    this.flowCards['isInverterStatus'] =
+      this.homey.flow.getConditionCard('isInverterStatus')
+        .registerRunListener(async (args, state) => {
+          this.log(`[${args.device.getName()}] Condition 'isInverterStatus' triggered`);
+          this.log(`[${args.device.getName()}] - inverter.status: ${args.device.getCapabilityValue('operational_status')}`);
+          this.log(`[${args.device.getName()}] - parameter status: '${args.inverter_status}'`);
 
-    this.flowCards['condition.isInverterStatus']
-      .registerRunListener((args, state, callback) => {
-        this.log('Flow condition.isInverterStatus');
-        this.log(`- inverter.status: ${args.device.getCapabilityValue('operational_status')}`);
-        this.log(`- parameter status: '${args.inverter_status}'`);
+          if (args.device.getCapabilityValue('operational_status').indexOf(args.inverter_status) > -1) {
+            return true;
+          } else {
+            return false;
+          }
+        });
 
-        if (args.device.getCapabilityValue('operational_status').indexOf(args.inverter_status) > -1) {
-          return true;
-        } else {
-          return false;
-        }
-      });
 
-    this.flowCards['condition.power_condition']
-      .registerRunListener((args, state, callback) => {
-        this.log('Flow condition.power_condition');
-        let power = args.device.getCapabilityValue('measure_power');
-        this.log(`- inverter.power: ${power}`);
-        this.log(`- parameter power: '${args.power}'`);
+    this.flowCards['power_condition'] =
+      this.homey.flow.getConditionCard('power_condition')
+        .registerRunListener(async (args, state) => {
+          this.log(`[${args.device.getName()}] Condition 'power_condition' triggered`);
+          let power = args.device.getCapabilityValue('measure_power');
+          this.log(`- inverter.power: ${power}`);
+          this.log(`- parameter power: '${args.power}'`);
 
-        if (power < args.power) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+          if (power < args.power) {
+            return true;
+          } else {
+            return false;
+          }
+        });
   }
 
-  _registerFlow(type, keys, cls) {
-    keys.forEach(key => {
-      this.log(`- flow '${type}.${key}'`);
-      this.flowCards[`${type}.${key}`] = new cls(key).register();
-    });
+  triggerDeviceFlow(flow, tokens, device) {
+    this.log(`[${device.getName()}] Triggering device flow '${flow}' with tokens`, tokens);
+    this.flowCards[flow].trigger(device, tokens);
   }
-
+/*
   triggerFlow(flow, tokens, device) {
     this.log(`Triggering flow '${flow}' with tokens`, tokens);
 
@@ -96,20 +88,22 @@ class InverterDriver extends Homey.Driver {
       this.flowCards[flow].trigger(tokens);
     }
   }
+*/
 
-  onPair(socket) {
+  async onPair(session) {
     let self = this;
     let devices = [];
     let inverterProperties;
     let mode = 'discovery';
     let settings;
 
-    socket.on('settings', function (data, callback) {
+    session.setHandler('settings', async (data) => {
+    //socket.on('settings', function (data, callback) {
       settings = data;
 
       let smaSession = new SMA({
         host: settings.address,
-        port: Homey.ManagerSettings.get('port'),
+        port: this.homey.settings.get('port'),
         autoClose: true
       });
 
@@ -123,17 +117,20 @@ class InverterDriver extends Homey.Driver {
 
       //Wait 3 seconds to allow properties to be read
       sleep(3000).then(() => {
-        callback(null, true);
+        //callback(null, true);
         // Show the next view
-        socket.nextView();
+        //socket.nextView();
+        session.nextView();
       });
     });
 
-    socket.on('list_devices', (data, callback) => {
+    session.setHandler('list_devices', async (data) => {
+    //socket.on('list_devices', (data, callback) => {
 
       if (mode === 'manual') {
         if (!inverterProperties) {
-          callback(new Error('Wrong IP number or port, no SMA inverter found'));
+          //callback(new Error('Wrong IP number or port, no SMA inverter found'));
+          throw new Error('Wrong IP number or port, no SMA inverter found');
         } else {
           this.log(`Adding to devices: ${inverterProperties.deviceType}`);
           devices.push({
@@ -143,16 +140,17 @@ class InverterDriver extends Homey.Driver {
             },
             settings: {
               address: settings.address,
-              port: Number(Homey.ManagerSettings.get('port'))
+              port: Number(this.homey.settings.get('port'))
             }
           });
 
-          callback(null, devices);
+          //callback(null, devices);
+          return devices;
         }
       } else {
         //Discover devices using multicast query
         let discoveryQuery = new discovery({
-          port: Homey.ManagerSettings.get('port')
+          port: this.homey.settings.get('port')
         });
         discoveryQuery.discover();
 
@@ -183,16 +181,17 @@ class InverterDriver extends Homey.Driver {
         });
 
         //Wait for inverterInfo to be collected
-        sleep(6000).then(() => {
+        return sleep(6000).then(() => {
           if (devices.length === 0) {
             this.log('No inverters found using auto-discovery, fallback to manual entry');
             mode = 'manual';
-            socket.showView('settings');
+            //socket.showView('settings');
+            session.showView('settings');
           } else {
             this.log(`Found '${devices.length}' inverter(s)`);
-            callback(null, devices);
+            //callback(null, devices);
+            return devices;
           }
-
         }).catch(reason => {
           console.log('Timeout error', reason);
         });

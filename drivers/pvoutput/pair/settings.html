@@ -17,11 +17,9 @@
                     start_reporting: inputstart,
                     stop_reporting: inputstop
                 };
-                Homey.emit('settings', settings, function (err, result) {
+                Homey.emit('settings', settings).then(function (result) {
                     console.log(result);
-                    if (results) {
-                        Homey.done();
-                    } else {
+                    if (!results) {
                         $('.sma-error').show();
                         $('.sma-error-msg').html('Failed to connect to the inverter!');
                     }

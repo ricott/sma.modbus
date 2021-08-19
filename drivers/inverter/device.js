@@ -1,6 +1,6 @@
 'use strict';
 
-const Homey = require('homey');
+const { Device } = require('homey');
 const SMA = require('../../lib/sma.js');
 const decodeData = require('../../lib/decodeData.js');
 
@@ -15,10 +15,10 @@ const deviceCapabilitesList = ['measure_power',
   'measure_power.dcA',
   'measure_power.dcB'];
 
-class InverterDevice extends Homey.Device {
+class InverterDevice extends Device {
 
-  onInit() {
-    this.log(`SMA inverter initiated, '${this.getName()}'`);
+  async onInit() {
+    this.log(`[${this.getName()}] SMA inverter initiated`);
 
     //New class in Homey v3, update existing devices to new class
     if (this.getClass() !== 'solarpanel') {
@@ -120,7 +120,7 @@ class InverterDevice extends Homey.Device {
     });
 
     this.inverter.smaApi.on('error', error => {
-      this.error('Houston we have a problem', error);
+      this.error(`[${this.getName()}] Houston we have a problem`, error);
 
       let message = '';
       if (this.isError(error)) {
@@ -156,7 +156,8 @@ class InverterDevice extends Homey.Device {
     let timeToMidnight = night.getTime() - new Date().getTime();
 
     setTimeout(() => {
-      this.log(`Resetting total yield at midnight`);
+      this.log(`[${this.getName()}] Resetting total yield at midnight`);
+
       this.resetDailyYield();
       this.resetAtMidnight();
     }, timeToMidnight);
@@ -170,7 +171,7 @@ class InverterDevice extends Homey.Device {
     //Check if we have totalYield from midnight saved
     let totalYieldAtMidnight = this.getStoreValue('totalYieldAtMidnight') || 0;
     if (totalYieldAtMidnight === 0) {
-      this.log(`Total yield store value is '0', setting it to '${totalYield}'`);
+      this.log(`[${this.getName()}] Total yield store value is '0', setting it to '${totalYield}'`);
       this.setStoreValue('totalYieldAtMidnight', totalYield);
     }
 
@@ -180,12 +181,12 @@ class InverterDevice extends Homey.Device {
 
   shouldWeCalculateDailyYield() {
     let manual = this.inverter.smaApi.isDailyYieldManual();
-    this.log(`Calculate manual daily yield: '${manual}'`);
+    this.log(`[${this.getName()}] Calculate manual daily yield: '${manual}'`);
     this.inverter.manualDailyYield = manual;
   }
 
   assignCapabilityNames() {
-    this.log('Assigning new capability names');
+    this.log(`[${this.getName()}] Assigning new capability names`);
     if (this.hasCapability('measure_voltage.dcA')) {
       this.setCapabilityOptions('measure_voltage.dcA', { title: { en: this.inverter.mppAName } });
     }
@@ -201,7 +202,8 @@ class InverterDevice extends Homey.Device {
   }
 
   setupCapabilities() {
-    this.log('Setting up capabilities');
+    this.log(`[${this.getName()}] Setting up capabilities`);
+
     let capabilities = this.inverter.smaApi.getDeviceCapabilities();
     let capabilityKeys = Object.values(capabilities);
 
@@ -209,14 +211,14 @@ class InverterDevice extends Homey.Device {
       if (capabilityKeys.includes(capability)) {
         //Device should have capability
         if (!this.hasCapability(capability)) {
-          this.log(`Adding missing capability '${capability}'`);
+          this.log(`[${this.getName()}] Adding missing capability '${capability}'`);
           this.addCapability(capability);
         } else {
-          this.log(`Device has capability '${capability}'`);
+          this.log(`[${this.getName()}] Device has capability '${capability}'`);
         }
       } else {
         //Device doesnt have capability, remove it
-        this.log(`Removing capability '${capability}'`);
+        this.log(`[${this.getName()}] Removing capability '${capability}'`);
         this.removeCapability(capability);
       }
     });
@@ -238,15 +240,14 @@ class InverterDevice extends Homey.Device {
           let tokens = {
             inverter_status: value || 'n/a'
           }
-          this.getDriver().triggerFlow('trigger.inverter_status_changed', tokens, this);
+          this.driver.triggerDeviceFlow('inverter_status_changed', tokens, this);
 
         } else if (key === 'operational_status.health') {
           let tokens = {
             inverter_condition: value || 'n/a'
           }
-          this.getDriver().triggerFlow('trigger.inverter_condition_changed', tokens, this);
+          this.driver.triggerDeviceFlow('inverter_condition_changed', tokens, this);
         }
-
       } else {
         //Update value to show we are doing it in app
         //this.log(`[${this.getName()}] (NoDiff) Updating capability '${key}' from '${oldValue}' to '${value}'`);
@@ -256,7 +257,7 @@ class InverterDevice extends Homey.Device {
   }
 
   onDeleted() {
-    this.log(`Deleting SMA inverter '${this.getName()}' from Homey.`);
+    this.log(`[${this.getName()}] Deleting this SMA inverter from Homey.`);
     this.destroySMASession();
   }
 
@@ -265,32 +266,33 @@ class InverterDevice extends Homey.Device {
     this.inverter.name = name;
   }
 
-  async onSettings(oldSettings, newSettings, changedKeysArr) {
+  //async onSettings(oldSettings, newSettings, changedKeysArr) {
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
     let changeConn = false;
     let changeLabel = false;
-    if (changedKeysArr.indexOf("address") > -1) {
-      this.log('Address value was change to:', newSettings.address);
+    if (changedKeys.indexOf("address") > -1) {
+      this.log(`[${this.getName()}] Address value was change to '${newSettings.address}'`);
       this.inverter.address = newSettings.address;
       changeConn = true;
     }
-    if (changedKeysArr.indexOf("port") > -1) {
-      this.log('Port value was change to:', newSettings.port);
+    if (changedKeys.indexOf("port") > -1) {
+      this.log(`[${this.getName()}] Port value was change to '${newSettings.port}'`);
       this.inverter.port = newSettings.port;
       changeConn = true;
     }
-    if (changedKeysArr.indexOf("polling") > -1) {
-      this.log('Polling value was change to:', newSettings.polling);
+    if (changedKeys.indexOf("polling") > -1) {
+      this.log(`[${this.getName()}] Polling value was change to '${newSettings.polling}'`);
       this.inverter.polling = newSettings.polling;
       changeConn = true;
     }
 
-    if (changedKeysArr.indexOf("mpp_a_name") > -1) {
-      this.log('MPP A name was change to:', newSettings.mpp_a_name);
+    if (changedKeys.indexOf("mpp_a_name") > -1) {
+      this.log(`[${this.getName()}] MPP A name was change to '${newSettings.mpp_a_name}'`);
       this.inverter.mppAName = newSettings.mpp_a_name;
       changeLabel = true;
     }
-    if (changedKeysArr.indexOf("mpp_b_name") > -1) {
-      this.log('MPP B name was change to:', newSettings.mpp_b_name);
+    if (changedKeys.indexOf("mpp_b_name") > -1) {
+      this.log(`[${this.getName()}] MPP B name was change to '${newSettings.mpp_b_name}'`);
       this.inverter.mppBName = newSettings.mpp_b_name;
       changeLabel = true;
     }

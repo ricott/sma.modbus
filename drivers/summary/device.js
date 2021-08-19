@@ -1,12 +1,12 @@
 'use strict';
 
-const Homey = require('homey');
-const { ManagerDrivers } = require('homey');
+const { Device } = require('homey');
+//const { ManagerDrivers } = require('homey');
 
-class SummaryDevice extends Homey.Device {
+class SummaryDevice extends Device {
 
-    onInit() {
-        this.log(`SMA summary initiated, '${this.getName()}'`);
+    async onInit() {
+        this.log(`[${this.getName()}] SMA summary initiated`);
 
         this.pollIntervals = [];
         this.summary = {
@@ -22,7 +22,7 @@ class SummaryDevice extends Homey.Device {
     }
 
     setupCapabilities() {
-        this.log('Setting up capabilities');
+        this.log(`[${this.getName()}] Setting up capabilities`);
         if (this.summary.showMPP === 'yes') {
             if (this.summary.invertersMPPConfig.MPP_A) {
                 this.showCapability('power_pv.dcA', this.summary.invertersMPPConfig.MPP_A_LBL);
@@ -39,23 +39,23 @@ class SummaryDevice extends Homey.Device {
     showCapability(capabilityName, label) {
         //Device should have capability
         if (!this.hasCapability(capabilityName)) {
-            this.log(`Adding missing capability '${capabilityName}' with label '${label}'`);
+            this.log(`[${this.getName()}] Adding missing capability '${capabilityName}' with label '${label}'`);
             this.addCapability(capabilityName);
             this.setCapabilityOptions(capabilityName, {title: { en: label}});
         } else {
-            this.log(`Device has capability '${capabilityName}'`);
+            this.log(`[${this.getName()}] Device has capability '${capabilityName}'`);
         }
     }
 
     hideCapability(capabilityName) {
         //Device doesnt have capability, remove it
-        this.log(`Removing capability '${capabilityName}'`);
+        this.log(`[${this.getName()}] Removing capability '${capabilityName}'`);
         this.removeCapability(capabilityName);
     }
 
     getInverterMPPConfig() {
         let mpp = {MPP_A: true, MPP_A_LBL: '' ,MPP_B: true, MPP_B_LBL: ''};
-        ManagerDrivers.getDriver('inverter').getDevices().forEach(function (inverter) {
+        this.homey.drivers.getDriver('inverter').getDevices().forEach(function (inverter) {
             if (!inverter.hasCapability('measure_power.dcA')) {
                 mpp.MPP_A = false;
             } else {
@@ -74,33 +74,38 @@ class SummaryDevice extends Homey.Device {
 
         let battery_charge = 0;
         let battery_discharge = 0;
-        ManagerDrivers.getDriver('storage').getDevices().forEach(function (inverter) {
+        this.homey.drivers.getDriver('storage').getDevices().forEach(function (inverter) {
             battery_charge = battery_charge + inverter.getCapabilityValue('measure_power.charge');
             battery_discharge = battery_discharge + inverter.getCapabilityValue('measure_power.discharge')
         });
-        this._updateProperty('power_drawn.battery', (battery_charge - battery_discharge));
 
         let power_pv = 0;
         let power_MPPA = 0;
         let power_MPPB = 0;
-        ManagerDrivers.getDriver('inverter').getDevices().forEach(function (inverter) {
+        this.homey.drivers.getDriver('inverter').getDevices().forEach(function (inverter) {
             power_pv = power_pv + inverter.getCapabilityValue('measure_power');
             power_MPPA = power_MPPA + inverter.getCapabilityValue('measure_power.dcA') || 0;
             power_MPPB = power_MPPB + inverter.getCapabilityValue('measure_power.dcB') || 0;
         });
-        this._updateProperty('power_pv', power_pv);
-        this._updateProperty('power_pv.dcA', power_MPPA);
-        this._updateProperty('power_pv.dcB', power_MPPB);
 
         let power_grid = 0;
         let surplus = 0;
-        ManagerDrivers.getDriver('energy').getDevices().forEach(function (em) {
+        this.homey.drivers.getDriver('energy').getDevices().forEach(function (em) {
             power_grid = power_grid + em.getCapabilityValue('measure_power');
             surplus = surplus + em.getCapabilityValue('measure_power.surplus');
         });
+
+        let grid = power_grid - surplus;
+        let battery = battery_charge - battery_discharge;
+        let consumption = power_pv - battery + grid;
+
+        this._updateProperty('power_drawn.battery', battery);
+        this._updateProperty('power_pv', power_pv);
+        this._updateProperty('power_pv.dcA', power_MPPA);
+        this._updateProperty('power_pv.dcB', power_MPPB);
         //Will be negative if there is a surplus
-        this._updateProperty('power_grid', (power_grid - surplus));
-        this._updateProperty('power_self', ((power_pv + power_grid + battery_discharge) - (surplus + battery_charge)));
+        this._updateProperty('power_grid', grid);
+        this._updateProperty('power_self', consumption);
     }
 
     _initilializeTimers() {
@@ -112,7 +117,7 @@ class SummaryDevice extends Homey.Device {
 
     _deleteTimers() {
         //Kill interval object(s)
-        this.log('Removing timers');
+        this.log(`[${this.getName()}] Removing timers`);
         this.pollIntervals.forEach(timer => {
             clearInterval(timer);
         });
@@ -137,7 +142,7 @@ class SummaryDevice extends Homey.Device {
     }
 
     onDeleted() {
-        this.log(`Deleting SMA summary '${this.getName()}' from Homey.`);
+        this.log(`[${this.getName()}] Deleting this SMA summary from Homey.`);
         this._deleteTimers();
     }
 
@@ -146,16 +151,16 @@ class SummaryDevice extends Homey.Device {
         this.summary.name = name;
     }
 
-    async onSettings(oldSettings, newSettings, changedKeysArr) {
+    async onSettings({ oldSettings, newSettings, changedKeys }) {
 
-        if (changedKeysArr.indexOf("polling") > -1) {
-            this.log('Polling value was change to:', newSettings.polling);
+        if (changedKeys.indexOf("polling") > -1) {
+            this.log(`[${this.getName()}] Polling value was change to '${newSettings.polling}'`);
             this.summary.polling = newSettings.polling;
             this._reinitializeTimers();
         }
 
-        if (changedKeysArr.indexOf("show_mpp") > -1) {
-            this.log('Show MPP value was change to:', newSettings.show_mpp);
+        if (changedKeys.indexOf("show_mpp") > -1) {
+            this.log(`[${this.getName()}] Show MPP value was change to '${newSettings.show_mpp}'`);
             this.summary.showMPP = newSettings.show_mpp;
             this.summary.invertersMPPConfig = this.getInverterMPPConfig();
             this.setupCapabilities();

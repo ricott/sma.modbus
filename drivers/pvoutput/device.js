@@ -1,7 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
-const { ManagerDrivers } = require('homey');
+//const { ManagerDrivers } = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
 const utility = require('../../lib/util.js');
 //Encryption settings
@@ -10,8 +10,8 @@ const crypto_algorithm = 'aes-256-ctr';
 
 class PVOutputDevice extends Homey.Device {
 
-  onInit() {
-    this.log(`SMA PVOutput initiated, '${this.getName()}'`);
+  async onInit() {
+    this.log(`[${this.getName()}] SMA PVOutput initiated`);
 
     this.pollIntervals = [];
     this.pvoutput = {
@@ -24,9 +24,9 @@ class PVOutputDevice extends Homey.Device {
     };
     this.apikey_setting = `${this.pvoutput.systemId}.apikey`;
 
-    if (!Homey.ManagerSettings.get(this.apikey_setting)) {
+    if (!this.homey.settings.get(this.apikey_setting)) {
       //This is a newly added device, lets copy api key to homey settings
-      this.log(`Storing api key`);
+      this.log(`[${this.getName()}] Storing api key`);
       this.storeAPIKeyEncrypted();
     }
 
@@ -39,7 +39,7 @@ class PVOutputDevice extends Homey.Device {
   }
 
   _initilializeTimers() {
-    this.log('Adding timers');
+    this.log(`[${this.getName()}] Adding timers`);
     // Start a poller, to check the device status
     this.pollIntervals.push(setInterval(() => {
       this.addStatus();
@@ -48,7 +48,7 @@ class PVOutputDevice extends Homey.Device {
 
   _deleteTimers() {
     //Kill interval object(s)
-    this.log('Removing timers');
+    this.log(`[${this.getName()}] Removing timers`);
     this.pollIntervals.forEach(timer => {
       clearInterval(timer);
     });
@@ -69,7 +69,7 @@ class PVOutputDevice extends Homey.Device {
       //Sum values across all registered inverters
       //Most people will only have one, but lets support several
       let numberOfInverters = 0;
-      ManagerDrivers.getDriver('inverter').getDevices().forEach(function (inverter) {
+      this.homey.drivers.getDriver('inverter').getDevices().forEach(function (inverter) {
         numberOfInverters++;
         power_pv = power_pv + inverter.getCapabilityValue('measure_power');
         yield_pv = yield_pv + inverter.getCurrentDailyYield();
@@ -130,7 +130,7 @@ class PVOutputDevice extends Homey.Device {
 
   onDeleted() {
     this.log(`Deleting SMA PVOutput '${this.getName()}' from Homey.`);
-    Homey.ManagerSettings.unset(this.apikey_setting);
+    this.homey.settings.unset(this.apikey_setting);
     this.pvoutput = null;
   }
 
@@ -139,19 +139,19 @@ class PVOutputDevice extends Homey.Device {
     this.pvoutput.name = name;
   }
 
-  async onSettings(oldSettings, newSettings, changedKeysArr) {
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
     let change = false;
-    if (changedKeysArr.indexOf("interval") > -1) {
+    if (changedKeys.indexOf("interval") > -1) {
       this.log('Interval value was change to:', newSettings.interval);
       this.pvoutput.interval = newSettings.interval;
       change = true;
     }
 
-    if (changedKeysArr.indexOf("start_reporting") > -1) {
+    if (changedKeys.indexOf("start_reporting") > -1) {
       this.log('Start reporting value was change to:', newSettings.start_reporting);
       this.pvoutput.start_reporting = newSettings.start_reporting;
     }
-    if (changedKeysArr.indexOf("stop_reporting") > -1) {
+    if (changedKeys.indexOf("stop_reporting") > -1) {
       this.log('Stop reporting value was change to:', newSettings.stop_reporting);
       this.pvoutput.stop_reporting = newSettings.stop_reporting;
     }
@@ -162,16 +162,16 @@ class PVOutputDevice extends Homey.Device {
   }
 
   storeAPIKeyEncrypted() {
-    this.log(`Encrypting api key`);
+    this.log(`[${this.getName()}] Encrypting api key`);
     let plaintextApikey = this.getStoreValue('apikey');
-    Homey.ManagerSettings.set(this.apikey_setting, this.encryptText(plaintextApikey));
+    this.homey.settings.set(this.apikey_setting, this.encryptText(plaintextApikey));
 
     //Remove unencrypted apikey passed from driver
     this.unsetStoreValue('apikey');
   }
 
   getAPIKey() {
-    return this.decryptText(Homey.ManagerSettings.get(this.apikey_setting));
+    return this.decryptText(this.homey.settings.get(this.apikey_setting));
   }
 
   encryptText(plainText) {

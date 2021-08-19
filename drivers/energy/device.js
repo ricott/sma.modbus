@@ -1,12 +1,12 @@
 'use strict';
 
-const Homey = require('homey');
+const { Device } = require('homey');
 const EnergyMeter = require('../../lib/sma_em.js');
 
-class EnergyDevice extends Homey.Device {
+class EnergyDevice extends Device {
 
-  onInit() {
-    this.log(`SMA energy meter initiated, '${this.getName()}'`);
+  async onInit() {
+    this.log(`[${this.getName()}] SMA energy meter initiated`);
 
     this.phaseAlerts = {
       L1: false,
@@ -34,7 +34,7 @@ class EnergyDevice extends Homey.Device {
       });
 
     this.upgradeDevice();
-    this.registerFlowTokens();
+    await this.registerFlowTokens();
 
     this.setupEMSession();
   }
@@ -49,15 +49,17 @@ class EnergyDevice extends Homey.Device {
     }
   }
 
-  registerFlowTokens() {
-    this.availCurrentToken = new Homey.FlowToken(`${this.energy.serialNo}.availableCurrent`, {
+  async registerFlowTokens() {
+    this.availCurrentToken = await this.homey.flow.createToken(`${this.energy.serialNo}.availableCurrent`,
+      //new Homey.FlowToken(`${this.energy.serialNo}.availableCurrent`, 
+    {
       type: 'number',
       title: `${this.energy.name} Available current`
     });
-    this.availCurrentToken.register()
+    /*this.availCurrentToken.register()
       .catch(err => {
         this.log('Failed to register flow token', err);
-      });
+      });*/
   }
 
   setupEMSession() {
@@ -165,7 +167,8 @@ class EnergyDevice extends Homey.Device {
                 phase: phase,
                 percentageUtilized: utilization
               }
-              this.getDriver().triggerFlow('trigger.phase_threshold_triggered', tokens, this);
+              //this.getDriver().triggerFlow('trigger.phase_threshold_triggered', tokens, this);
+              this.driver.triggerDeviceFlow('phase_threshold_triggered', tokens, this);
             }
           } else if (this.phaseAlerts[phase] === true) {
             //Reset alert
@@ -181,7 +184,8 @@ class EnergyDevice extends Homey.Device {
   }
 
   onDeleted() {
-    this.log(`Deleting SMA energy meter '${this.getName()}' from Homey.`);
+    this.log(`[${this.getName()}] Deleting SMA energy meter from Homey.`);
+    this.homey.flow.unregisterToken(this.availCurrentToken);
     this.energy.emSession.disconnect();
     this.energy.emSession = null;
   }
@@ -191,26 +195,26 @@ class EnergyDevice extends Homey.Device {
     this.energy.name = name;
   }
 
-  async onSettings(oldSettings, newSettings, changedKeysArr) {
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
     let change = false;
-    if (changedKeysArr.indexOf("polling") > -1) {
+    if (changedKeys.indexOf("polling") > -1) {
       this.log('Polling value was change to:', newSettings.polling);
       this.energy.polling = newSettings.polling;
       this.energy.emSession.setRefreshInterval(this.energy.polling);
     }
 
-    if (changedKeysArr.indexOf("offset") > -1) {
+    if (changedKeys.indexOf("offset") > -1) {
       this.log('Offset value was change to:', newSettings.offset);
       this.energy.offset = newSettings.offset;
     }
 
-    if (changedKeysArr.indexOf("mainFuse") > -1) {
+    if (changedKeys.indexOf("mainFuse") > -1) {
       this.log('Main fuse value was change to:', newSettings.mainFuse);
       this.energy.mainFuse = newSettings.mainFuse;
       change = true;
     }
 
-    if (changedKeysArr.indexOf("threshold") > -1) {
+    if (changedKeys.indexOf("threshold") > -1) {
       this.log('Threshold value was change to:', newSettings.threshold);
       this.energy.threshold = newSettings.threshold;
       change = true;

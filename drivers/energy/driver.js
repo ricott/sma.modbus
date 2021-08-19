@@ -1,11 +1,11 @@
 'use strict';
 
-const Homey = require('homey');
+const { Driver } = require('homey');
 const EnergyMeter = require('../../lib/sma_em.js');
 
-class EnergyDriver extends Homey.Driver {
+class EnergyDriver extends Driver {
 
-  onInit() {
+  async onInit() {
     this.log('SMA energy driver has been initialized');
     this.flowCards = {};
     this._registerFlows();
@@ -15,59 +15,51 @@ class EnergyDriver extends Homey.Driver {
     this.log('Registering flows');
 
     // Register device triggers
-    let triggers = [
-      'phase_threshold_triggered'
-    ];
-    this._registerFlow('trigger', triggers, Homey.FlowCardTriggerDevice);
+    this.flowCards['phase_threshold_triggered'] = this.homey.flow.getDeviceTriggerCard('phase_threshold_triggered');
 
     //Register conditions
-    triggers = [
-      'phaseUtilized',
-      'anyPhaseUtilized'
-    ];
-    this._registerFlow('condition', triggers, Homey.FlowCardCondition);
+    this.flowCards['phaseUtilized'] =
+      this.homey.flow.getConditionCard('phaseUtilized')
+        .registerRunListener(async (args, state) => {
+          this.log(`[${args.device.getName()}] Condition 'phaseUtilized' triggered`);
+          this.log(`[${args.device.getName()}] Phase: '${args.phase}'`);
+          this.log(`[${args.device.getName()}] Utilization: ${args.utilization}%`);
+          let phaseCurrent = args.device.getCapabilityValue(`measure_current.${args.phase}`);
+          this.log(`[${args.device.getName()}] - Phase current: ${phaseCurrent}A`);
+          let utilization = (phaseCurrent / args.device.energy.mainFuse) * 100;
+          this.log(`[${args.device.getName()}] - Phase utlization: ${utilization}%`);
 
-    this.flowCards['condition.phaseUtilized']
-      .registerRunListener((args, state, callback) => {
-        this.log('Flow condition.phaseUtilization');
-        this.log(`Phase: '${args.phase}'`);
-        this.log(`Utilization: ${args.utilization}%`);
-        let phaseCurrent = args.device.getCapabilityValue(`measure_current.${args.phase}`);
-        this.log(`- Phase current: ${phaseCurrent}A`);
-        let utilization = (phaseCurrent / args.device.energy.mainFuse) * 100;
-        this.log(`- Phase utlization: ${utilization}%`);
+          if (utilization >= args.utilization) {
+            return true;
+          } else {
+            return false;
+          }
+        });
 
-        if (utilization >= args.utilization) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+    this.flowCards['anyPhaseUtilized'] =
+      this.homey.flow.getConditionCard('anyPhaseUtilized')
+        .registerRunListener(async (args, state) => {
+          this.log(`[${args.device.getName()}] Condition 'anyPhaseUtilized' triggered`);
+          this.log(`[${args.device.getName()}] Utilization: ${args.utilization}%`);
+          let utilizationL1 = (args.device.getCapabilityValue('measure_current.L1') / args.device.energy.mainFuse) * 100;
+          let utilizationL2 = (args.device.getCapabilityValue('measure_current.L2') / args.device.energy.mainFuse) * 100;
+          let utilizationL3 = (args.device.getCapabilityValue('measure_current.L3') / args.device.energy.mainFuse) * 100;
+          this.log(`[${args.device.getName()}] - Phase utlization: ${utilizationL1}%, ${utilizationL2}%, ${utilizationL3}%`);
 
-    this.flowCards['condition.anyPhaseUtilized']
-      .registerRunListener((args, state, callback) => {
-        this.log('Flow condition.phaseUtilization');
-        this.log(`Utilization: ${args.utilization}%`);
-        let utilizationL1 = (args.device.getCapabilityValue('measure_current.L1') / args.device.energy.mainFuse) * 100;
-        let utilizationL2 = (args.device.getCapabilityValue('measure_current.L2') / args.device.energy.mainFuse) * 100;
-        let utilizationL3 = (args.device.getCapabilityValue('measure_current.L3') / args.device.energy.mainFuse) * 100;
-        this.log(`- Phase utlization: ${utilizationL1}%, ${utilizationL2}%, ${utilizationL3}%`);
-
-        if (utilizationL1 >= args.utilization || utilizationL2 >= args.utilization || utilizationL3 >= args.utilization) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+          if (utilizationL1 >= args.utilization || utilizationL2 >= args.utilization || utilizationL3 >= args.utilization) {
+            return true;
+          } else {
+            return false;
+          }
+        });
   }
 
-  _registerFlow(type, keys, cls) {
-    keys.forEach(key => {
-      this.log(`- flow '${type}.${key}'`);
-      this.flowCards[`${type}.${key}`] = new cls(key).register();
-    });
+  triggerDeviceFlow(flow, tokens, device) {
+    this.log(`[${device.getName()}] Triggering device flow '${flow}' with tokens`, tokens);
+    this.flowCards[flow].trigger(device, tokens);
   }
 
+  /*
   triggerFlow(flow, tokens, device) {
     this.log(`Triggering flow '${flow}' with tokens`, tokens);
     if (this.flowCards[flow] instanceof Homey.FlowCardTriggerDevice) {
@@ -78,15 +70,15 @@ class EnergyDriver extends Homey.Driver {
       this.log('- regular trigger');
       this.flowCards[flow].trigger(tokens);
     }
-  }
+  }*/
 
-  onPair(socket) {
+  async onPair(session) {
     let devices = [];
 
-    socket.on('list_devices', (data, callback) => {
+    //socket.on('list_devices', (data, callback) => {
+    session.setHandler('list_devices', async (data) => {
 
       let emSession = new EnergyMeter({});
-
       emSession.on('readings', readings => {
         if (!devices.find((em) => em.data.id === readings.serialNo)) {
           this.log(`Adding to devices: ${readings.serialNo}`);
@@ -108,9 +100,11 @@ class EnergyDriver extends Homey.Driver {
         }
 
         if (devices.length == 0) {
-          callback(new Error('No SMA Energy Meters found!'));
+          //callback(new Error('No SMA Energy Meters found!'));
+          throw new Error('No SMA Energy Meters found!')
         } else {
-          callback(null, devices);
+          //callback(null, devices);
+          return devices;
         }
 
       }).catch(reason => {
