@@ -1,7 +1,6 @@
 'use strict';
 
 const Homey = require('homey');
-//const { ManagerDrivers } = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
 const utility = require('../../lib/util.js');
 //Encryption settings

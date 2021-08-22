@@ -59,25 +59,10 @@ class EnergyDriver extends Driver {
     this.flowCards[flow].trigger(device, tokens);
   }
 
-  /*
-  triggerFlow(flow, tokens, device) {
-    this.log(`Triggering flow '${flow}' with tokens`, tokens);
-    if (this.flowCards[flow] instanceof Homey.FlowCardTriggerDevice) {
-      this.log('- device trigger for ', device.getName());
-      this.flowCards[flow].trigger(device, tokens);
-    }
-    else if (this.flowCards[flow] instanceof Homey.FlowCardTrigger) {
-      this.log('- regular trigger');
-      this.flowCards[flow].trigger(tokens);
-    }
-  }*/
-
   async onPair(session) {
     let devices = [];
 
-    //socket.on('list_devices', (data, callback) => {
     session.setHandler('list_devices', async (data) => {
-
       let emSession = new EnergyMeter({});
       emSession.on('readings', readings => {
         if (!devices.find((em) => em.data.id === readings.serialNo)) {
@@ -92,7 +77,7 @@ class EnergyDriver extends Driver {
       });
 
       //Wait for some time and see what we find
-      sleep(2500).then(() => {
+      return sleep(2500).then(() => {
         try {
           emSession.disconnect();
         } catch (err) {
@@ -100,10 +85,8 @@ class EnergyDriver extends Driver {
         }
 
         if (devices.length == 0) {
-          //callback(new Error('No SMA Energy Meters found!'));
           throw new Error('No SMA Energy Meters found!')
         } else {
-          //callback(null, devices);
           return devices;
         }
 

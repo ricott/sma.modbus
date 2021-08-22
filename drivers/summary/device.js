@@ -1,7 +1,6 @@
 'use strict';
 
 const { Device } = require('homey');
-//const { ManagerDrivers } = require('homey');
 
 class SummaryDevice extends Device {
 

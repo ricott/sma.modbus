@@ -1,7 +1,6 @@
 'use strict';
 
 const { Driver } = require('homey');
-const { ManagerDrivers } = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
 
 class PVOutputDriver extends Driver {
@@ -22,7 +21,7 @@ class PVOutputDriver extends Driver {
     session.setHandler('list_devices', async (data) => {
       //Check that we have an inverter registered as a device
       //Validate pvoutput account by looking up system
-      if (ManagerDrivers.getDriver('inverter').getDevices().length > 0) {
+      if (this.homey.drivers.getDriver('inverter').getDevices().length > 0) {
         let client = new PVOutputClient({
           apikey: settings.apikey,
           systemId: settings.systemid

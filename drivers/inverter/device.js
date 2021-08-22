@@ -54,6 +54,7 @@ class InverterDevice extends Device {
   }
   destroySMASession() {
     if (this.inverter.smaApi) {
+      this.log(`[${this.getName()}] Disconnecting the inverter`);
       this.inverter.smaApi.disconnect();
     }
   }
@@ -266,7 +267,6 @@ class InverterDevice extends Device {
     this.inverter.name = name;
   }
 
-  //async onSettings(oldSettings, newSettings, changedKeysArr) {
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     let changeConn = false;
     let changeLabel = false;

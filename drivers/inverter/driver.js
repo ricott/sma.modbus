@@ -75,20 +75,6 @@ class InverterDriver extends Driver {
     this.log(`[${device.getName()}] Triggering device flow '${flow}' with tokens`, tokens);
     this.flowCards[flow].trigger(device, tokens);
   }
-/*
-  triggerFlow(flow, tokens, device) {
-    this.log(`Triggering flow '${flow}' with tokens`, tokens);
-
-    if (this.flowCards[flow] instanceof Homey.FlowCardTriggerDevice) {
-      this.log('- device trigger for ', device.getName());
-      this.flowCards[flow].trigger(device, tokens);
-
-    } else if (this.flowCards[flow] instanceof Homey.FlowCardTrigger) {
-      this.log('- regular trigger');
-      this.flowCards[flow].trigger(tokens);
-    }
-  }
-*/
 
   async onPair(session) {
     let self = this;
@@ -98,7 +84,6 @@ class InverterDriver extends Driver {
     let settings;
 
     session.setHandler('settings', async (data) => {
-    //socket.on('settings', function (data, callback) {
       settings = data;
 
       let smaSession = new SMA({
@@ -117,19 +102,14 @@ class InverterDriver extends Driver {
 
       //Wait 3 seconds to allow properties to be read
       sleep(3000).then(() => {
-        //callback(null, true);
-        // Show the next view
-        //socket.nextView();
         session.nextView();
       });
     });
 
     session.setHandler('list_devices', async (data) => {
-    //socket.on('list_devices', (data, callback) => {
 
       if (mode === 'manual') {
         if (!inverterProperties) {
-          //callback(new Error('Wrong IP number or port, no SMA inverter found'));
           throw new Error('Wrong IP number or port, no SMA inverter found');
         } else {
           this.log(`Adding to devices: ${inverterProperties.deviceType}`);
@@ -144,7 +124,6 @@ class InverterDriver extends Driver {
             }
           });
 
-          //callback(null, devices);
           return devices;
         }
       } else {
@@ -185,11 +164,9 @@ class InverterDriver extends Driver {
           if (devices.length === 0) {
             this.log('No inverters found using auto-discovery, fallback to manual entry');
             mode = 'manual';
-            //socket.showView('settings');
             session.showView('settings');
           } else {
             this.log(`Found '${devices.length}' inverter(s)`);
-            //callback(null, devices);
             return devices;
           }
         }).catch(reason => {

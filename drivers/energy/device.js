@@ -51,15 +51,10 @@ class EnergyDevice extends Device {
 
   async registerFlowTokens() {
     this.availCurrentToken = await this.homey.flow.createToken(`${this.energy.serialNo}.availableCurrent`,
-      //new Homey.FlowToken(`${this.energy.serialNo}.availableCurrent`, 
     {
       type: 'number',
       title: `${this.energy.name} Available current`
     });
-    /*this.availCurrentToken.register()
-      .catch(err => {
-        this.log('Failed to register flow token', err);
-      });*/
   }
 
   setupEMSession() {
@@ -167,7 +162,6 @@ class EnergyDevice extends Device {
                 phase: phase,
                 percentageUtilized: utilization
               }
-              //this.getDriver().triggerFlow('trigger.phase_threshold_triggered', tokens, this);
               this.driver.triggerDeviceFlow('phase_threshold_triggered', tokens, this);
             }
           } else if (this.phaseAlerts[phase] === true) {
