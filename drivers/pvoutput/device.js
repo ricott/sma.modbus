@@ -80,7 +80,7 @@ class PVOutputDevice extends Homey.Device {
       }
 
       let self = this;
-      this.pvoutput.session.publishStatus({
+      this.pvoutput.session.publishStatus(this.homey.clock.getTimezone(), {
         yield: yield_pv,
         power: power_pv,
         voltage: voltage_pv
@@ -95,7 +95,7 @@ class PVOutputDevice extends Homey.Device {
             let dateTime = new Date().toISOString();
             self.setSettings({ last_error: dateTime + '\n' + result.response })
               .catch(err => {
-                self.error('Failed to update settings', err);
+                self.error('Failed to update settings last_error', err);
               });
           }
         });

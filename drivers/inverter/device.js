@@ -138,7 +138,7 @@ class InverterDevice extends Device {
       let dateTime = new Date().toISOString();
       this.setSettings({ sma_last_error: dateTime + '\n' + message })
         .catch(err => {
-          this.error('Failed to update settings', err);
+          this.error('Failed to update settings sma_last_error', err);
         });
     });
   }

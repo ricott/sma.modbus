@@ -30,7 +30,7 @@ class EnergyDevice extends Device {
     //Update serial number setting
     this.setSettings({ serialNo: String(this.energy.serialNo) })
       .catch(err => {
-        this.error('Failed to update settings', err);
+        this.error('Failed to update settings serialNo', err);
       });
 
     this.upgradeDevice();
@@ -82,11 +82,11 @@ class EnergyDevice extends Device {
       this._updateProperty('measure_current.L3', readings.currentL3);
       this._updateProperty('frequency', readings.frequency);
 
-      if (this.energy.softwareVersion != readings.swVersion) {
+      if (this.energy.softwareVersion != readings.swVersion && readings.swVersion != 0) {
         this.energy.softwareVersion = readings.swVersion;
-        this.setSettings({ swVersion: this.energy.softwareVersion })
+        this.setSettings({ swVersion: `${this.energy.softwareVersion}` })
           .catch(err => {
-            this.error('Failed to update settings', err);
+            this.error('Failed to update settings swVersion', err);
           });
       }
 
@@ -132,7 +132,7 @@ class EnergyDevice extends Device {
       let dateTime = new Date().toISOString();
       this.setSettings({ sma_last_error: dateTime + '\n' + message })
         .catch(err => {
-          this.error('Failed to update settings', err);
+          this.error('Failed to update settings sma_last_error', err);
         });
     });
   }

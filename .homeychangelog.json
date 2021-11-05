@@ -1,4 +1,8 @@
 {
+  "2.3.1": {
+    "en": "Fixed timezone offset for PVOutput",
+    "sv": "Rättade tidszon för PVOutput"
+  },
   "2.3.0": {
     "en": "App upgraded to Homey SDK version 3",
     "sv": "Uppgradering till Homey SDK version 3"
