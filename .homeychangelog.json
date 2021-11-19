@@ -1,4 +1,8 @@
 {
+  "2.3.2": {
+    "en": "Improved Energy Meter support",
+    "sv": "Förbättrad hantering av energimätare"
+  },
   "2.3.1": {
     "en": "Fixed timezone offset for PVOutput",
     "sv": "Rättade tidszon för PVOutput"
