@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.3.2",
+  "version": "2.3.3",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -1085,6 +1085,15 @@
                 "sv": "Elnät, landskod"
               },
               "value": ""
+            },
+            {
+              "id": "isDailyYieldManual",
+              "type": "label",
+              "label": {
+                "en": "Daily yield manually calculated",
+                "sv": "Daglig avkastning manuellt uträknad"
+              },
+              "value": "false"
             }
           ]
         },

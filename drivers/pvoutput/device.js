@@ -13,25 +13,17 @@ class PVOutputDevice extends Homey.Device {
     this.log(`[${this.getName()}] SMA PVOutput initiated`);
 
     this.pollIntervals = [];
-    this.pvoutput = {
-      name: this.getName(),
-      interval: this.getSettings().interval,
-      systemId: this.getData().id,
-      start_reporting: this.getSettings().start_reporting,
-      stop_reporting: this.getSettings().stop_reporting,
-      session: null
-    };
-    this.apikey_setting = `${this.pvoutput.systemId}.apikey`;
+    this.pvoutputSession = null;
 
-    if (!this.homey.settings.get(this.apikey_setting)) {
+    if (!this.homey.settings.get(`${this.getData().id}.apikey`)) {
       //This is a newly added device, lets copy api key to homey settings
       this.log(`[${this.getName()}] Storing api key`);
       this.storeAPIKeyEncrypted();
     }
 
-    this.pvoutput.session = new PVOutputClient({
+    this.pvoutputSession = new PVOutputClient({
       apikey: this.getAPIKey(),
-      systemId: this.pvoutput.systemId
+      systemId: this.getData().id
     });
 
     this._initilializeTimers();
@@ -42,7 +34,7 @@ class PVOutputDevice extends Homey.Device {
     // Start a poller, to check the device status
     this.pollIntervals.push(setInterval(() => {
       this.addStatus();
-    }, this.pvoutput.interval * 60 * 1000));
+    }, this.getSetting('interval') * 60 * 1000));
   }
 
   _deleteTimers() {
@@ -71,7 +63,7 @@ class PVOutputDevice extends Homey.Device {
       this.homey.drivers.getDriver('inverter').getDevices().forEach(function (inverter) {
         numberOfInverters++;
         power_pv = power_pv + inverter.getCapabilityValue('measure_power');
-        yield_pv = yield_pv + inverter.getCurrentDailyYield();
+        yield_pv = yield_pv + inverter.getCapabilityValue('meter_power');
         voltage_pv = voltage_pv + inverter.getCapabilityValue('measure_voltage');
       });
       //Lets get average voltage
@@ -80,7 +72,7 @@ class PVOutputDevice extends Homey.Device {
       }
 
       let self = this;
-      this.pvoutput.session.publishStatus(this.homey.clock.getTimezone(), {
+      this.pvoutputSession.publishStatus(this.homey.clock.getTimezone(), {
         yield: yield_pv,
         power: power_pv,
         voltage: voltage_pv
@@ -105,8 +97,8 @@ class PVOutputDevice extends Homey.Device {
   shouldAddStatus() {
     let timestamp = new Date();
     let time = Number(`${timestamp.getHours()}${utility.pad(timestamp.getMinutes(), 2)}`);
-    //this.log(`Current time '${time}', start reporting '${this.pvoutput.start_reporting}', stop reporting '${this.pvoutput.stop_reporting}'`);
-    if (time > this.pvoutput.start_reporting && time < this.pvoutput.stop_reporting) {
+    //this.log(`Current time '${time}', start reporting '${this.getSetting('start_reporting')}', stop reporting '${this.getSetting('stop_reporting')}'`);
+    if (time > this.getSetting('start_reporting') && time < this.getSetting('stop_reporting')) {
       //this.log('Logging to pvoutput');
       return true;
     } else {
@@ -129,30 +121,15 @@ class PVOutputDevice extends Homey.Device {
 
   onDeleted() {
     this.log(`Deleting SMA PVOutput '${this.getName()}' from Homey.`);
-    this.homey.settings.unset(this.apikey_setting);
+    this.homey.settings.unset(`${this.getData().id}.apikey`);
     this.pvoutput = null;
-  }
-
-  onRenamed(name) {
-    this.log(`Renaming SMA PVOutput from '${this.energy.name}' to '${name}'`);
-    this.pvoutput.name = name;
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     let change = false;
     if (changedKeys.indexOf("interval") > -1) {
       this.log('Interval value was change to:', newSettings.interval);
-      this.pvoutput.interval = newSettings.interval;
       change = true;
-    }
-
-    if (changedKeys.indexOf("start_reporting") > -1) {
-      this.log('Start reporting value was change to:', newSettings.start_reporting);
-      this.pvoutput.start_reporting = newSettings.start_reporting;
-    }
-    if (changedKeys.indexOf("stop_reporting") > -1) {
-      this.log('Stop reporting value was change to:', newSettings.stop_reporting);
-      this.pvoutput.stop_reporting = newSettings.stop_reporting;
     }
 
     if (change) {
@@ -163,14 +140,14 @@ class PVOutputDevice extends Homey.Device {
   storeAPIKeyEncrypted() {
     this.log(`[${this.getName()}] Encrypting api key`);
     let plaintextApikey = this.getStoreValue('apikey');
-    this.homey.settings.set(this.apikey_setting, this.encryptText(plaintextApikey));
+    this.homey.settings.set(`${this.getData().id}.apikey`, this.encryptText(plaintextApikey));
 
     //Remove unencrypted apikey passed from driver
     this.unsetStoreValue('apikey');
   }
 
   getAPIKey() {
-    return this.decryptText(this.homey.settings.get(this.apikey_setting));
+    return this.decryptText(this.homey.settings.get(`${this.getData().id}.apikey`));
   }
 
   encryptText(plainText) {

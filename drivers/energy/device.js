@@ -14,21 +14,10 @@ class EnergyDevice extends Device {
       L3: false
     };
 
-    this.energy = {
-      name: this.getName(),
-      polling: this.getSettings().polling,
-      serialNo: this.getData().id,
-      mainFuse: this.getSettings().mainFuse,
-      threshold: this.getSettings().threshold,
-      offset: this.getSettings().offset,
-      softwareVersion: null,
-      properties: null,
-      readings: null,
-      emSession: null
-    };
+    this.emSession = null;
 
     //Update serial number setting
-    this.setSettings({ serialNo: String(this.energy.serialNo) })
+    this.setSettings({ serialNo: String(this.getData().id) })
       .catch(err => {
         this.error('Failed to update settings serialNo', err);
       });
@@ -50,17 +39,17 @@ class EnergyDevice extends Device {
   }
 
   async registerFlowTokens() {
-    this.availCurrentToken = await this.homey.flow.createToken(`${this.energy.serialNo}.availableCurrent`,
+    this.availCurrentToken = await this.homey.flow.createToken(`${this.getData().id}.availableCurrent`,
     {
       type: 'number',
-      title: `${this.energy.name} Available current`
+      title: `${this.getName()} Available current`
     });
   }
 
   setupEMSession() {
-    this.energy.emSession = new EnergyMeter({
-      serialNo: this.energy.serialNo,
-      refreshInterval: this.energy.polling
+    this.emSession = new EnergyMeter({
+      serialNo: this.getData().id,
+      refreshInterval: this.getSetting('polling')
     });
 
     this.initializeEventListeners();
@@ -68,8 +57,7 @@ class EnergyDevice extends Device {
 
   initializeEventListeners() {
 
-    this.energy.emSession.on('readings', readings => {
-      this.energy.readings = readings;
+    this.emSession.on('readings', readings => {
 
       this._updateProperty('measure_power', readings.pregard);
       this._updateProperty('measure_power.surplus', readings.psurplus);
@@ -82,9 +70,8 @@ class EnergyDevice extends Device {
       this._updateProperty('measure_current.L3', readings.currentL3);
       this._updateProperty('frequency', readings.frequency);
 
-      if (this.energy.softwareVersion != readings.swVersion && readings.swVersion != 0) {
-        this.energy.softwareVersion = readings.swVersion;
-        this.setSettings({ swVersion: `${this.energy.softwareVersion}` })
+      if (readings.swVersion != 0) {
+        this.setSettings({ swVersion: `${readings.swVersion}` })
           .catch(err => {
             this.error('Failed to update settings swVersion', err);
           });
@@ -104,8 +91,10 @@ class EnergyDevice extends Device {
         currentL3 = 0;
       }
 
-      let availableCurrent = this.energy.mainFuse - Math.max(currentL1, currentL2, currentL3);
-      availableCurrent = availableCurrent - this.energy.offset;
+      const mainFuse = this.getSetting('mainFuse');
+      const offset = this.getSetting('offset');
+      let availableCurrent = mainFuse - Math.max(currentL1, currentL2, currentL3);
+      availableCurrent = availableCurrent - offset;
       if (availableCurrent < 0) {
         availableCurrent = 0;
       } else {
@@ -114,7 +103,7 @@ class EnergyDevice extends Device {
       this.availCurrentToken.setValue(availableCurrent);
     });
 
-    this.energy.emSession.on('error', error => {
+    this.emSession.on('error', error => {
       this.error('Houston we have a problem', error);
 
       let message = '';
@@ -151,9 +140,11 @@ class EnergyDevice extends Device {
           key === 'measure_current.L2' ||
           key === 'measure_current.L3') {
 
+          const mainFuse = this.getSetting('mainFuse');
+          const threshold = this.getSetting('threshold');
           let phase = key.substring(key.indexOf('.') + 1);
-          let utilization = (value / this.energy.mainFuse) * 100;
-          if (utilization >= this.energy.threshold) {
+          let utilization = (value / mainFuse) * 100;
+          if (utilization >= threshold) {
             if (this.phaseAlerts[phase] === false) {
               //Only trigger if this is new threshold alert
               utilization = parseFloat(utilization.toFixed(2));
@@ -180,37 +171,29 @@ class EnergyDevice extends Device {
   onDeleted() {
     this.log(`[${this.getName()}] Deleting SMA energy meter from Homey.`);
     this.homey.flow.unregisterToken(this.availCurrentToken);
-    this.energy.emSession.disconnect();
-    this.energy.emSession = null;
-  }
-
-  onRenamed(name) {
-    this.log(`Renaming SMA energy meter from '${this.energy.name}' to '${name}'`);
-    this.energy.name = name;
+    this.emSession.disconnect();
+    this.emSession = null;
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     let change = false;
     if (changedKeys.indexOf("polling") > -1) {
       this.log('Polling value was change to:', newSettings.polling);
-      this.energy.polling = newSettings.polling;
-      this.energy.emSession.setRefreshInterval(this.energy.polling);
+      this.emSession.setRefreshInterval(newSettings.polling);
     }
 
     if (changedKeys.indexOf("offset") > -1) {
       this.log('Offset value was change to:', newSettings.offset);
-      this.energy.offset = newSettings.offset;
+      change = true;
     }
 
     if (changedKeys.indexOf("mainFuse") > -1) {
       this.log('Main fuse value was change to:', newSettings.mainFuse);
-      this.energy.mainFuse = newSettings.mainFuse;
       change = true;
     }
 
     if (changedKeys.indexOf("threshold") > -1) {
       this.log('Threshold value was change to:', newSettings.threshold);
-      this.energy.threshold = newSettings.threshold;
       change = true;
     }
 

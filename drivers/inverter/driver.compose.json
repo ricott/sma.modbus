@@ -222,6 +222,15 @@
             "sv": "Elnät, landskod"
           },
           "value": ""
+        },
+        {
+          "id": "isDailyYieldManual",
+          "type": "label",
+          "label": {
+            "en": "Daily yield manually calculated",
+            "sv": "Daglig avkastning manuellt uträknad"
+          },
+          "value": "false"
         }
       ]
     },

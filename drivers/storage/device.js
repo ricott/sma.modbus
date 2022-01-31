@@ -11,20 +11,13 @@ class SmaModbusStorageDevice extends Device {
   async onInit() {
 
     this.pollIntervals = [];
-    this.storage = {
-      name: this.getName(),
-      address: this.getSettings().address,
-      port: this.getSettings().port,
-      polling: this.getSettings().polling,
-    };
-
     let options = {
-      'host': this.storage.address,
-      'port': this.storage.port,
+      'host': this.getSetting('address'),
+      'port': this.getSetting('port'),
       'unitId': 3,
       'timeout': 5000,
       'autoReconnect': true,
-      'reconnectTimeout': this.storage.polling,
+      'reconnectTimeout': this.getSetting('polling'),
       'logLabel': 'SMA Sunny Boy Storage',
       'logLevel': 'error',
       'logEnabled': false
@@ -176,26 +169,18 @@ class SmaModbusStorageDevice extends Device {
     clearInterval(this.pollingInterval);
   }
 
-  onRenamed(name) {
-    this.log(`Renaming SMA storage from '${this.storage.name}' to '${name}'`);
-    this.storage.name = name;
-  }
-
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     let change = false;
     if (changedKeys.indexOf("address") > -1) {
       this.log('Address value was change to:', newSettings.address);
-      this.storage.address = newSettings.address;
       change = true;
     }
     if (changedKeys.indexOf("port") > -1) {
       this.log('Port value was change to:', newSettings.port);
-      this.storage.port = newSettings.port;
       change = true;
     }
     if (changedKeys.indexOf("polling") > -1) {
       this.log('Polling value was change to:', newSettings.polling);
-      this.storage.polling = newSettings.polling;
       change = true;
     }
 

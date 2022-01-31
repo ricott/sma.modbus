@@ -1,4 +1,8 @@
 {
+  "2.3.3": {
+    "en": "Maintenance",
+    "sv": "Förbättrad stabilitet"
+  },
   "2.3.2": {
     "en": "Improved Energy Meter support",
     "sv": "Förbättrad hantering av energimätare"

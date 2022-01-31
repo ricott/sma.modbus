@@ -20,42 +20,26 @@ class InverterDevice extends Device {
   async onInit() {
     this.log(`[${this.getName()}] SMA inverter initiated`);
 
-    //New class in Homey v3, update existing devices to new class
-    if (this.getClass() !== 'solarpanel') {
-      this.setClass('solarpanel');
-    }
-
-    this.inverter = {
-      name: this.getName(),
-      address: this.getSettings().address,
-      port: this.getSettings().port,
-      polling: this.getSettings().polling,
-      mppAName: this.getSettings().mpp_a_name,
-      mppBName: this.getSettings().mpp_b_name,
-      manualDailyYield: false,
-      currentDailyYield: 0,
-      properties: null,
-      readings: null,
-      smaApi: null
-    };
+    //Property with reference to the SMA api object
+    this.smaApi = null;
 
     this.setupSMASession();
     this.resetAtMidnight();
   }
 
   setupSMASession() {
-    this.inverter.smaApi = new SMA({
-      host: this.inverter.address,
-      port: this.inverter.port,
-      refreshInterval: this.inverter.polling
+    this.smaApi = new SMA({
+      host: this.getSetting('address'),
+      port: this.getSetting('port'),
+      refreshInterval: this.getSetting('polling')
     });
 
     this.initializeEventListeners();
   }
   destroySMASession() {
-    if (this.inverter.smaApi) {
+    if (this.smaApi) {
       this.log(`[${this.getName()}] Disconnecting the inverter`);
-      this.inverter.smaApi.disconnect();
+      this.smaApi.disconnect();
     }
   }
   reinitializeSMASession() {
@@ -65,18 +49,16 @@ class InverterDevice extends Device {
 
   initializeEventListeners() {
 
-    this.inverter.smaApi.on('readings', readings => {
-      this.inverter.readings = readings;
+    this.smaApi.on('readings', readings => {
 
       //Existing capabilities
       let dailyYield = readings.dailyYield || 0.0
-      if (this.inverter.manualDailyYield) {
+      if (this.getSetting('isDailyYieldManual') == 'true') {
         dailyYield = this.calculateDailyYield(readings.totalYield);
       }
       //Fishy values coming for at least one user with negative daily yield
       //Lets make sure it is not negative
       dailyYield = Math.max(dailyYield, 0.0);
-      this.inverter.currentDailyYield = dailyYield;
       this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
 
       this._updateProperty('measure_power', readings.acPowerTotal || 0);
@@ -99,8 +81,7 @@ class InverterDevice extends Device {
       this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
     });
 
-    this.inverter.smaApi.on('properties', properties => {
-      this.inverter.properties = properties;
+    this.smaApi.on('properties', properties => {
 
       this.setSettings({
         deviceType: String(properties.deviceType),
@@ -120,7 +101,7 @@ class InverterDevice extends Device {
       this.shouldWeCalculateDailyYield();
     });
 
-    this.inverter.smaApi.on('error', error => {
+    this.smaApi.on('error', error => {
       this.error(`[${this.getName()}] Houston we have a problem`, error);
 
       let message = '';
@@ -141,10 +122,6 @@ class InverterDevice extends Device {
           this.error('Failed to update settings sma_last_error', err);
         });
     });
-  }
-
-  getCurrentDailyYield() {
-    return this.inverter.currentDailyYield;
   }
 
   resetAtMidnight() {
@@ -181,31 +158,36 @@ class InverterDevice extends Device {
   }
 
   shouldWeCalculateDailyYield() {
-    let manual = this.inverter.smaApi.isDailyYieldManual();
+    const manual = this.smaApi.isDailyYieldManual();
     this.log(`[${this.getName()}] Calculate manual daily yield: '${manual}'`);
-    this.inverter.manualDailyYield = manual;
+    this.setSettings({
+      isDailyYieldManual: String(manual || 'false')
+    })
+      .catch(err => {
+        this.error('Failed to update isDailyYieldManual', err);
+      });
   }
 
   assignCapabilityNames() {
     this.log(`[${this.getName()}] Assigning new capability names`);
     if (this.hasCapability('measure_voltage.dcA')) {
-      this.setCapabilityOptions('measure_voltage.dcA', { title: { en: this.inverter.mppAName } });
+      this.setCapabilityOptions('measure_voltage.dcA', { title: { en: this.getSetting('mpp_a_name') } });
     }
     if (this.hasCapability('measure_power.dcA')) {
-      this.setCapabilityOptions('measure_power.dcA', { title: { en: this.inverter.mppAName } });
+      this.setCapabilityOptions('measure_power.dcA', { title: { en: this.getSetting('mpp_a_name') } });
     }
     if (this.hasCapability('measure_voltage.dcB')) {
-      this.setCapabilityOptions('measure_voltage.dcB', { title: { en: this.inverter.mppBName } });
+      this.setCapabilityOptions('measure_voltage.dcB', { title: { en: this.getSetting('mpp_b_name') } });
     }
     if (this.hasCapability('measure_power.dcB')) {
-      this.setCapabilityOptions('measure_power.dcB', { title: { en: this.inverter.mppBName } });
+      this.setCapabilityOptions('measure_power.dcB', { title: { en: this.getSetting('mpp_b_name') } });
     }
   }
 
   setupCapabilities() {
     this.log(`[${this.getName()}] Setting up capabilities`);
 
-    let capabilities = this.inverter.smaApi.getDeviceCapabilities();
+    let capabilities = this.smaApi.getDeviceCapabilities();
     let capabilityKeys = Object.values(capabilities);
 
     deviceCapabilitesList.forEach(capability => {
@@ -262,38 +244,28 @@ class InverterDevice extends Device {
     this.destroySMASession();
   }
 
-  onRenamed(name) {
-    this.log(`Renaming SMA inverter from '${this.inverter.name}' to '${name}'`);
-    this.inverter.name = name;
-  }
-
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     let changeConn = false;
     let changeLabel = false;
     if (changedKeys.indexOf("address") > -1) {
       this.log(`[${this.getName()}] Address value was change to '${newSettings.address}'`);
-      this.inverter.address = newSettings.address;
       changeConn = true;
     }
     if (changedKeys.indexOf("port") > -1) {
       this.log(`[${this.getName()}] Port value was change to '${newSettings.port}'`);
-      this.inverter.port = newSettings.port;
       changeConn = true;
     }
     if (changedKeys.indexOf("polling") > -1) {
       this.log(`[${this.getName()}] Polling value was change to '${newSettings.polling}'`);
-      this.inverter.polling = newSettings.polling;
       changeConn = true;
     }
 
     if (changedKeys.indexOf("mpp_a_name") > -1) {
       this.log(`[${this.getName()}] MPP A name was change to '${newSettings.mpp_a_name}'`);
-      this.inverter.mppAName = newSettings.mpp_a_name;
       changeLabel = true;
     }
     if (changedKeys.indexOf("mpp_b_name") > -1) {
       this.log(`[${this.getName()}] MPP B name was change to '${newSettings.mpp_b_name}'`);
-      this.inverter.mppBName = newSettings.mpp_b_name;
       changeLabel = true;
     }
 

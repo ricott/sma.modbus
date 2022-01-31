@@ -8,26 +8,19 @@ class SummaryDevice extends Device {
         this.log(`[${this.getName()}] SMA summary initiated`);
 
         this.pollIntervals = [];
-        this.summary = {
-            name: this.getName(),
-            polling: this.getSettings().polling,
-            showMPP: this.getSettings().show_mpp,
-            invertersMPPConfig: null
-        };
-
-        this.summary.invertersMPPConfig = this.getInverterMPPConfig();
+        this.invertersMPPConfig = this.getInverterMPPConfig();
         this.setupCapabilities();
         this._initilializeTimers();
     }
 
     setupCapabilities() {
         this.log(`[${this.getName()}] Setting up capabilities`);
-        if (this.summary.showMPP === 'yes') {
-            if (this.summary.invertersMPPConfig.MPP_A) {
-                this.showCapability('power_pv.dcA', this.summary.invertersMPPConfig.MPP_A_LBL);
+        if (this.getSetting('show_mpp') == 'yes') {
+            if (this.invertersMPPConfig.MPP_A) {
+                this.showCapability('power_pv.dcA', this.invertersMPPConfig.MPP_A_LBL);
             }
-            if (this.summary.invertersMPPConfig.MPP_B) {
-                this.showCapability('power_pv.dcB', this.summary.invertersMPPConfig.MPP_B_LBL);
+            if (this.invertersMPPConfig.MPP_B) {
+                this.showCapability('power_pv.dcB', this.invertersMPPConfig.MPP_B_LBL);
             }
         } else {
             this.hideCapability('power_pv.dcA');
@@ -111,7 +104,7 @@ class SummaryDevice extends Device {
         this.log('Adding timers');
         this.pollIntervals.push(setInterval(() => {
             this.updateValues();
-        }, 1000 * this.summary.polling));
+        }, 1000 * this.getSetting('polling')));
     }
 
     _deleteTimers() {
@@ -145,23 +138,16 @@ class SummaryDevice extends Device {
         this._deleteTimers();
     }
 
-    onRenamed(name) {
-        this.log(`Renaming SMA summary from '${this.summary.name}' to '${name}'`);
-        this.summary.name = name;
-    }
-
     async onSettings({ oldSettings, newSettings, changedKeys }) {
 
         if (changedKeys.indexOf("polling") > -1) {
             this.log(`[${this.getName()}] Polling value was change to '${newSettings.polling}'`);
-            this.summary.polling = newSettings.polling;
             this._reinitializeTimers();
         }
 
         if (changedKeys.indexOf("show_mpp") > -1) {
             this.log(`[${this.getName()}] Show MPP value was change to '${newSettings.show_mpp}'`);
-            this.summary.showMPP = newSettings.show_mpp;
-            this.summary.invertersMPPConfig = this.getInverterMPPConfig();
+            this.invertersMPPConfig = this.getInverterMPPConfig();
             this.setupCapabilities();
         }
     }
