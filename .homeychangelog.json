@@ -1,4 +1,8 @@
 {
+  "2.3.4": {
+    "en": "Fixed PVOutbut yield bug",
+    "sv": "Fixat PVOutput bugg relaterat till yield"
+  },
   "2.3.3": {
     "en": "Maintenance",
     "sv": "Förbättrad stabilitet"

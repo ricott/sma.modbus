@@ -3,6 +3,7 @@
 const Homey = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
 const utility = require('../../lib/util.js');
+const decodeData = require('../../lib/decodeData.js');
 //Encryption settings
 const crypto = require('crypto');
 const crypto_algorithm = 'aes-256-ctr';
@@ -60,16 +61,18 @@ class PVOutputDevice extends Homey.Device {
       //Sum values across all registered inverters
       //Most people will only have one, but lets support several
       let numberOfInverters = 0;
-      this.homey.drivers.getDriver('inverter').getDevices().forEach(function (inverter) {
+      for (const inverter of this.homey.drivers.getDriver('inverter').getDevices()) {
         numberOfInverters++;
         power_pv = power_pv + inverter.getCapabilityValue('measure_power');
-        yield_pv = yield_pv + inverter.getCapabilityValue('meter_power');
+        yield_pv = yield_pv + decodeData.formatKWHasWH(inverter.getCapabilityValue('meter_power'));
         voltage_pv = voltage_pv + inverter.getCapabilityValue('measure_voltage');
-      });
+      }
       //Lets get average voltage
       if (numberOfInverters > 1) {
         voltage_pv = Number(voltage_pv / numberOfInverters).toFixed(2);
       }
+
+      this.log(`Summarized values, yield: ${yield_pv}, power: ${power_pv}, voltage: ${voltage_pv},`);
 
       let self = this;
       this.pvoutputSession.publishStatus(this.homey.clock.getTimezone(), {
