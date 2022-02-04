@@ -76,6 +76,20 @@ class InverterDriver extends Driver {
     this.flowCards[flow].trigger(device, tokens);
   }
 
+  foundNewInverters(devices) {
+    let foundNewInverter = false;
+    for (const device of devices) {
+      for (const inverter of this.getDevices()) {
+        if (device.data.id != inverter.getData().id) {
+          foundNewInverter = true;
+          break;
+        }
+      }
+    }
+
+    return foundNewInverter;
+  }
+
   async onPair(session) {
     let self = this;
     let devices = [];
@@ -162,7 +176,11 @@ class InverterDriver extends Driver {
         //Wait for inverterInfo to be collected
         return sleep(6000).then(() => {
           if (devices.length === 0) {
-            this.log('No inverters found using auto-discovery, fallback to manual entry');
+            this.log('No inverters found using auto-discovery, show manual entry');
+            mode = 'manual';
+            session.showView('settings');
+          } else if (!this.foundNewInverters(devices)) {
+            this.log('Found inverters using auto-discovery - but they are already added to Homey, show manual entry');
             mode = 'manual';
             session.showView('settings');
           } else {
