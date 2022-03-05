@@ -1,7 +1,11 @@
 {
+  "2.3.6": {
+    "en": "Fixed bug related to adding new inverter",
+    "sv": "Löst problem vid tillägg av ny växelriktare"
+  },
   "2.3.5": {
     "en": "Improved discovery of Inverters",
-    "sv": "Förbättrad login vid tillägga av ny växelriktare"
+    "sv": "Förbättrad login vid tillägg av ny växelriktare"
   },
   "2.3.4": {
     "en": "Fixed PVOutbut yield bug",
