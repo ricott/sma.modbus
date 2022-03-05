@@ -76,17 +76,15 @@ class InverterDriver extends Driver {
     this.flowCards[flow].trigger(device, tokens);
   }
 
-  foundNewInverters(devices) {
-    let foundNewInverter = false;
-    for (const device of devices) {
-      for (const inverter of this.getDevices()) {
-        if (device.data.id != inverter.getData().id) {
-          foundNewInverter = true;
-          break;
-        }
+  isNewInverter(inverterId) {
+    let foundNewInverter = true;
+    for (const inverter of this.getDevices()) {
+      this.log(`Comparing Inverter ID found '${inverterId}' with existing Inverter ID '${inverter.getData().id}'`);
+      if (inverterId == inverter.getData().id) {
+        foundNewInverter = false;
+        break;
       }
     }
-
     return foundNewInverter;
   }
 
@@ -152,17 +150,21 @@ class InverterDriver extends Driver {
           //8001: Solar Inverters (DevClss1)
           //Filter out storage devices, etc
           if (inverterInfo.deviceClass == 8001) {
-            this.log(`Adding to devices: ${inverterInfo.deviceType}`);
-            devices.push({
-              name: inverterInfo.deviceType,
-              data: {
-                id: inverterInfo.serialNo
-              },
-              settings: {
-                address: inverterInfo.address,
-                port: Number(inverterInfo.port)
-              }
-            });
+            if (this.isNewInverter(inverterInfo.serialNo)) {
+              this.log(`Adding to devices: ${inverterInfo.deviceType}`);
+              devices.push({
+                name: inverterInfo.deviceType,
+                data: {
+                  id: inverterInfo.serialNo
+                },
+                settings: {
+                  address: inverterInfo.address,
+                  port: Number(inverterInfo.port)
+                }
+              });
+            } else {
+              this.log(`Found inverter '${inverterInfo.serialNo}' that is already added to Homey, ignoring it ...`);
+            }
           } else {
             this.log('Found a SMA device that is not an inverter', inverterInfo);
           }
@@ -176,11 +178,7 @@ class InverterDriver extends Driver {
         //Wait for inverterInfo to be collected
         return sleep(6000).then(() => {
           if (devices.length === 0) {
-            this.log('No inverters found using auto-discovery, show manual entry');
-            mode = 'manual';
-            session.showView('settings');
-          } else if (!this.foundNewInverters(devices)) {
-            this.log('Found inverters using auto-discovery - but they are already added to Homey, show manual entry');
+            this.log('No (new) inverters found using auto-discovery, show manual entry');
             mode = 'manual';
             session.showView('settings');
           } else {

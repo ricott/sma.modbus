@@ -9,14 +9,15 @@
                     address: inputaddress
                 };
                 Homey.emit('settings', settings).then(function (result) {
+                    //Afraid we will never see anything but null here
                     console.log(result);
-                    //if (results) {
-                    //    Homey.done();
-                    //} else {
-                    if (!result) {
-                        $('.sma-error').show();
-                        $('.sma-error-msg').html('Failed to connect to the inverter!');
-                    }
+                    $('.sma-error').show();
+                    $('.sma-error-msg').html('Trying to connect ...');
+
+                    //if (!result) {
+                    //    $('.sma-error').show();
+                    //    $('.sma-error-msg').html('Failed to connect to the inverter!');
+                    //}
                 });
             } else {
                 $('.sma-error').show();
@@ -67,7 +68,7 @@
     }
 </style>
 
-<p data-i18n="pair.intro">Enter the IP address of your SMA Tripower.</p>
+<p data-i18n="pair.intro">Enter the IP address of your SMA Inverter.</p>
 <div class="sma-pairing">
     <div class="form-group">
         <label for="address" data-i18n="pair.address">IP address</label>
@@ -79,6 +80,8 @@
 </div>
 
 <div class="messages">
-    <p class="sma-status sma-error" style="color: #ff6300;"><i class="fa fa-times"></i> <span
-            class="sma-error-msg"></span></p>
+    <p class="sma-status sma-error" style="color: #ff6300;">
+        <i class="fa fa-times"></i> 
+        <span class="sma-error-msg"></span>
+    </p>
 </div>

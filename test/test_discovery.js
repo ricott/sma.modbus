@@ -1,8 +1,8 @@
 'use strict';
 
-const discovery = require('../lib/deviceDiscovery.js');
+const Discovery = require('../lib/deviceDiscovery.js');
 
-let discoveryQuery = new discovery({
+let discoveryQuery = new Discovery({
     port: 502
   });
 
