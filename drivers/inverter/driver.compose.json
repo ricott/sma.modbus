@@ -75,8 +75,12 @@
     {
       "id": "start",
       "navigation": {
-        "next": "list_devices"
+        "next": "loading"
       }
+    },
+    {
+      "id": "loading",
+      "template": "loading"
     },
     {
       "id": "settings"

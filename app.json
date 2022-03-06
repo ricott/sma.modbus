@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.3.6",
+  "version": "2.3.7",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -59,8 +59,7 @@
   "contributing": {
     "donate": {
       "paypal": {
-        "username": "RBarkestam",
-        "currency": "EUR"
+        "username": "RBarkestam"
       }
     }
   },
@@ -938,8 +937,12 @@
         {
           "id": "start",
           "navigation": {
-            "next": "list_devices"
+            "next": "loading"
           }
+        },
+        {
+          "id": "loading",
+          "template": "loading"
         },
         {
           "id": "settings"

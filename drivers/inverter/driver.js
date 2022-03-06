@@ -91,54 +91,17 @@ class InverterDriver extends Driver {
   async onPair(session) {
     let self = this;
     let devices = [];
-    let inverterProperties;
-    let mode = 'discovery';
+    let mode;
     let settings;
 
-    session.setHandler('settings', async (data) => {
-      settings = data;
+    session.setHandler('showView', async (view) => {
+      this.log(`Showing view '${view}'`);
 
-      let smaSession = new SMA({
-        host: settings.address,
-        port: this.homey.settings.get('port'),
-        autoClose: true
-      });
+      if (view === 'loading') {
+        mode = 'discovery';
+        //Make sure devices array is empty
+        devices.splice(0, devices.length);
 
-      smaSession.on('properties', properties => {
-        inverterProperties = properties;
-      });
-
-      smaSession.on('error', error => {
-        self.log('Failed to read inverter properties', error);
-      });
-
-      //Wait 3 seconds to allow properties to be read
-      sleep(3000).then(() => {
-        session.nextView();
-      });
-    });
-
-    session.setHandler('list_devices', async (data) => {
-
-      if (mode === 'manual') {
-        if (!inverterProperties) {
-          throw new Error('Wrong IP number or port, no SMA inverter found');
-        } else {
-          this.log(`Adding to devices: ${inverterProperties.deviceType}`);
-          devices.push({
-            name: inverterProperties.deviceType,
-            data: {
-              id: inverterProperties.serialNo
-            },
-            settings: {
-              address: settings.address,
-              port: Number(this.homey.settings.get('port'))
-            }
-          });
-
-          return devices;
-        }
-      } else {
         //Discover devices using multicast query
         let discoveryQuery = new discovery({
           port: this.homey.settings.get('port')
@@ -172,23 +135,64 @@ class InverterDriver extends Driver {
 
         discoveryQuery.on('error', error => {
           //Ignore the error, if no inverter found we'll do manual entry
-          //discoveryError = error;
         });
 
-        //Wait for inverterInfo to be collected
-        return sleep(6000).then(() => {
+        sleep(6000).then(() => {
           if (devices.length === 0) {
             this.log('No (new) inverters found using auto-discovery, show manual entry');
-            mode = 'manual';
             session.showView('settings');
           } else {
             this.log(`Found '${devices.length}' inverter(s)`);
-            return devices;
+            session.showView('list_devices');
           }
         }).catch(reason => {
           console.log('Timeout error', reason);
         });
       }
+    });
+
+    session.setHandler('settings', async (data) => {
+      mode = 'manual';
+      settings = data;
+      //Make sure devices array is empty
+      devices.splice(0, devices.length);
+
+      let smaSession = new SMA({
+        host: settings.address,
+        port: this.homey.settings.get('port'),
+        autoClose: true
+      });
+
+      smaSession.on('properties', inverterProperties => {
+        this.log(`Adding to devices: ${inverterProperties.deviceType}`);
+        devices.push({
+          name: inverterProperties.deviceType,
+          data: {
+            id: inverterProperties.serialNo
+          },
+          settings: {
+            address: settings.address,
+            port: Number(this.homey.settings.get('port'))
+          }
+        });
+      });
+
+      smaSession.on('error', error => {
+        self.log('Failed to read inverter properties', error);
+      });
+
+      //Wait 3 seconds to allow properties to be read
+      sleep(3000).then(() => {
+        session.showView('list_devices');
+      });
+    });
+
+    session.setHandler('list_devices', async (data) => {
+      if (mode === 'manual' && devices.length === 0) {
+        //Manual entry and no device found
+        throw new Error('Wrong IP number or port, no SMA inverter found');
+      }
+      return devices;
     });
   }
 }

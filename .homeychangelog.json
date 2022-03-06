@@ -1,4 +1,8 @@
 {
+  "2.3.7": {
+    "en": "Fixed bug related to adding new inverter",
+    "sv": "Löst problem vid tillägg av ny växelriktare"
+  },
   "2.3.6": {
     "en": "Fixed bug related to adding new inverter",
     "sv": "Löst problem vid tillägg av ny växelriktare"
