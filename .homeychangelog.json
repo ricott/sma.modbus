@@ -1,4 +1,8 @@
 {
+  "2.3.8": {
+    "en": "New version of the Energy Summary device",
+    "sv": "Ny version av Energisammanställning enheten"
+  },
   "2.3.7": {
     "en": "Fixed bug related to adding new inverter",
     "sv": "Löst problem vid tillägg av ny växelriktare"

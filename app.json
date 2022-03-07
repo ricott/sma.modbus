@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.3.7",
+  "version": "2.3.8",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -1455,18 +1455,36 @@
       },
       "class": "sensor",
       "capabilities": [
-        "power_pv",
-        "power_grid",
-        "power_drawn.battery",
-        "power_self",
+        "measure_power.pv",
+        "measure_power",
+        "measure_power.battery",
+        "measure_power.consumption",
         "power_pv.dcA",
         "power_pv.dcB"
       ],
       "capabilitiesOptions": {
-        "power_drawn.battery": {
+        "measure_power.pv": {
+          "title": {
+            "en": "PV power",
+            "sv": "Solceller"
+          }
+        },
+        "measure_power": {
+          "title": {
+            "en": "Grid power",
+            "sv": "Uttag elnät"
+          }
+        },
+        "measure_power.battery": {
           "title": {
             "en": "Battery power",
             "sv": "Batteriladdning effekt"
+          }
+        },
+        "measure_power.consumption": {
+          "title": {
+            "en": "Consumption",
+            "sv": "Konsumtion"
           }
         }
       },

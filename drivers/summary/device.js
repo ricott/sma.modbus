@@ -9,13 +9,13 @@ class SummaryDevice extends Device {
 
         this.pollIntervals = [];
         this.invertersMPPConfig = this.getInverterMPPConfig();
-        this.setupCapabilities();
+        this.setupCapabilities(this.getSetting('show_mpp'));
         this._initilializeTimers();
     }
 
-    setupCapabilities() {
+    setupCapabilities(show_mpp) {
         this.log(`[${this.getName()}] Setting up capabilities`);
-        if (this.getSetting('show_mpp') == 'yes') {
+        if (show_mpp == 'yes') {
             if (this.invertersMPPConfig.MPP_A) {
                 this.showCapability('power_pv.dcA', this.invertersMPPConfig.MPP_A_LBL);
             }
@@ -91,13 +91,13 @@ class SummaryDevice extends Device {
         let battery = battery_charge - battery_discharge;
         let consumption = power_pv - battery + grid;
 
-        this._updateProperty('power_drawn.battery', battery);
-        this._updateProperty('power_pv', power_pv);
+        this._updateProperty('measure_power.battery', battery);
+        this._updateProperty('measure_power.pv', power_pv);
         this._updateProperty('power_pv.dcA', power_MPPA);
         this._updateProperty('power_pv.dcB', power_MPPB);
         //Will be negative if there is a surplus
-        this._updateProperty('power_grid', grid);
-        this._updateProperty('power_self', consumption);
+        this._updateProperty('measure_power', grid);
+        this._updateProperty('measure_power.consumption', consumption);
     }
 
     _initilializeTimers() {
@@ -148,7 +148,7 @@ class SummaryDevice extends Device {
         if (changedKeys.indexOf("show_mpp") > -1) {
             this.log(`[${this.getName()}] Show MPP value was change to '${newSettings.show_mpp}'`);
             this.invertersMPPConfig = this.getInverterMPPConfig();
-            this.setupCapabilities();
+            this.setupCapabilities(newSettings.show_mpp);
         }
     }
 }
