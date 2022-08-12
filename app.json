@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.3.8",
+  "version": "2.3.9",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -880,6 +880,8 @@
         "measure_power.dcB",
         "measure_power",
         "measure_voltage",
+        "measure_voltage.l2",
+        "measure_voltage.l3",
         "meter_power",
         "measure_yield"
       ],
@@ -923,6 +925,20 @@
             "en": "Grid voltage (L1)",
             "nl": "Netspanning (L1)",
             "sv": "Nätspänning (L1)"
+          }
+        },
+        "measure_voltage.l2": {
+          "title": {
+            "en": "Grid voltage (L2)",
+            "nl": "Netspanning (L2)",
+            "sv": "Nätspänning (L2)"
+          }
+        },
+        "measure_voltage.l3": {
+          "title": {
+            "en": "Grid voltage (L3)",
+            "nl": "Netspanning (L3)",
+            "sv": "Nätspänning (L3)"
           }
         },
         "meter_power": {

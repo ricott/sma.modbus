@@ -1,4 +1,8 @@
 {
+  "2.3.9": {
+    "en": "An inverter now also displays AC voltage for L2 and L3",
+    "sv": "Växelriktare visar nu även AC spänning för L2 och L3"
+  },
   "2.3.8": {
     "en": "New version of the Energy Summary device",
     "sv": "Ny version av Energisammanställning enheten"

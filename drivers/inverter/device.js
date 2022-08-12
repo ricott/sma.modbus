@@ -4,16 +4,20 @@ const { Device } = require('homey');
 const SMA = require('../../lib/sma.js');
 const decodeData = require('../../lib/decodeData.js');
 
-const deviceCapabilitesList = ['measure_power',
+const deviceCapabilitesList = [
+  'measure_power',
   'meter_power',
   'measure_voltage',
+  'measure_voltage.l2',
+  'measure_voltage.l3',
   'measure_yield',
   'operational_status.health',
   'operational_status',
   'measure_voltage.dcA',
   'measure_voltage.dcB',
   'measure_power.dcA',
-  'measure_power.dcB'];
+  'measure_power.dcB'
+];
 
 class InverterDevice extends Device {
 
@@ -63,6 +67,8 @@ class InverterDevice extends Device {
 
       this._updateProperty('measure_power', readings.acPowerTotal || 0);
       this._updateProperty('measure_voltage', readings.acVoltageL1 || 0);
+      this._updateProperty('measure_voltage.l2', readings.acVoltageL2 || 0);
+      this._updateProperty('measure_voltage.l3', readings.acVoltageL3 || 0);
       this._updateProperty('measure_yield', decodeData.formatWHasMWH(readings.totalYield || 0.0));
 
       //New capabilities

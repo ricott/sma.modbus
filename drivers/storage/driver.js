@@ -44,10 +44,14 @@ class SmaModbusStorageDriver extends Driver {
 
   }
 
-
   triggerDeviceFlow(flow, tokens, device) {
     this.log(`[${device.getName()}] Triggering device flow '${flow}' with tokens`, tokens);
-    this.flowCards[flow].trigger(device, tokens);
+    try {
+        this.flowCards[flow].trigger(device, tokens);        
+    } catch (error) {
+        this.log(`Failed to trigger flow '${flow}' for device '${device.getName()}'`);
+        this.log(error);
+    }
   }
 
 }
