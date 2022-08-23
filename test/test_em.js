@@ -16,8 +16,9 @@ emSession.on('readings', readings => {
   console.log('psurplus : ' + readings.psurplus);
 */
 
- //console.log('pregardcounter : ' + readings.pregardcounter);
- console.log('pregardL1 : ' + readings.pregardL1);
+ console.log('pregardcounter : ' + readings.pregardcounter);
+ console.log('psurpluscounter : ' + readings.psurpluscounter);
+ /*console.log('pregardL1 : ' + readings.pregardL1);
  console.log('pregardL2 : ' + readings.pregardL2);
  console.log('pregardL3 : ' + readings.pregardL3);
 
@@ -28,7 +29,7 @@ emSession.on('readings', readings => {
  console.log('currentL1 : ' + readings.currentL1);
  console.log('currentL2 : ' + readings.currentL2);
  console.log('currentL3 : ' + readings.currentL3);
- 
+ */
  console.log('swVersion : ' + readings.swVersion);
  console.log('*********************************');
 });

@@ -1,117 +1,121 @@
 {
-  "2.3.9": {
-    "en": "An inverter now also displays AC voltage for L2 and L3",
-    "sv": "Växelriktare visar nu även AC spänning för L2 och L3"
-  },
-  "2.3.8": {
-    "en": "New version of the Energy Summary device",
-    "sv": "Ny version av Energisammanställning enheten"
-  },
-  "2.3.7": {
-    "en": "Fixed bug related to adding new inverter",
-    "sv": "Löst problem vid tillägg av ny växelriktare"
-  },
-  "2.3.6": {
-    "en": "Fixed bug related to adding new inverter",
-    "sv": "Löst problem vid tillägg av ny växelriktare"
-  },
-  "2.3.5": {
-    "en": "Improved discovery of Inverters",
-    "sv": "Förbättrad login vid tillägg av ny växelriktare"
-  },
-  "2.3.4": {
-    "en": "Fixed PVOutbut yield bug",
-    "sv": "Fixat PVOutput bugg relaterat till yield"
-  },
-  "2.3.3": {
-    "en": "Maintenance",
-    "sv": "Förbättrad stabilitet"
-  },
-  "2.3.2": {
-    "en": "Improved Energy Meter support",
-    "sv": "Förbättrad hantering av energimätare"
-  },
-  "2.3.1": {
-    "en": "Fixed timezone offset for PVOutput",
-    "sv": "Rättade tidszon för PVOutput"
-  },
-  "2.3.0": {
-    "en": "App upgraded to Homey SDK version 3",
-    "sv": "Uppgradering till Homey SDK version 3"
-  },
-  "2.2.2": {
-    "en": "Improved discovery for energy meter devices",
-    "sv": "Förbättrad upptäckt av elmätare"
-  },
-  "2.2.1": {
-    "en": "Improved discovery for energy meter devices",
-    "sv": "Förbättrad upptäckt av elmätare"
-  },
-  "2.2.0": {
-    "en": "Added missing operational status values",
-    "sv": "Lade till saknade statuskoder"
-  },
-  "2.1.9": {
-    "en": "New inverter power condition",
-    "sv": "Nytt villkor för effekt"
-  },
-  "2.1.8": {
-    "en": "Swedish language improvements",
-    "sv": "Förbättrad översättning till svenska"
-  },
-  "2.1.7": {
-    "en": "Swedish language improvements",
-    "sv": "Förbättrad översättning till svenska"
-  },
-  "2.1.6": {
-    "en": "Fixed PVOutput bug which caused missing reports"
-  },
-  "2.1.5": {
-    "en": "Eliminated a bug which caused app to crash"
-  },
-  "2.1.4": {
-    "en": "Filter out negative daily yield values"
-  },
-  "2.1.3": {
-    "en": "More accurate daily yield reported to PVOutput.org"
-  },
-  "2.1.2": {
-    "en": "Added manually calculated daily yield for inverters that miss this functionality"
-  },
-  "2.1.1": {
-    "en": "Added MPP A and B power capabilities to the summary device"
-  },
-  "2.1.0": {
-    "en": "Added MPP A and B power capabilities to Inverter devices that supports it"
-  },
-  "2.0.9": {
-    "en": "Added frequency capability to Energy Meter / Home Manager devices"
-  },
-  "2.0.8": {
-    "en": "Filter out unknown condition status for inverter device type. Added Swedish language support"
-  },
-  "2.0.7": {
-    "en": "PVOutput date bug solved"
-  },
-  "2.0.6": {
-    "en": "You can now report your inverter(s) status to PVOutput.org"
-  },
-  "2.0.5": {
-    "en": "Enhanced energy meter readings to use SMA obis identifiers"
-  },
-  "2.0.4": {
-    "en": "Support for SB AV-40 inverters. New inverter condition trigger."
-  },
-  "2.0.3": {
-    "en": "Enhanced wizard for adding inverters which allows to manually add the IP address of the inverter if auto-discovery doesn't find any inverters."
-  },
-  "2.0.2": {
-    "en": "New Homey app store adoption"
-  },
-  "2.0.1": {
-    "en": "Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability. Load balancing feature added Energy Meter. "
-  },
-  "2.0.0": {
-    "en": "New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters. And tons more ..."
-  }
+    "2.4.0": {
+        "en": "New device icons! The lifetime energy import and export are now exposed as flow tokens from the energy device type.",
+        "sv": "Nya enhetsikoner! Energi för import och export exponeras som flödesvärden från elmätarenheten."
+    },
+    "2.3.9": {
+        "en": "An inverter now also displays AC voltage for L2 and L3",
+        "sv": "Växelriktare visar nu även AC spänning för L2 och L3"
+    },
+    "2.3.8": {
+        "en": "New version of the Energy Summary device",
+        "sv": "Ny version av Energisammanställning enheten"
+    },
+    "2.3.7": {
+        "en": "Fixed bug related to adding new inverter",
+        "sv": "Löst problem vid tillägg av ny växelriktare"
+    },
+    "2.3.6": {
+        "en": "Fixed bug related to adding new inverter",
+        "sv": "Löst problem vid tillägg av ny växelriktare"
+    },
+    "2.3.5": {
+        "en": "Improved discovery of Inverters",
+        "sv": "Förbättrad login vid tillägg av ny växelriktare"
+    },
+    "2.3.4": {
+        "en": "Fixed PVOutbut yield bug",
+        "sv": "Fixat PVOutput bugg relaterat till yield"
+    },
+    "2.3.3": {
+        "en": "Maintenance",
+        "sv": "Förbättrad stabilitet"
+    },
+    "2.3.2": {
+        "en": "Improved Energy Meter support",
+        "sv": "Förbättrad hantering av energimätare"
+    },
+    "2.3.1": {
+        "en": "Fixed timezone offset for PVOutput",
+        "sv": "Rättade tidszon för PVOutput"
+    },
+    "2.3.0": {
+        "en": "App upgraded to Homey SDK version 3",
+        "sv": "Uppgradering till Homey SDK version 3"
+    },
+    "2.2.2": {
+        "en": "Improved discovery for energy meter devices",
+        "sv": "Förbättrad upptäckt av elmätare"
+    },
+    "2.2.1": {
+        "en": "Improved discovery for energy meter devices",
+        "sv": "Förbättrad upptäckt av elmätare"
+    },
+    "2.2.0": {
+        "en": "Added missing operational status values",
+        "sv": "Lade till saknade statuskoder"
+    },
+    "2.1.9": {
+        "en": "New inverter power condition",
+        "sv": "Nytt villkor för effekt"
+    },
+    "2.1.8": {
+        "en": "Swedish language improvements",
+        "sv": "Förbättrad översättning till svenska"
+    },
+    "2.1.7": {
+        "en": "Swedish language improvements",
+        "sv": "Förbättrad översättning till svenska"
+    },
+    "2.1.6": {
+        "en": "Fixed PVOutput bug which caused missing reports"
+    },
+    "2.1.5": {
+        "en": "Eliminated a bug which caused app to crash"
+    },
+    "2.1.4": {
+        "en": "Filter out negative daily yield values"
+    },
+    "2.1.3": {
+        "en": "More accurate daily yield reported to PVOutput.org"
+    },
+    "2.1.2": {
+        "en": "Added manually calculated daily yield for inverters that miss this functionality"
+    },
+    "2.1.1": {
+        "en": "Added MPP A and B power capabilities to the summary device"
+    },
+    "2.1.0": {
+        "en": "Added MPP A and B power capabilities to Inverter devices that supports it"
+    },
+    "2.0.9": {
+        "en": "Added frequency capability to Energy Meter / Home Manager devices"
+    },
+    "2.0.8": {
+        "en": "Filter out unknown condition status for inverter device type. Added Swedish language support"
+    },
+    "2.0.7": {
+        "en": "PVOutput date bug solved"
+    },
+    "2.0.6": {
+        "en": "You can now report your inverter(s) status to PVOutput.org"
+    },
+    "2.0.5": {
+        "en": "Enhanced energy meter readings to use SMA obis identifiers"
+    },
+    "2.0.4": {
+        "en": "Support for SB AV-40 inverters. New inverter condition trigger."
+    },
+    "2.0.3": {
+        "en": "Enhanced wizard for adding inverters which allows to manually add the IP address of the inverter if auto-discovery doesn't find any inverters."
+    },
+    "2.0.2": {
+        "en": "New Homey app store adoption"
+    },
+    "2.0.1": {
+        "en": "Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability. Load balancing feature added Energy Meter. "
+    },
+    "2.0.0": {
+        "en": "New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters. And tons more ..."
+    }
 }
