@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.4.0",
+  "version": "2.4.1",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -650,7 +650,9 @@
         "measure_current.L2",
         "measure_power.L3",
         "measure_current.L3",
-        "frequency"
+        "frequency",
+        "meter_power",
+        "meter_power.export"
       ],
       "capabilitiesOptions": {
         "measure_power": {
@@ -699,6 +701,18 @@
           "title": {
             "en": "L3 current",
             "sv": "L3 ström"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Lifetime import",
+            "sv": "Livstid import"
+          }
+        },
+        "meter_power.export": {
+          "title": {
+            "en": "Lifetime export",
+            "sv": "Livstid export"
           }
         }
       },
@@ -1476,7 +1490,8 @@
         "measure_power.battery",
         "measure_power.consumption",
         "power_pv.dcA",
-        "power_pv.dcB"
+        "power_pv.dcB",
+        "meter_power"
       ],
       "capabilitiesOptions": {
         "measure_power.pv": {
@@ -1501,6 +1516,12 @@
           "title": {
             "en": "Consumption",
             "sv": "Konsumtion"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Lifetime consumption",
+            "sv": "Livstid förbrukning"
           }
         }
       },
@@ -1633,18 +1654,18 @@
     "measure_yield": {
       "type": "number",
       "title": {
-        "en": "Total Yield",
+        "en": "Lifetime Yield",
         "nl": "Totale opbrengst",
-        "sv": "Total produktion"
+        "sv": "Lifstid produktion"
       },
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
       "icon": "/assets/total_yield.svg",
       "units": {
-        "en": "MWh",
-        "nl": "MWh",
-        "sv": "MWh"
+        "en": "KWh",
+        "nl": "KWh",
+        "sv": "KWh"
       }
     },
     "operational_status": {

@@ -22,19 +22,41 @@ class EnergyDevice extends Device {
                 this.error('Failed to update settings serialNo', err);
             });
 
-        this.upgradeDevice();
+        await this.upgradeDevice();
         await this.registerFlowTokens();
 
         this.setupEMSession();
     }
 
-    upgradeDevice() {
+    async upgradeDevice() {
         this.log('Upgrading existing device');
         //v2.0.9 added frequency capability, lets add it to existing devices
-        let capability = 'frequency';
+        await this.addCapabilityHelper('frequency');
+        //v2.4.1 added meter_power import and export
+        await this.addCapabilityHelper('meter_power');
+        await this.addCapabilityHelper('meter_power.export');
+    }
+
+    async removeCapabilityHelper(capability) {
+        if (this.hasCapability(capability)) {
+            try {
+                this.log(`Remove existing capability '${capability}'`);
+                await this.removeCapability(capability);
+            } catch (reason) {
+                this.error(`Failed to removed capability '${capability}'`);
+                this.error(reason);
+            }
+        }
+    }
+    async addCapabilityHelper(capability) {
         if (!this.hasCapability(capability)) {
-            this.log(`Adding missing capability '${capability}'`);
-            this.addCapability(capability);
+            try {
+                this.log(`Adding missing capability '${capability}'`);
+                await this.addCapability(capability);
+            } catch (reason) {
+                this.error(`Failed to add capability '${capability}'`);
+                this.error(reason);
+            }
         }
     }
 
@@ -79,6 +101,9 @@ class EnergyDevice extends Device {
             this._updateProperty('measure_power.L3', (readings.pregardL3 - readings.psurplusL3));
             this._updateProperty('measure_current.L3', readings.currentL3);
             this._updateProperty('frequency', readings.frequency);
+
+            this._updateProperty('meter_power', readings.pregardcounter);
+            this._updateProperty('meter_power.export', readings.psurpluscounter);
 
             if (readings.swVersion != 0) {
                 this.setSettings({ swVersion: `${readings.swVersion}` })

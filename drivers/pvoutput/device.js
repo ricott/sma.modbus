@@ -72,7 +72,7 @@ class PVOutputDevice extends Homey.Device {
         voltage_pv = Number(voltage_pv / numberOfInverters).toFixed(2);
       }
 
-      this.log(`Summarized values, yield: ${yield_pv}, power: ${power_pv}, voltage: ${voltage_pv},`);
+      //this.log(`Summarized values, yield: ${yield_pv}, power: ${power_pv}, voltage: ${voltage_pv}`);
 
       let self = this;
       this.pvoutputSession.publishStatus(this.homey.clock.getTimezone(), {

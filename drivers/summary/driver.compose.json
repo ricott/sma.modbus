@@ -14,7 +14,8 @@
     "measure_power.battery",
     "measure_power.consumption",
     "power_pv.dcA",
-    "power_pv.dcB"
+    "power_pv.dcB",
+    "meter_power"
   ],
   "capabilitiesOptions": {
     "measure_power.pv": {
@@ -39,6 +40,12 @@
       "title": {
         "en": "Consumption",
         "sv": "Konsumtion"
+      }
+    },
+    "meter_power": {
+      "title": {
+        "en": "Lifetime consumption",
+        "sv": "Livstid förbrukning"
       }
     }
   },

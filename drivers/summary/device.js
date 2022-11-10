@@ -9,6 +9,7 @@ class SummaryDevice extends Device {
 
         this.pollIntervals = [];
         this.invertersMPPConfig = this.getInverterMPPConfig();
+        await this.upgradeDevice();
         this.setupCapabilities(this.getSetting('show_mpp'));
         this._initilializeTimers();
     }
@@ -25,6 +26,34 @@ class SummaryDevice extends Device {
         } else {
             this.hideCapability('power_pv.dcA');
             this.hideCapability('power_pv.dcB');
+        }
+    }
+
+    async upgradeDevice() {
+        this.log('Upgrading existing device');
+        await this.addCapabilityHelper('meter_power');
+    }
+
+    async removeCapabilityHelper(capability) {
+        if (this.hasCapability(capability)) {
+            try {
+                this.log(`Remove existing capability '${capability}'`);
+                await this.removeCapability(capability);
+            } catch (reason) {
+                this.error(`Failed to removed capability '${capability}'`);
+                this.error(reason);
+            }
+        }
+    }
+    async addCapabilityHelper(capability) {
+        if (!this.hasCapability(capability)) {
+            try {
+                this.log(`Adding missing capability '${capability}'`);
+                await this.addCapability(capability);
+            } catch (reason) {
+                this.error(`Failed to add capability '${capability}'`);
+                this.error(reason);
+            }
         }
     }
 
@@ -74,17 +103,23 @@ class SummaryDevice extends Device {
         let power_pv = 0;
         let power_MPPA = 0;
         let power_MPPB = 0;
+        let lifetime_yield = 0;
         this.homey.drivers.getDriver('inverter').getDevices().forEach(function (inverter) {
             power_pv = power_pv + inverter.getCapabilityValue('measure_power');
             power_MPPA = power_MPPA + inverter.getCapabilityValue('measure_power.dcA') || 0;
             power_MPPB = power_MPPB + inverter.getCapabilityValue('measure_power.dcB') || 0;
+            lifetime_yield = lifetime_yield + inverter.getCapabilityValue('measure_yield');
         });
 
         let power_grid = 0;
         let surplus = 0;
+        let lifetime_import = 0;
+        let lifetime_export = 0;
         this.homey.drivers.getDriver('energy').getDevices().forEach(function (em) {
             power_grid = power_grid + em.getCapabilityValue('measure_power');
             surplus = surplus + em.getCapabilityValue('measure_power.surplus');
+            lifetime_import = lifetime_import + em.getCapabilityValue('meter_power');
+            lifetime_export = lifetime_export + em.getCapabilityValue('meter_power.export');
         });
 
         let grid = power_grid - surplus;
@@ -98,6 +133,9 @@ class SummaryDevice extends Device {
         //Will be negative if there is a surplus
         this._updateProperty('measure_power', grid);
         this._updateProperty('measure_power.consumption', consumption);
+
+        const lifetime_consumption = (lifetime_import + lifetime_yield) - lifetime_export;
+        this._updateProperty('meter_power', lifetime_consumption);
     }
 
     _initilializeTimers() {
