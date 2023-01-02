@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.4.1",
+  "version": "2.4.2",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -1663,9 +1663,9 @@
       "uiComponent": "sensor",
       "icon": "/assets/total_yield.svg",
       "units": {
-        "en": "KWh",
-        "nl": "KWh",
-        "sv": "KWh"
+        "en": "kWh",
+        "nl": "kWh",
+        "sv": "kWh"
       }
     },
     "operational_status": {

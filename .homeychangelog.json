@@ -1,7 +1,11 @@
 {
+    "2.4.2": {
+        "en": "Improved error handling",
+        "sv": "Förbättrad felhantering"
+    },
     "2.4.1": {
-        "en": "Lifetime import/export/consumption capabilities added for energy and summary devices. Note! Lifetime yield for inverters are changed to KWh instead of MWh.",
-        "sv": "Livstid import/export/konsumption tillagt till elmätare och energisammanställning enheterna. OBS! Notera att liftids produktion för växelrikare är ändrad från MWh till KWh."
+        "en": "Lifetime import/export/consumption capabilities added for energy and summary devices. Note! Lifetime yield for inverters are changed to kWh instead of MWh.",
+        "sv": "Livstid import/export/konsumption tillagt till elmätare och energisammanställning enheterna. OBS! Notera att liftids produktion för växelrikare är ändrad från MWh till kWh."
     },
     "2.4.0": {
         "en": "New device icons! The lifetime energy import and export are now exposed as flow tokens from the energy device type.",

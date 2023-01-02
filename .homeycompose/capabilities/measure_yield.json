@@ -10,8 +10,8 @@
   "uiComponent": "sensor",
   "icon": "/assets/total_yield.svg",
   "units": {
-    "en": "KWh",
-    "nl": "KWh",
-    "sv": "KWh"
+    "en": "kWh",
+    "nl": "kWh",
+    "sv": "kWh"
   }
 }

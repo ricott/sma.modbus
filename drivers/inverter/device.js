@@ -69,7 +69,10 @@ class InverterDevice extends Device {
       this._updateProperty('measure_voltage', readings.acVoltageL1 || 0);
       this._updateProperty('measure_voltage.l2', readings.acVoltageL2 || 0);
       this._updateProperty('measure_voltage.l3', readings.acVoltageL3 || 0);
-      this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield || 0.0));
+      //Ignore occasional 0 values for the total yield
+      if (readings.totalYield && readings.totalYield > 0) {
+        this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield || 0.0));
+      }
 
       //New capabilities
       if (readings.condition && !readings.condition.startsWith('UNKNOWN')) {
