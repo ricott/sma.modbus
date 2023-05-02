@@ -84,6 +84,10 @@
             "en": "Polling",
             "nl": "Polling",
             "sv": "Uppdateringsfrekvens"
+          },
+          "hint": {
+            "en": "How frequently should the summary device be updated. Restart the app for new value to take effect.",
+            "sv": "Hur frekvent skall enheten uppdateras. Start om appen för att ett nytt värde skall användas."
           }
         },
         {

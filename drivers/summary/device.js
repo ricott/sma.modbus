@@ -7,7 +7,6 @@ class SummaryDevice extends Device {
     async onInit() {
         this.log(`[${this.getName()}] SMA summary initiated`);
 
-        this.pollIntervals = [];
         this.invertersMPPConfig = this.getInverterMPPConfig();
         await this.upgradeDevice();
         this.setupCapabilities(this.getSetting('show_mpp'));
@@ -140,22 +139,9 @@ class SummaryDevice extends Device {
 
     _initilializeTimers() {
         this.log('Adding timers');
-        this.pollIntervals.push(setInterval(() => {
+        this.homey.setInterval(() => {
             this.updateValues();
-        }, 1000 * this.getSetting('polling')));
-    }
-
-    _deleteTimers() {
-        //Kill interval object(s)
-        this.log(`[${this.getName()}] Removing timers`);
-        this.pollIntervals.forEach(timer => {
-            clearInterval(timer);
-        });
-    }
-
-    _reinitializeTimers() {
-        this._deleteTimers();
-        this._initilializeTimers();
+        }, 1000 * this.getSetting('polling'));
     }
 
     _updateProperty(key, value) {
@@ -173,14 +159,12 @@ class SummaryDevice extends Device {
 
     onDeleted() {
         this.log(`[${this.getName()}] Deleting this SMA summary from Homey.`);
-        this._deleteTimers();
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
 
         if (changedKeys.indexOf("polling") > -1) {
             this.log(`[${this.getName()}] Polling value was change to '${newSettings.polling}'`);
-            this._reinitializeTimers();
         }
 
         if (changedKeys.indexOf("show_mpp") > -1) {

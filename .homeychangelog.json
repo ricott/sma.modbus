@@ -1,4 +1,8 @@
 {
+    "2.4.3": {
+        "en": "Improved timer lifecycle",
+        "sv": "Förbättrad hantering av timers"
+    },
     "2.4.2": {
         "en": "Improved error handling",
         "sv": "Förbättrad felhantering"

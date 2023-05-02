@@ -50,8 +50,8 @@
             "sv": "Uppdateringsfrekvens (minuter)"
           },
           "hint": {
-            "en": "How frequently should PVOutput be updated",
-            "sv": "Hur frekvent skall PVOutput uppdateras"
+            "en": "How frequently should PVOutput be updated. Restart the app for new value to take effect.",
+            "sv": "Hur frekvent skall PVOutput uppdateras. Start om appen för att ett nytt värde skall användas."
           }
         },
         {

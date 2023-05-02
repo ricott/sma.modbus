@@ -13,7 +13,6 @@ class PVOutputDevice extends Homey.Device {
   async onInit() {
     this.log(`[${this.getName()}] SMA PVOutput initiated`);
 
-    this.pollIntervals = [];
     this.pvoutputSession = null;
 
     if (!this.homey.settings.get(`${this.getData().id}.apikey`)) {
@@ -33,22 +32,9 @@ class PVOutputDevice extends Homey.Device {
   _initilializeTimers() {
     this.log(`[${this.getName()}] Adding timers`);
     // Start a poller, to check the device status
-    this.pollIntervals.push(setInterval(() => {
+    this.homey.setInterval(() => {
       this.addStatus();
-    }, this.getSetting('interval') * 60 * 1000));
-  }
-
-  _deleteTimers() {
-    //Kill interval object(s)
-    this.log(`[${this.getName()}] Removing timers`);
-    this.pollIntervals.forEach(timer => {
-      clearInterval(timer);
-    });
-  }
-
-  _reinitializeTimers() {
-    this._deleteTimers();
-    this._initilializeTimers();
+    }, this.getSetting('interval') * 60 * 1000);
   }
 
   addStatus() {
@@ -129,14 +115,8 @@ class PVOutputDevice extends Homey.Device {
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    let change = false;
     if (changedKeys.indexOf("interval") > -1) {
       this.log('Interval value was change to:', newSettings.interval);
-      change = true;
-    }
-
-    if (change) {
-      this._reinitializeTimers();
     }
   }
 

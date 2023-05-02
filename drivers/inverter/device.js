@@ -142,7 +142,7 @@ class InverterDevice extends Device {
     night.setMilliseconds(0);
     let timeToMidnight = night.getTime() - new Date().getTime();
 
-    setTimeout(() => {
+    this.homey.setTimeout(() => {
       this.log(`[${this.getName()}] Resetting total yield at midnight`);
 
       this.resetDailyYield();

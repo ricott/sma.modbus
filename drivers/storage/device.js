@@ -10,7 +10,6 @@ class SmaModbusStorageDevice extends Device {
 
     async onInit() {
 
-        this.pollIntervals = [];
         let options = {
             'host': this.getSetting('address'),
             'port': this.getSetting('port'),
@@ -30,7 +29,7 @@ class SmaModbusStorageDevice extends Device {
         socket.on('connect', () => {
             this.log('Connected ...');
 
-            this.pollingInterval = setInterval(() => {
+            this.pollingInterval = this.homey.setInterval(() => {
                 Promise.all([
                     client.readHoldingRegisters(30955, 2),
                     client.readHoldingRegisters(30845, 2),
@@ -160,9 +159,8 @@ class SmaModbusStorageDevice extends Device {
         socket.on('close', () => {
             this.log('Client closed, retrying in 63 seconds');
 
-            clearInterval(this.pollingInterval);
-
-            setTimeout(() => {
+            this.homey.clearInterval(this.pollingInterval);
+            this.homey.setTimeout(() => {
                 socket.connect(options);
                 this.log('Reconnecting now ...');
             }, 63000)
@@ -172,7 +170,6 @@ class SmaModbusStorageDevice extends Device {
 
     onDeleted() {
         this.log(`Deleting SMA storage '${this.getName()}' from Homey.`);
-        clearInterval(this.pollingInterval);
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
