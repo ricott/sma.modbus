@@ -104,7 +104,7 @@ class EnergyDriver extends Driver {
 
 // sleep time expects milliseconds
 function sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
+    return new Promise((resolve) => this.homey.setTimeout(resolve, time));
 }
 
 module.exports = EnergyDriver;
