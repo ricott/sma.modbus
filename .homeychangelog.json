@@ -1,4 +1,8 @@
 {
+    "2.4.5": {
+        "en": "Fixed the nightly reset of the manually calculated daily yield",
+        "sv": "Fixat den nattliga reset av den manuellt uträknade dagliga produktionen"
+    },
     "2.4.4": {
         "en": "Improved timer lifecycle handling",
         "sv": "Förbättrad hantering av timers"
