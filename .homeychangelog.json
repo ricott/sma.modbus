@@ -1,4 +1,8 @@
 {
+    "2.4.6": {
+        "en": "Fixed bug that occured when adding new energy meter or inverter",
+        "sv": "Fixat en bugg relaterat till parning med energimätare och växelriktare"
+    },
     "2.4.5": {
         "en": "Fixed the nightly reset of the manually calculated daily yield",
         "sv": "Fixat den nattliga reset av den manuellt uträknade dagliga produktionen"

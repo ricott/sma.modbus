@@ -81,7 +81,7 @@ class EnergyDriver extends Driver {
             });
 
             //Wait for some time and see what we find
-            return sleep(2500).then(() => {
+            return this.#sleep(2500).then(() => {
                 try {
                     emSession.disconnect();
                 } catch (err) {
@@ -100,11 +100,10 @@ class EnergyDriver extends Driver {
 
         });
     }
-}
 
-// sleep time expects milliseconds
-function sleep(time) {
-    return new Promise((resolve) => this.homey.setTimeout(resolve, time));
+    #sleep(time) {
+        return new Promise((resolve) => this.homey.setTimeout(resolve, time));
+    }
 }
 
 module.exports = EnergyDriver;

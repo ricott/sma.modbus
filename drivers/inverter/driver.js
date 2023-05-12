@@ -99,7 +99,7 @@ class InverterDriver extends Driver {
         let settings;
 
         session.setHandler('showView', async (view) => {
-            this.log(`Showing view '${view}'`);
+            self.log(`Showing view '${view}'`);
 
             if (view === 'loading') {
                 mode = 'discovery';
@@ -108,7 +108,7 @@ class InverterDriver extends Driver {
 
                 //Discover devices using multicast query
                 let discoveryQuery = new discovery({
-                    port: this.homey.settings.get('port')
+                    port: self.homey.settings.get('port')
                 });
                 discoveryQuery.discover();
 
@@ -117,8 +117,8 @@ class InverterDriver extends Driver {
                     //8001: Solar Inverters (DevClss1)
                     //Filter out storage devices, etc
                     if (inverterInfo.deviceClass == 8001) {
-                        if (this.isNewInverter(inverterInfo.serialNo)) {
-                            this.log(`Adding to devices: ${inverterInfo.deviceType}`);
+                        if (self.isNewInverter(inverterInfo.serialNo)) {
+                            self.log(`Adding to devices: ${inverterInfo.deviceType}`);
                             devices.push({
                                 name: inverterInfo.deviceType,
                                 data: {
@@ -130,10 +130,10 @@ class InverterDriver extends Driver {
                                 }
                             });
                         } else {
-                            this.log(`Found inverter '${inverterInfo.serialNo}' that is already added to Homey, ignoring it ...`);
+                            self.log(`Found inverter '${inverterInfo.serialNo}' that is already added to Homey, ignoring it ...`);
                         }
                     } else {
-                        this.log('Found a SMA device that is not an inverter', inverterInfo);
+                        self.log('Found a SMA device that is not an inverter', inverterInfo);
                     }
                 });
 
@@ -141,16 +141,16 @@ class InverterDriver extends Driver {
                     //Ignore the error, if no inverter found we'll do manual entry
                 });
 
-                sleep(6000).then(() => {
+                self.#sleep(6000).then(() => {
                     if (devices.length === 0) {
-                        this.log('No (new) inverters found using auto-discovery, show manual entry');
+                        self.log('No (new) inverters found using auto-discovery, show manual entry');
                         session.showView('settings');
                     } else {
-                        this.log(`Found '${devices.length}' inverter(s)`);
+                        self.log(`Found '${devices.length}' inverter(s)`);
                         session.showView('list_devices');
                     }
                 }).catch(reason => {
-                    console.log('Timeout error', reason);
+                    self.log('Timeout error', reason);
                 });
             }
         });
@@ -163,12 +163,12 @@ class InverterDriver extends Driver {
 
             let smaSession = new SMA({
                 host: settings.address,
-                port: this.homey.settings.get('port'),
+                port: self.homey.settings.get('port'),
                 autoClose: true
             });
 
             smaSession.on('properties', inverterProperties => {
-                this.log(`Adding to devices: ${inverterProperties.deviceType}`);
+                self.log(`Adding to devices: ${inverterProperties.deviceType}`);
                 devices.push({
                     name: inverterProperties.deviceType,
                     data: {
@@ -176,7 +176,7 @@ class InverterDriver extends Driver {
                     },
                     settings: {
                         address: settings.address,
-                        port: Number(this.homey.settings.get('port'))
+                        port: Number(self.homey.settings.get('port'))
                     }
                 });
             });
@@ -186,7 +186,7 @@ class InverterDriver extends Driver {
             });
 
             //Wait 3 seconds to allow properties to be read
-            sleep(3000).then(() => {
+            self.#sleep(3000).then(() => {
                 session.showView('list_devices');
             });
         });
@@ -199,11 +199,10 @@ class InverterDriver extends Driver {
             return devices;
         });
     }
-}
 
-// sleep time expects milliseconds
-function sleep(time) {
-    return new Promise((resolve) => this.homey.setTimeout(resolve, time));
+    #sleep(time) {
+        return new Promise((resolve) => this.homey.setTimeout(resolve, time));
+    }
 }
 
 module.exports = InverterDriver;

@@ -153,7 +153,7 @@ class InverterDevice extends Device {
             this.log(`[${this.getName()}] Resetting daily yield`);
 
             await this.resetDailyYield();
-            await this.resetAtMidnight();
+            this.resetAtMidnight();
         }, msToMidnight);
     }
 
