@@ -81,7 +81,8 @@ class EnergyDevice extends Device {
     setupEMSession() {
         this.emSession = new EnergyMeter({
             serialNo: this.getData().id,
-            refreshInterval: this.getSetting('polling')
+            refreshInterval: this.getSetting('polling'),
+            device: this
         });
 
         this.initializeEventListeners();

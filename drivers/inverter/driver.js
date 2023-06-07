@@ -108,7 +108,8 @@ class InverterDriver extends Driver {
 
                 //Discover devices using multicast query
                 let discoveryQuery = new discovery({
-                    port: self.homey.settings.get('port')
+                    port: self.homey.settings.get('port'),
+                    device: this
                 });
                 discoveryQuery.discover();
 
@@ -164,7 +165,8 @@ class InverterDriver extends Driver {
             let smaSession = new SMA({
                 host: settings.address,
                 port: self.homey.settings.get('port'),
-                autoClose: true
+                autoClose: true,
+                device: this
             });
 
             smaSession.on('properties', inverterProperties => {

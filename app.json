@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.4.6",
+  "version": "2.4.7",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -1641,6 +1641,7 @@
     },
     "frequency": {
       "type": "number",
+      "decimals": 2,
       "title": {
         "en": "Frequency",
         "sv": "Frekvens"

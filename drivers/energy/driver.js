@@ -67,7 +67,9 @@ class EnergyDriver extends Driver {
         let devices = [];
 
         session.setHandler('list_devices', async (data) => {
-            let emSession = new EnergyMeter({});
+            let emSession = new EnergyMeter({
+                device: this
+            });
             emSession.on('readings', readings => {
                 if (!devices.find((em) => em.data.id === readings.serialNo)) {
                     this.log(`Adding to devices: ${readings.serialNo}`);

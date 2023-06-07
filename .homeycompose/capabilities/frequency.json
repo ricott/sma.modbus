@@ -1,5 +1,6 @@
 {
   "type": "number",
+  "decimals": 2,
   "title": {
     "en": "Frequency",
     "sv": "Frekvens"

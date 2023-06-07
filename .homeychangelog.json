@@ -1,4 +1,8 @@
 {
+    "2.4.7": {
+        "en": "Maintenance",
+        "sv": "Förbättrad stabilitet"
+    },
     "2.4.6": {
         "en": "Fixed bug that occured when adding new energy meter or inverter",
         "sv": "Fixat en bugg relaterat till parning med energimätare och växelriktare"

@@ -36,7 +36,8 @@ class InverterDevice extends Device {
         this.smaApi = new SMA({
             host: this.getSetting('address'),
             port: this.getSetting('port'),
-            refreshInterval: this.getSetting('polling')
+            refreshInterval: this.getSetting('polling'),
+            device: this
         });
 
         this.initializeEventListeners();

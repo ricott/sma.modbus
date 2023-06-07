@@ -4,6 +4,7 @@ const EnergyMeter = require('../lib/sma_em.js');
 var config = require('./config');
 
 let emSession = new EnergyMeter({
+  debug: true,
   serialNo: config.hm2.serial,
   refreshInterval: 2
 });
