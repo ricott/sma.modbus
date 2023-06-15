@@ -61,6 +61,7 @@ class EnergyDevice extends Device {
     }
 
     async registerFlowTokens() {
+        this.log('Registering flow tokens');
         this.availCurrentToken = await this.homey.flow.createToken(`${this.getData().id}.availableCurrent`,
             {
                 type: 'number',
