@@ -12,8 +12,6 @@ As of version 2 of the app the following device types are supported
 ## Inverters
 In the [support topic](https://community.athom.com/t/696) is a shortened list of supported inverters. Version 2 of the app tries to figure out which capabilities each inverter has, using a mapping logic and will only show capabilities in Homey that the inverter supports. For instance, some inverters don't support daily yield, then this capability won't be displayed in Homey for that inverter.
 
-You can view a somewhat complete list of supported inverters in the second tab of this [Google sheets document](https://drive.google.com/file/d/1TF1kpXG1iz1xidIHFoD4WOr5wCsETIy7/view?usp=sharing). If you connect your inverter and you do not see all values appear in the Homey device, please use the support topic to ask for support for your type of inverter. The device type (e.g. STP 25000TL-30) of the inverter should always be possible to access, by default this is also used as the device name when you add a new inverter to Homey. Please include this information in any support request.
-
 The most basic capability set that all inverters should support are; grid power, grid voltage and total yield. If you only get these values on a "modern" inverter please comment in the support thread, most likely the mapping is incorrect.
 
 ## Sunny Boy Storage

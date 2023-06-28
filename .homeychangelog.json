@@ -1,4 +1,8 @@
 {
+    "2.5.0": {
+        "en": "Basic support for STP SE hybrid inverters",
+        "sv": "Stöd för STP SE hybrid växelriktare"
+    },
     "2.4.9": {
         "en": "Maintenance",
         "sv": "Förbättrad stabilitet"
