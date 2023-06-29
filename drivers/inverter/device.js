@@ -24,9 +24,11 @@ class InverterDevice extends Device {
 
     async onInit() {
         this.log(`[${this.getName()}] SMA inverter initiated`);
-
-        //Property with reference to the SMA api object
         this.smaApi = null;
+
+        // Register device triggers
+        this._inverter_status_changed = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
+        this._inverter_condition_changed = this.homey.flow.getDeviceTriggerCard('inverter_condition_changed');
 
         this.setupSMASession();
         this.resetAtMidnight();
@@ -242,13 +244,13 @@ class InverterDevice extends Device {
                     let tokens = {
                         inverter_status: value || 'n/a'
                     }
-                    this.driver.triggerDeviceFlow('inverter_status_changed', tokens, this);
+                    this._inverter_status_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
                 } else if (key === 'operational_status.health') {
                     let tokens = {
                         inverter_condition: value || 'n/a'
                     }
-                    this.driver.triggerDeviceFlow('inverter_condition_changed', tokens, this);
+                    this._inverter_condition_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
                 }
             } else {
                 //Update value to show we are doing it in app

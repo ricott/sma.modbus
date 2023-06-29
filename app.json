@@ -38,7 +38,7 @@
       "modbus"
     ]
   },
-  "version": "2.5.0",
+  "version": "2.5.1",
   "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
@@ -77,6 +77,40 @@
     "net": "*"
   },
   "flow": {
+    "actions": [
+      {
+        "id": "set_max_active_power",
+        "title": {
+          "en": "Limit the max active power output",
+          "sv": "Begränsa den högsta möjliga ut-effekten"
+        },
+        "titleFormatted": {
+          "en": "Limit the max active power output to [[power]]",
+          "sv": "Begränsa den högsta möjliga ut-effekten till [[power]]"
+        },
+        "hint": {
+          "en": ""
+        },
+        "args": [
+          {
+            "name": "power",
+            "type": "number",
+            "title": {
+              "en": "Power (W)",
+              "sv": "Effekt (W)"
+            },
+            "min": 0,
+            "max": 655360,
+            "step": 1
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=inverter"
+          }
+        ]
+      }
+    ],
     "triggers": [
       {
         "id": "phase_threshold_triggered",

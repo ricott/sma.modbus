@@ -9,6 +9,14 @@ const socket = new net.Socket();
 class SmaModbusStorageDevice extends Device {
 
     async onInit() {
+        // Register device triggers
+        this._changedOperationalStatus = this.homey.flow.getDeviceTriggerCard('changedOperationalStatus');
+        this._changedBattery = this.homey.flow.getDeviceTriggerCard('changedBattery');
+        this._changedBatteryCharging = this.homey.flow.getDeviceTriggerCard('changedBatteryCharging');
+        this._changedBatteryDischarging = this.homey.flow.getDeviceTriggerCard('changedBatteryDischarging');
+        this._changedPowerDrawn = this.homey.flow.getDeviceTriggerCard('changedPowerDrawn');
+        this._changedPowerGridFeedin = this.homey.flow.getDeviceTriggerCard('changedPowerGridFeedin');
+        this._changedBatteryCapacity = this.homey.flow.getDeviceTriggerCard('changedBatteryCapacity');
 
         let options = {
             'host': this.getSetting('address'),
@@ -23,7 +31,6 @@ class SmaModbusStorageDevice extends Device {
         }
 
         let client = new modbus.client.TCP(socket, 3)
-
         socket.connect(options);
 
         socket.on('connect', () => {
@@ -59,35 +66,35 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             status: this.homey.__('Off')
                         }
-                        this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
                     } else if (this.getCapabilityValue('operational_status') != this.homey.__('Standby') && operational_code == 2291) {
                         this.setCapabilityValue('operational_status', this.homey.__('Standby'));
                         let tokens = {
                             status: this.homey.__('Standby')
                         }
-                        this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
                     } else if (this.getCapabilityValue('operational_status') != this.homey.__('Charge') && operational_code == 2292) {
                         this.setCapabilityValue('operational_status', this.homey.__('Charge'));
                         let tokens = {
                             status: this.homey.__('Charge')
                         }
-                        this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
                     } else if (this.getCapabilityValue('operational_status') != this.homey.__('Discharge') && operational_code == 2293) {
                         this.setCapabilityValue('operational_status', this.homey.__('Discharge'));
                         let tokens = {
                             status: this.homey.__('Discharge')
                         }
-                        this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
                     } else if (this.getCapabilityValue('operational_status') != this.homey.__('NA') && operational_code == 16777213) {
                         this.setCapabilityValue('operational_status', this.homey.__('NA'));
                         let tokens = {
                             status: this.homey.__('NA')
                         }
-                        this.driver.triggerDeviceFlow('changedOperationalStatus', tokens, this);
+                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                     // BATTERY
@@ -96,7 +103,7 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             charge: battery
                         }
-                        this.driver.triggerDeviceFlow('changedBattery', tokens, this);
+                        this._changedBattery.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                     // MEASURE_POWER: CHARGE
@@ -105,7 +112,7 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             charging: charge
                         }
-                        this.driver.triggerDeviceFlow('changedBatteryCharging', tokens, this);
+                        this._changedBatteryCharging.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                     // MEASURE_POWER: DISCHARGE
@@ -114,7 +121,7 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             discharging: discharge
                         }
-                        this.driver.triggerDeviceFlow('changedBatteryDischarging', tokens, this);
+                        this._changedBatteryDischarging.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                     // POWER DRAWN
@@ -123,7 +130,7 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             drawn: power_drawn
                         }
-                        this.driver.triggerDeviceFlow('changedPowerDrawn', tokens, this);
+                        this._changedPowerDrawn.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                     // POWERGRID FEED IN
@@ -132,7 +139,7 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             feedin: powergrid_feed_in
                         }
-                        this.driver.triggerDeviceFlow('changedPowerGridFeedin', tokens, this);
+                        this._changedPowerGridFeedin.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                     // BATTERY CAPACITY
@@ -141,7 +148,7 @@ class SmaModbusStorageDevice extends Device {
                         let tokens = {
                             capacity: battery_capacity
                         }
-                        this.driver.triggerDeviceFlow('changedBatteryCapacity', tokens, this);
+                        this._changedBatteryCapacity.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
 
                 }).catch((err) => {

@@ -8,6 +8,9 @@ class EnergyDevice extends Device {
     async onInit() {
         this.log(`[${this.getName()}] SMA energy meter initiated`);
 
+        // Register device triggers
+        this._phase_threshold_triggered = this.homey.flow.getDeviceTriggerCard('phase_threshold_triggered');
+
         this.phaseAlerts = {
             L1: false,
             L2: false,
@@ -194,7 +197,7 @@ class EnergyDevice extends Device {
                                 phase: phase,
                                 percentageUtilized: utilization
                             }
-                            this.driver.triggerDeviceFlow('phase_threshold_triggered', tokens, this);
+                            this._phase_threshold_triggered.trigger(this, tokens, {}).catch(error => { this.error(error) });
                         }
                     } else if (this.phaseAlerts[phase] === true) {
                         //Reset alert

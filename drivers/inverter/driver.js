@@ -14,70 +14,64 @@ class InverterDriver extends Driver {
             this.homey.settings.set('port', 502);
         }
 
-        this.flowCards = {};
         this._registerFlows();
     }
 
     _registerFlows() {
         this.log('Registering flows');
 
-        // Register device triggers
-        this.flowCards['inverter_status_changed'] = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
-        this.flowCards['inverter_condition_changed'] = this.homey.flow.getDeviceTriggerCard('inverter_condition_changed');
+        const isInverterDailyYield = this.homey.flow.getConditionCard('isInverterDailyYield');
+        isInverterDailyYield.registerRunListener(async (args, state) => {
+            this.log(`[${args.device.getName()}] Condition 'isInverterDailyYield' triggered`);
+            this.log(`[${args.device.getName()}] - inverter.dailyYield: ${args.device.getCapabilityValue('meter_power')}`);
+            this.log(`[${args.device.getName()}] - parameter yield: '${args.daily_yield}'`);
 
-        //Register conditions
-        this.flowCards['isInverterDailyYield'] =
-            this.homey.flow.getConditionCard('isInverterDailyYield')
-                .registerRunListener(async (args, state) => {
-                    this.log(`[${args.device.getName()}] Condition 'isInverterDailyYield' triggered`);
-                    this.log(`[${args.device.getName()}] - inverter.dailyYield: ${args.device.getCapabilityValue('meter_power')}`);
-                    this.log(`[${args.device.getName()}] - parameter yield: '${args.daily_yield}'`);
+            if (args.device.getCapabilityValue('meter_power') > args.daily_yield) {
+                return true;
+            } else {
+                return false;
+            }
+        });
 
-                    if (args.device.getCapabilityValue('meter_power') > args.daily_yield) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+        const isInverterStatus = this.homey.flow.getConditionCard('isInverterStatus');
+        isInverterStatus.registerRunListener(async (args, state) => {
+            this.log(`[${args.device.getName()}] Condition 'isInverterStatus' triggered`);
+            this.log(`[${args.device.getName()}] - inverter.status: ${args.device.getCapabilityValue('operational_status')}`);
+            this.log(`[${args.device.getName()}] - parameter status: '${args.inverter_status}'`);
+
+            if (args.device.getCapabilityValue('operational_status').indexOf(args.inverter_status) > -1) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        const power_condition = this.homey.flow.getConditionCard('power_condition');
+        power_condition.registerRunListener(async (args, state) => {
+            this.log(`[${args.device.getName()}] Condition 'power_condition' triggered`);
+            let power = args.device.getCapabilityValue('measure_power');
+            this.log(`- inverter.power: ${power}`);
+            this.log(`- parameter power: '${args.power}'`);
+
+            if (power < args.power) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        const set_max_active_power = this.homey.flow.getActionCard('set_max_active_power');
+        set_max_active_power.registerRunListener(async (args) => {
+            this.log(`[${args.device.getName()}] Action 'set_max_active_power' triggered`);
+            this.log(`[${args.device.getName()}] - power: '${args.power}'`);
+
+            return args.device.smaApi.setMaxActivePowerOutput(args.power)
+                .then(function (result) {
+                    return Promise.resolve(true);
+                }).catch(reason => {
+                    return Promise.reject(`Failed to limit the max active power output. Reason: ${reason.message}`);
                 });
-
-        this.flowCards['isInverterStatus'] =
-            this.homey.flow.getConditionCard('isInverterStatus')
-                .registerRunListener(async (args, state) => {
-                    this.log(`[${args.device.getName()}] Condition 'isInverterStatus' triggered`);
-                    this.log(`[${args.device.getName()}] - inverter.status: ${args.device.getCapabilityValue('operational_status')}`);
-                    this.log(`[${args.device.getName()}] - parameter status: '${args.inverter_status}'`);
-
-                    if (args.device.getCapabilityValue('operational_status').indexOf(args.inverter_status) > -1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
-
-
-        this.flowCards['power_condition'] =
-            this.homey.flow.getConditionCard('power_condition')
-                .registerRunListener(async (args, state) => {
-                    this.log(`[${args.device.getName()}] Condition 'power_condition' triggered`);
-                    let power = args.device.getCapabilityValue('measure_power');
-                    this.log(`- inverter.power: ${power}`);
-                    this.log(`- parameter power: '${args.power}'`);
-
-                    if (power < args.power) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
-    }
-
-    triggerDeviceFlow(flow, tokens, device) {
-        this.log(`[${device.getName()}] Triggering device flow '${flow}' with tokens`, tokens);
-        this.flowCards[flow].trigger(device, tokens)
-            .catch(error => {
-                this.log(`Failed to trigger flow '${flow}' for device '${device.getName()}'`);
-                this.log(error);
-            });
+        });
     }
 
     isNewInverter(inverterId) {
