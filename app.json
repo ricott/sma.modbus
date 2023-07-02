@@ -2,7 +2,8 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "sma.modbus",
   "sdk": 3,
-  "brandColor": "#015a93",
+  "version": "2.5.2",
+  "compatibility": ">=5.0.0",
   "name": {
     "en": "SMA Energy",
     "sv": "SMA Energy"
@@ -11,6 +12,7 @@
     "en": "My home. My energy. Our climate.",
     "sv": "Mitt hem. Min energi. Vårt klimat."
   },
+  "category": "energy",
   "tags": {
     "en": [
       "sma",
@@ -38,8 +40,6 @@
       "modbus"
     ]
   },
-  "version": "2.5.1",
-  "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
     "email": "richard@barkestam.se"
@@ -72,46 +72,78 @@
     "large": "./assets/images/large.png",
     "small": "./assets/images/small.png"
   },
-  "category": "energy",
+  "brandColor": "#015a93",
   "dependencies": {
     "net": "*"
   },
   "flow": {
-    "actions": [
+    "triggers": [
       {
-        "id": "set_max_active_power",
+        "id": "inverter_condition_changed",
         "title": {
-          "en": "Limit the max active power output",
-          "sv": "Begränsa den högsta möjliga ut-effekten"
+          "en": "Condition changed",
+          "nl": "Staat gewijzigd",
+          "sv": "Tillstånd ändrad"
         },
         "titleFormatted": {
-          "en": "Limit the max active power output to [[power]]",
-          "sv": "Begränsa den högsta möjliga ut-effekten till [[power]]"
+          "en": "Condition changed to [[inverter_condition]]",
+          "sv": "Tillstånd ändrades till [[inverter_condition]]"
         },
-        "hint": {
-          "en": ""
-        },
+        "tokens": [
+          {
+            "name": "inverter_condition",
+            "type": "string",
+            "title": {
+              "en": "Condition",
+              "nl": "Staat",
+              "sv": "Tillstånd"
+            },
+            "example": {
+              "en": "Ok"
+            }
+          }
+        ],
         "args": [
           {
-            "name": "power",
-            "type": "number",
-            "title": {
-              "en": "Power (W)",
-              "sv": "Effekt (W)"
-            },
-            "min": 0,
-            "max": 655360,
-            "step": 1
-          },
-          {
-            "name": "device",
             "type": "device",
+            "name": "device",
             "filter": "driver_id=inverter"
           }
         ]
-      }
-    ],
-    "triggers": [
+      },
+      {
+        "id": "inverter_status_changed",
+        "title": {
+          "en": "Operational Status Changed",
+          "nl": "Operationele status gewijzigd",
+          "sv": "Operationell status ändrad"
+        },
+        "titleFormatted": {
+          "en": "Operational status changed to [[inverter_status]]",
+          "sv": "Operationell status ändrades till [[inverter_status]]"
+        },
+        "tokens": [
+          {
+            "name": "inverter_status",
+            "type": "string",
+            "title": {
+              "en": "Operational Status",
+              "nl": "Operationele status",
+              "sv": "Operationell status"
+            },
+            "example": {
+              "en": "MPP"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+          }
+        ]
+      },
       {
         "id": "phase_threshold_triggered",
         "title": {
@@ -151,72 +183,6 @@
             "example": {
               "en": "98"
             }
-          }
-        ]
-      },
-      {
-        "id": "inverter_status_changed",
-        "title": {
-          "en": "Operational Status Changed",
-          "nl": "Operationele status gewijzigd",
-          "sv": "Operationell status ändrad"
-        },
-        "titleFormatted": {
-          "en": "Operational status changed to [[inverter_status]]",
-          "sv": "Operationell status ändrades till [[inverter_status]]"
-        },
-        "tokens": [
-          {
-            "name": "inverter_status",
-            "type": "string",
-            "title": {
-              "en": "Operational Status",
-              "nl": "Operationele status",
-              "sv": "Operationell status"
-            },
-            "example": {
-              "en": "MPP"
-            }
-          }
-        ],
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=inverter"
-          }
-        ]
-      },
-      {
-        "id": "inverter_condition_changed",
-        "title": {
-          "en": "Condition changed",
-          "nl": "Staat gewijzigd",
-          "sv": "Tillstånd ändrad"
-        },
-        "titleFormatted": {
-          "en": "Condition changed to [[inverter_condition]]",
-          "sv": "Tillstånd ändrades till [[inverter_condition]]"
-        },
-        "tokens": [
-          {
-            "name": "inverter_condition",
-            "type": "string",
-            "title": {
-              "en": "Condition",
-              "nl": "Staat",
-              "sv": "Tillstånd"
-            },
-            "example": {
-              "en": "Ok"
-            }
-          }
-        ],
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=inverter"
           }
         ]
       },
@@ -440,59 +406,6 @@
     ],
     "conditions": [
       {
-        "id": "phaseUtilized",
-        "title": {
-          "en": "A phase utilized !{{above|below}}",
-          "sv": "En fas är utnyttjad !{{över|under}}"
-        },
-        "titleFormatted": {
-          "en": "Phase [[phase]] is utilized !{{above|below}} [[utilization]]%",
-          "sv": "Fas [[phase]] är utnyttjad !{{över|under}} [[utilization]]%"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=energy"
-          },
-          {
-            "name": "phase",
-            "type": "dropdown",
-            "values": [
-              {
-                "id": "L1",
-                "label": {
-                  "en": "L1",
-                  "sv": "L1"
-                }
-              },
-              {
-                "id": "L2",
-                "label": {
-                  "en": "L2",
-                  "sv": "L2"
-                }
-              },
-              {
-                "id": "L3",
-                "label": {
-                  "en": "L3",
-                  "sv": "L3"
-                }
-              }
-            ]
-          },
-          {
-            "name": "utilization",
-            "type": "number",
-            "title": {
-              "en": "Utilization (%)",
-              "sv": "Utnyttjad (%)"
-            }
-          }
-        ]
-      },
-      {
         "id": "anyPhaseUtilized",
         "title": {
           "en": "Any phase utilized !{{above|below}}",
@@ -566,6 +479,59 @@
             "title": {
               "en": "Operational status",
               "sv": "Operationell status"
+            }
+          }
+        ]
+      },
+      {
+        "id": "phaseUtilized",
+        "title": {
+          "en": "A phase utilized !{{above|below}}",
+          "sv": "En fas är utnyttjad !{{över|under}}"
+        },
+        "titleFormatted": {
+          "en": "Phase [[phase]] is utilized !{{above|below}} [[utilization]]%",
+          "sv": "Fas [[phase]] är utnyttjad !{{över|under}} [[utilization]]%"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=energy"
+          },
+          {
+            "name": "phase",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "L1",
+                "label": {
+                  "en": "L1",
+                  "sv": "L1"
+                }
+              },
+              {
+                "id": "L2",
+                "label": {
+                  "en": "L2",
+                  "sv": "L2"
+                }
+              },
+              {
+                "id": "L3",
+                "label": {
+                  "en": "L3",
+                  "sv": "L3"
+                }
+              }
+            ]
+          },
+          {
+            "name": "utilization",
+            "type": "number",
+            "title": {
+              "en": "Utilization (%)",
+              "sv": "Utnyttjad (%)"
             }
           }
         ]
@@ -659,6 +625,37 @@
                 }
               }
             ]
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "set_target_power",
+        "title": {
+          "en": "Limit the active power output",
+          "sv": "Begränsa den aktiva effekten"
+        },
+        "titleFormatted": {
+          "en": "Limit the active power output to [[power]]",
+          "sv": "Begränsa den aktiva effekten till [[power]]"
+        },
+        "args": [
+          {
+            "name": "power",
+            "type": "number",
+            "title": {
+              "en": "Power (W)",
+              "sv": "Effekt (W)"
+            },
+            "min": 0,
+            "max": 655360,
+            "step": 1
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=inverter"
           }
         ]
       }
@@ -766,6 +763,7 @@
           "template": "add_devices"
         }
       ],
+      "id": "energy",
       "settings": [
         {
           "type": "group",
@@ -905,8 +903,7 @@
             }
           ]
         }
-      ],
-      "id": "energy"
+      ]
     },
     {
       "name": {
@@ -920,6 +917,9 @@
       },
       "class": "solarpanel",
       "capabilities": [
+        "measure_battery",
+        "target_power",
+        "measure_power.battery",
         "operational_status.health",
         "operational_status",
         "measure_voltage.dcA",
@@ -995,6 +995,12 @@
             "nl": "Dagelijkse opbrengst",
             "sv": "Dagens produktion"
           }
+        },
+        "measure_power.battery": {
+          "title": {
+            "en": "Battery",
+            "sv": "Batteri"
+          }
         }
       },
       "pair": [
@@ -1023,6 +1029,7 @@
           "template": "add_devices"
         }
       ],
+      "id": "inverter",
       "settings": [
         {
           "type": "group",
@@ -1135,16 +1142,6 @@
               "value": ""
             },
             {
-              "id": "activePowerLimit",
-              "type": "label",
-              "label": {
-                "en": "Active power limit (W)",
-                "nl": "Actief vermogen limiet (W)",
-                "sv": "Inställd effekt (W)"
-              },
-              "value": ""
-            },
-            {
               "id": "gridCountry",
               "type": "label",
               "label": {
@@ -1184,8 +1181,7 @@
             }
           ]
         }
-      ],
-      "id": "inverter"
+      ]
     },
     {
       "name": {
@@ -1217,6 +1213,7 @@
           "template": "add_devices"
         }
       ],
+      "id": "pvoutput",
       "settings": [
         {
           "type": "group",
@@ -1414,8 +1411,7 @@
             }
           ]
         }
-      ],
-      "id": "pvoutput"
+      ]
     },
     {
       "name": {
@@ -1458,6 +1454,7 @@
           "id": "start"
         }
       ],
+      "id": "storage",
       "settings": [
         {
           "type": "group",
@@ -1505,8 +1502,7 @@
             }
           ]
         }
-      ],
-      "id": "storage"
+      ]
     },
     {
       "name": {
@@ -1572,6 +1568,7 @@
           "template": "add_devices"
         }
       ],
+      "id": "summary",
       "settings": [
         {
           "type": "group",
@@ -1624,8 +1621,7 @@
             }
           ]
         }
-      ],
-      "id": "summary"
+      ]
     }
   ],
   "capabilities": {
@@ -1649,10 +1645,11 @@
     "battery_capacity": {
       "type": "number",
       "title": {
-        "en": "Battery Capacity",
+        "en": "Battery SoC",
         "nl": "Batterij capaciteit",
-        "sv": "Batteriladdning"
+        "sv": "Batteri SoC"
       },
+      "insights": true,
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
@@ -1804,6 +1801,29 @@
         "nl": "W",
         "sv": "W"
       }
+    },
+    "target_power": {
+      "title": {
+        "en": "Target power limit",
+        "sv": "Högsta tillåtna effekt"
+      },
+      "type": "number",
+      "desc": {
+        "en": "The inverters active power limit",
+        "sv": "Växelriktarens aktiva effekt gräns"
+      },
+      "min": 0,
+      "max": 655360,
+      "decimals": 0,
+      "step": 1,
+      "units": {
+        "en": "W"
+      },
+      "setable": true,
+      "getable": true,
+      "insights": true,
+      "uiComponent": "slider",
+      "chartType": "stepLine"
     }
   }
 }

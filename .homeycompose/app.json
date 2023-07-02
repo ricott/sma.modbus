@@ -1,7 +1,8 @@
 {
   "id": "sma.modbus",
   "sdk": 3,
-  "brandColor": "#015a93",
+  "version": "2.5.2",
+  "compatibility": ">=5.0.0",
   "name": {
     "en": "SMA Energy",
     "sv": "SMA Energy"
@@ -10,6 +11,7 @@
     "en": "My home. My energy. Our climate.",
     "sv": "Mitt hem. Min energi. Vårt klimat."
   },
+  "category": "energy",
   "tags": {
     "en": [
       "sma",
@@ -37,8 +39,6 @@
       "modbus"
     ]
   },
-  "version": "2.5.1",
-  "compatibility": ">=5.0.0",
   "author": {
     "name": "Richard Barkestam",
     "email": "richard@barkestam.se"
@@ -71,7 +71,7 @@
     "large": "./assets/images/large.png",
     "small": "./assets/images/small.png"
   },
-  "category": "energy",
+  "brandColor": "#015a93",
   "dependencies": {
     "net": "*"
   }

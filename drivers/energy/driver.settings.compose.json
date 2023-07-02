@@ -1,0 +1,140 @@
+[
+    {
+        "type": "group",
+        "label": {
+            "en": "Emergy Meter settings",
+            "nl": "Omvormer instellingen",
+            "sv": "Elmätare inställningar"
+        },
+        "children": [
+            {
+                "id": "polling",
+                "type": "number",
+                "value": 5,
+                "step": 1,
+                "attr": {
+                    "min": 2,
+                    "max": 3600
+                },
+                "label": {
+                    "en": "Poll interval",
+                    "nl": "Polling",
+                    "sv": "Uppdateringsfrekvens"
+                }
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "label": {
+            "en": "Load balancing",
+            "sv": "Lastbalansering"
+        },
+        "children": [
+            {
+                "id": "mainFuse",
+                "type": "number",
+                "value": 20,
+                "step": 1,
+                "attr": {
+                    "min": 1,
+                    "max": 100
+                },
+                "label": {
+                    "en": "Main fuse (A)",
+                    "sv": "Huvudsäkring (A)"
+                },
+                "hint": {
+                    "en": "Main fuse of your property, typically 16, 20, 25, 32 etc.",
+                    "sv": "Huvudsäkring för din fastighet, normalt 16, 20, 25, 32 etc."
+                }
+            },
+            {
+                "id": "threshold",
+                "type": "number",
+                "value": 95,
+                "step": 1,
+                "attr": {
+                    "min": 1,
+                    "max": 120
+                },
+                "label": {
+                    "en": "Trigger threshold (%)",
+                    "sv": "Fasbelasningslarm (%)"
+                },
+                "hint": {
+                    "en": "At what utilization in percentage should the phase utilization alert trigger fire",
+                    "sv": "Vid vilken utnyttjandegrad i procent skall fasbelastningslarmet triggas"
+                }
+            },
+            {
+                "id": "offset",
+                "type": "number",
+                "value": 2,
+                "step": 1,
+                "attr": {
+                    "min": 0,
+                    "max": 100
+                },
+                "label": {
+                    "en": "Available current offset (A)",
+                    "sv": "Tillgänglig ström offset (A)"
+                },
+                "hint": {
+                    "en": "The available current is calculated from the most utilized phase vs main fuse. This offset parameter gives a possibility to decrease the available current to allow for some margin.",
+                    "sv": "Tillgänglig ström i ampere på den mest lastade fasen mot huvudsäkringen. Denna offset ger möjlighet att minska tillgänglig ström (A) för att bygga in en marginal."
+                }
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "label": {
+            "en": "Information",
+            "nl": "Informatie",
+            "sv": "Information"
+        },
+        "children": [
+            {
+                "id": "serialNo",
+                "type": "label",
+                "label": {
+                    "en": "Serial number",
+                    "nl": "Serienummer",
+                    "sv": "Serienummer"
+                },
+                "value": ""
+            },
+            {
+                "id": "swVersion",
+                "type": "label",
+                "label": {
+                    "en": "Software version",
+                    "nl": "Software versie",
+                    "sv": "Mjukvaruversion"
+                },
+                "value": ""
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "label": {
+            "en": "Debug",
+            "nl": "Debug",
+            "sv": "Felsökning"
+        },
+        "children": [
+            {
+                "id": "sma_last_error",
+                "type": "textarea",
+                "label": {
+                    "en": "Most recent SMA Error",
+                    "nl": "Meest recente SMA-fout",
+                    "sv": "Senaste SMA felmeddelandet"
+                },
+                "value": ""
+            }
+        ]
+    }
+]

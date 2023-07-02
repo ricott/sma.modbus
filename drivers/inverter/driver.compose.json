@@ -10,6 +10,9 @@
   },
   "class": "solarpanel",
   "capabilities": [
+    "measure_battery",
+    "target_power",
+    "measure_power.battery",
     "operational_status.health",
     "operational_status",
     "measure_voltage.dcA",
@@ -85,6 +88,12 @@
         "nl": "Dagelijkse opbrengst",
         "sv": "Dagens produktion"
       }
+    },
+    "measure_power.battery": {
+      "title": {
+        "en": "Battery",
+        "sv": "Batteri"
+      }
     }
   },
   "pair": [
@@ -111,168 +120,6 @@
     {
       "id": "add_devices",
       "template": "add_devices"
-    }
-  ],
-  "settings": [
-    {
-      "type": "group",
-      "label": {
-        "en": "Inverter settings",
-        "nl": "Omvormer instellingen",
-        "sv": "Inställningar för växelriktare"
-      },
-      "children": [
-        {
-          "id": "address",
-          "type": "text",
-          "value": "0.0.0.0",
-          "label": {
-            "en": "IP Address",
-            "nl": "IP adres",
-            "sv": "IP Adress"
-          }
-        },
-        {
-          "id": "port",
-          "type": "number",
-          "value": 502,
-          "step": 1,
-          "label": {
-            "en": "Port",
-            "nl": "Poort",
-            "sv": "Port"
-          }
-        },
-        {
-          "id": "polling",
-          "type": "number",
-          "value": 5,
-          "step": 1,
-          "attr": {
-            "min": 2,
-            "max": 3600
-          },
-          "label": {
-            "en": "Polling",
-            "nl": "Polling",
-            "sv": "Uppdateringsfrekvens"
-          }
-        },
-        {
-          "id": "mpp_a_name",
-          "type": "text",
-          "value": "MPP A (DC)",
-          "label": {
-            "en": "MPP A Name"
-          }
-        },
-        {
-          "id": "mpp_b_name",
-          "type": "text",
-          "value": "MPP B (DC)",
-          "label": {
-            "en": "MPP B Name"
-          }
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "label": {
-        "en": "Information",
-        "nl": "Informatie",
-        "sv": "Information"
-      },
-      "children": [
-        {
-          "id": "deviceType",
-          "type": "label",
-          "label": {
-            "en": "Device type",
-            "nl": "Soort apparaat",
-            "sv": "Enhet"
-          },
-          "value": ""
-        },
-        {
-          "id": "serialNo",
-          "type": "label",
-          "label": {
-            "en": "Serial number",
-            "nl": "Serienummer",
-            "sv": "Serienummer"
-          },
-          "value": ""
-        },
-        {
-          "id": "swVersion",
-          "type": "label",
-          "label": {
-            "en": "Software version",
-            "nl": "Software versie",
-            "sv": "Mjukvaruversion"
-          },
-          "value": ""
-        },
-        {
-          "id": "maxPower",
-          "type": "label",
-          "label": {
-            "en": "Max power (W)",
-            "nl": "Max vermogen (W)",
-            "sv": "Max effekt (W)"
-          },
-          "value": ""
-        },
-        {
-          "id": "activePowerLimit",
-          "type": "label",
-          "label": {
-            "en": "Active power limit (W)",
-            "nl": "Actief vermogen limiet (W)",
-            "sv": "Inställd effekt (W)"
-          },
-          "value": ""
-        },
-        {
-          "id": "gridCountry",
-          "type": "label",
-          "label": {
-            "en": "Grid country standard",
-            "sv": "Elnät, landskod"
-          },
-          "value": ""
-        },
-        {
-          "id": "isDailyYieldManual",
-          "type": "label",
-          "label": {
-            "en": "Daily yield manually calculated",
-            "sv": "Daglig avkastning manuellt uträknad"
-          },
-          "value": "false"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "label": {
-        "en": "Debug",
-        "nl": "Debug",
-        "sv": "Felsökning"
-      },
-      "children": [
-        {
-          "id": "sma_last_error",
-          "type": "textarea",
-          "label": {
-            "en": "Most recent SMA Error",
-            "nl": "Meest recente SMA-fout",
-            "sv": "Senaste SMA felmeddelandet"
-          },
-          "value": ""
-        }
-      ]
     }
   ]
 }

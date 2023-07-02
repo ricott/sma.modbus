@@ -1,10 +1,11 @@
 {
   "type": "number",
   "title": {
-    "en": "Battery Capacity",
+    "en": "Battery SoC",
     "nl": "Batterij capaciteit",
-    "sv": "Batteriladdning"
+    "sv": "Batteri SoC"
   },
+  "insights": true,
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",

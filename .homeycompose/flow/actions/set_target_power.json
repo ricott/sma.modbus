@@ -1,15 +1,12 @@
 {
-    "id": "set_max_active_power",
+    "id": "set_target_power",
     "title": {
-        "en": "Limit the max active power output",
-        "sv": "Begränsa den högsta möjliga ut-effekten"
+        "en": "Limit the active power output",
+        "sv": "Begränsa den aktiva effekten"
     },
     "titleFormatted": {
-        "en": "Limit the max active power output to [[power]]",
-        "sv": "Begränsa den högsta möjliga ut-effekten till [[power]]"
-    },
-    "hint": {
-        "en": ""
+        "en": "Limit the active power output to [[power]]",
+        "sv": "Begränsa den aktiva effekten till [[power]]"
     },
     "args": [
         {

@@ -6,7 +6,10 @@ const SMA = require('../../lib/sma.js');
 const decodeData = require('../../lib/decodeData.js');
 
 const deviceCapabilitesList = [
+    'measure_battery',
+    'target_power',
     'measure_power',
+    'measure_power.battery',
     'meter_power',
     'measure_voltage',
     'measure_voltage.l2',
@@ -20,6 +23,8 @@ const deviceCapabilitesList = [
     'measure_power.dcB'
 ];
 
+const _defaultActivePower = 50000;
+
 class InverterDevice extends Device {
 
     async onInit() {
@@ -32,6 +37,21 @@ class InverterDevice extends Device {
 
         this.setupSMASession();
         this.resetAtMidnight();
+    }
+
+    async setupCapabilityListeners() {
+
+        this.registerCapabilityListener('target_power', async (power) => {
+            this.log(`[${this.getName()}] Set active power limit to '${power}'`);
+            // Adjust active power to be <= max power
+            const activePower = Math.min(Number(this.getSetting('maxPower')), power);
+            await this.smaApi.setMaxActivePowerOutput(activePower)
+                .catch(reason => {
+                    let msg = `Failed to set active power limit! Reason: ${reason.message}`;
+                    this.error(msg);
+                    return Promise.reject(new Error(msg));
+                });
+        });
     }
 
     setupSMASession() {
@@ -57,7 +77,7 @@ class InverterDevice extends Device {
 
     initializeEventListeners() {
 
-        this.smaApi.on('readings', readings => {
+        this.smaApi.on('readings', (readings) => {
             var self = this;
 
             if (self.getSetting('isDailyYieldManual') == 'true') {
@@ -100,29 +120,51 @@ class InverterDevice extends Device {
             this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
             this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
             this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
+
+            this._updateProperty('measure_battery', readings.batterySoC || 0);
+            //Adjust active power to be <= max power
+            const activePower = Math.min(Number(this.getSetting('maxPower')), readings.targetPower || 0);
+            this._updateProperty('target_power', activePower);
+
+            const batteryCharge = readings.batteryCharge || 0;
+            const batteryDischarge = readings.batteryDischarge || 0;
+            // Idle power is 0
+            let batteryPower = 0;
+            if (batteryCharge > 0) {
+                // We are charging
+                batteryPower = batteryCharge;
+            } else if (batteryDischarge > 0) {
+                // We are discharging, make discharge negative
+                batteryPower = (batteryDischarge * -1);
+            }
+            this._updateProperty('measure_power.battery', batteryPower);
+
         });
 
-        this.smaApi.on('properties', properties => {
+        this.smaApi.on('properties', async (properties) => {
 
-            this.setSettings({
+            await this.setSettings({
                 deviceType: String(properties.deviceType),
                 serialNo: String(properties.serialNo),
                 swVersion: String(properties.swVersion || 'unknown'),
-                maxPower: String(properties.maxPower || 'unknown'),
-                activePowerLimit: String(properties.activePowerLimit || 'unknown'),
+                maxPower: String(properties.maxPower || _defaultActivePower),
                 gridCountry: String(properties.gridCountry || 'unknown')
-            })
-                .catch(err => {
-                    this.error('Failed to update settings', err);
-                });
+
+            }).catch(err => {
+                this.error('Failed to update settings', err);
+            });
 
             //When properties are read we have the device type needed to know capabilities
-            this.setupCapabilities();
-            this.assignCapabilityNames();
-            this.shouldWeCalculateDailyYield();
+            await this.setupCapabilities();
+            await this.updateCapabilityProperties();
+            await this.shouldWeCalculateDailyYield();
+            await this.setupCapabilityListeners();
+
+            //Update all the required properties first, then we start the timers to get readings
+            this.smaApi.initilializeTimers();
         });
 
-        this.smaApi.on('error', error => {
+        this.smaApi.on('error', (error) => {
             this.error(`[${this.getName()}] Houston we have a problem`, error);
 
             let message = '';
@@ -178,54 +220,48 @@ class InverterDevice extends Device {
         return dailyYield;
     }
 
-    shouldWeCalculateDailyYield() {
+    async shouldWeCalculateDailyYield() {
         const manual = this.smaApi.isDailyYieldManual();
         this.log(`[${this.getName()}] Calculate manual daily yield: '${manual}'`);
-        this.setSettings({
+        await this.setSettings({
             isDailyYieldManual: String(manual || 'false')
-        })
-            .catch(err => {
-                this.error('Failed to update isDailyYieldManual', err);
-            });
+
+        }).catch(err => {
+            this.error('Failed to update isDailyYieldManual', err);
+        });
     }
 
-    assignCapabilityNames() {
+    async updateCapabilityProperties() {
         this.log(`[${this.getName()}] Assigning new capability names`);
-        if (this.hasCapability('measure_voltage.dcA')) {
-            this.setCapabilityOptions('measure_voltage.dcA', { title: { en: this.getSetting('mpp_a_name') } });
-        }
-        if (this.hasCapability('measure_power.dcA')) {
-            this.setCapabilityOptions('measure_power.dcA', { title: { en: this.getSetting('mpp_a_name') } });
-        }
-        if (this.hasCapability('measure_voltage.dcB')) {
-            this.setCapabilityOptions('measure_voltage.dcB', { title: { en: this.getSetting('mpp_b_name') } });
-        }
-        if (this.hasCapability('measure_power.dcB')) {
-            this.setCapabilityOptions('measure_power.dcB', { title: { en: this.getSetting('mpp_b_name') } });
-        }
+        await this.updateCapabilityOptions('measure_voltage.dcA', { title: { en: this.getSetting('mpp_a_name') } });
+        await this.updateCapabilityOptions('measure_power.dcA', { title: { en: this.getSetting('mpp_a_name') } });
+
+        await this.updateCapabilityOptions('measure_voltage.dcB', { title: { en: this.getSetting('mpp_b_name') } });
+        await this.updateCapabilityOptions('measure_power.dcB', { title: { en: this.getSetting('mpp_b_name') } });
+
+        this.log(`[${this.getName()}] Updating max target power to '${this.getSetting('maxPower')}'`);
+        await this.updateCapabilityOptions('target_power', { max: Number(this.getSetting('maxPower')) });
     }
 
-    setupCapabilities() {
+    async setupCapabilities() {
         this.log(`[${this.getName()}] Setting up capabilities`);
 
         let capabilities = this.smaApi.getDeviceCapabilities();
         let capabilityKeys = Object.values(capabilities);
 
-        deviceCapabilitesList.forEach(capability => {
+        for (const capability of deviceCapabilitesList) {
             if (capabilityKeys.includes(capability)) {
                 //Device should have capability
                 if (!this.hasCapability(capability)) {
-                    this.log(`[${this.getName()}] Adding missing capability '${capability}'`);
-                    this.addCapability(capability);
+                    await this.addCapabilityHelper(capability);
                 } else {
                     this.log(`[${this.getName()}] Device has capability '${capability}'`);
                 }
             } else {
                 //Device doesnt have capability, remove it
-                this.log(`[${this.getName()}] Removing capability '${capability}'`);
-                this.removeCapability(capability);
+                await this.removeCapabilityHelper(capability);
             }
-        });
+        }
     }
 
     isError(err) {
@@ -235,27 +271,25 @@ class InverterDevice extends Device {
     _updateProperty(key, value) {
         if (this.hasCapability(key)) {
             let oldValue = this.getCapabilityValue(key);
-            //If oldValue===null then it is a newly added device, lets not trigger flows on that
-            if (oldValue !== null && oldValue != value) {
+            if (oldValue != value) {
                 //this.log(`[${this.getName()}] Updating capability '${key}' from '${oldValue}' to '${value}'`);
                 this.setCapabilityValue(key, value);
 
-                if (key === 'operational_status') {
-                    let tokens = {
-                        inverter_status: value || 'n/a'
-                    }
-                    this._inverter_status_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                //If oldValue===null then it is a newly added device, lets not trigger flows on that
+                if (oldValue !== null) {
+                    if (key === 'operational_status') {
+                        let tokens = {
+                            inverter_status: value || 'n/a'
+                        }
+                        this._inverter_status_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
-                } else if (key === 'operational_status.health') {
-                    let tokens = {
-                        inverter_condition: value || 'n/a'
+                    } else if (key === 'operational_status.health') {
+                        let tokens = {
+                            inverter_condition: value || 'n/a'
+                        }
+                        this._inverter_condition_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
                     }
-                    this._inverter_condition_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
                 }
-            } else {
-                //Update value to show we are doing it in app
-                //this.log(`[${this.getName()}] (NoDiff) Updating capability '${key}' from '${oldValue}' to '${value}'`);
-                this.setCapabilityValue(key, value);
             }
         }
     }
@@ -296,7 +330,39 @@ class InverterDevice extends Device {
         }
 
         if (changeLabel) {
-            this.assignCapabilityNames();
+            await this.updateCapabilityProperties();
+        }
+    }
+
+    async removeCapabilityHelper(capability) {
+        if (this.hasCapability(capability)) {
+            try {
+                this.log(`[${this.getName()}] Remove existing capability '${capability}'`);
+                await this.removeCapability(capability);
+            } catch (reason) {
+                this.error(reason);
+            }
+        }
+    }
+    async addCapabilityHelper(capability) {
+        if (!this.hasCapability(capability)) {
+            try {
+                this.log(`[${this.getName()}] Adding missing capability '${capability}'`);
+                await this.addCapability(capability);
+            } catch (reason) {
+                this.error(reason);
+            }
+        }
+    }
+
+    async updateCapabilityOptions(capability, options) {
+        if (this.hasCapability(capability)) {
+            try {
+                this.log(`[${this.getName()}] Updating capability options '${capability}'`);
+                await this.setCapabilityOptions(capability, options);
+            } catch (reason) {
+                this.error(reason);
+            }
         }
     }
 }

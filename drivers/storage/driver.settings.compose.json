@@ -1,0 +1,48 @@
+[
+    {
+        "type": "group",
+        "label": {
+            "en": "Sunny Boy Storage settings",
+            "nl": "Sunny Boy Storage instellingen",
+            "sv": "Sunny Boy Storage inställningar"
+        },
+        "children": [
+            {
+                "id": "address",
+                "type": "text",
+                "value": "0.0.0.0",
+                "label": {
+                    "en": "IP Address",
+                    "nl": "IP adres",
+                    "sv": "IP adress"
+                }
+            },
+            {
+                "id": "port",
+                "type": "number",
+                "value": 502,
+                "step": 1,
+                "label": {
+                    "en": "Port",
+                    "nl": "Poort",
+                    "sv": "Port"
+                }
+            },
+            {
+                "id": "polling",
+                "type": "number",
+                "value": 10,
+                "step": 1,
+                "attr": {
+                    "min": 2,
+                    "max": 3600
+                },
+                "label": {
+                    "en": "Polling",
+                    "nl": "Polling",
+                    "sv": "Uppdateringsfrekvens"
+                }
+            }
+        ]
+    }
+]

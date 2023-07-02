@@ -1,0 +1,26 @@
+{
+    "id": "isInverterDailyYield",
+    "title": {
+        "en": "Daily yield is !{{|not}} above",
+        "sv": "Dagens produktion är !{{|inte}} mer än"
+    },
+    "titleFormatted": {
+        "en": "Daily yield is !{{|not}} above [[daily_yield]]",
+        "sv": "Dagens produktion är !{{|inte}} mer än [[daily_yield]]"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+        },
+        {
+            "name": "daily_yield",
+            "type": "number",
+            "title": {
+                "en": "Daily yield (kWh)",
+                "sv": "Dagens produktion (kWh)"
+            }
+        }
+    ]
+}

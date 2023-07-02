@@ -1,0 +1,26 @@
+{
+    "id": "isInverterStatus",
+    "title": {
+        "en": "Operational status !{{contains|doesn't contain}}",
+        "sv": "Operationell status innehåller !{{|inte}}"
+    },
+    "titleFormatted": {
+        "en": "Operational status !{{contains|doesn't contain}} [[inverter_status]]",
+        "sv": "Operationell status innehåller !{{|inte}} [[inverter_status]]"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+        },
+        {
+            "name": "inverter_status",
+            "type": "text",
+            "title": {
+                "en": "Operational status",
+                "sv": "Operationell status"
+            }
+        }
+    ]
+}

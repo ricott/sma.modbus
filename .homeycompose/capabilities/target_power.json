@@ -1,0 +1,23 @@
+{
+    "title": {
+        "en": "Target power limit",
+        "sv": "Högsta tillåtna effekt"
+    },
+    "type": "number",
+    "desc": {
+        "en": "The inverters active power limit",
+        "sv": "Växelriktarens aktiva effekt gräns"
+    },
+    "min": 0,
+    "max": 655360,
+    "decimals": 0,
+    "step": 1,
+    "units": {
+        "en": "W"
+    },
+    "setable": true,
+    "getable": true,
+    "insights": true,
+    "uiComponent": "slider",
+    "chartType": "stepLine"
+}

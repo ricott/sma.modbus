@@ -1,0 +1,26 @@
+{
+    "id": "power_condition",
+    "title": {
+        "en": "Power is !{{below|above}}",
+        "sv": "Effekt är !{{under|över}}"
+    },
+    "titleFormatted": {
+        "en": "Power is !{{below|above}} [[power]]",
+        "sv": "Effekt är !{{under|över}} [[power]]"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=inverter"
+        },
+        {
+            "name": "power",
+            "type": "number",
+            "title": {
+                "en": "Power (W)",
+                "sv": "Effekt (W)"
+            }
+        }
+    ]
+}

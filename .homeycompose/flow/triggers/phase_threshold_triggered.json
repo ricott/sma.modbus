@@ -1,0 +1,42 @@
+{
+    "id": "phase_threshold_triggered",
+    "title": {
+        "en": "Phase utilization alert",
+        "sv": "Fasöverbelastning"
+    },
+    "titleFormatted": {
+        "en": "Phase [[phase]] is utilized to [[percentageUtilized]]%",
+        "sv": "Fas [[phase]] är utnyttjad till [[percentageUtilized]]%"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=energy"
+        }
+    ],
+    "tokens": [
+        {
+            "name": "phase",
+            "type": "string",
+            "title": {
+                "en": "Phase",
+                "sv": "Fas"
+            },
+            "example": {
+                "en": "L1"
+            }
+        },
+        {
+            "name": "percentageUtilized",
+            "type": "number",
+            "title": {
+                "en": "Utilized (%)",
+                "sv": "Utnyttjad (%)"
+            },
+            "example": {
+                "en": "98"
+            }
+        }
+    ]
+}

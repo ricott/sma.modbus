@@ -1,0 +1,53 @@
+{
+    "id": "phaseUtilized",
+    "title": {
+        "en": "A phase utilized !{{above|below}}",
+        "sv": "En fas är utnyttjad !{{över|under}}"
+    },
+    "titleFormatted": {
+        "en": "Phase [[phase]] is utilized !{{above|below}} [[utilization]]%",
+        "sv": "Fas [[phase]] är utnyttjad !{{över|under}} [[utilization]]%"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=energy"
+        },
+        {
+            "name": "phase",
+            "type": "dropdown",
+            "values": [
+                {
+                    "id": "L1",
+                    "label": {
+                        "en": "L1",
+                        "sv": "L1"
+                    }
+                },
+                {
+                    "id": "L2",
+                    "label": {
+                        "en": "L2",
+                        "sv": "L2"
+                    }
+                },
+                {
+                    "id": "L3",
+                    "label": {
+                        "en": "L3",
+                        "sv": "L3"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "utilization",
+            "type": "number",
+            "title": {
+                "en": "Utilization (%)",
+                "sv": "Utnyttjad (%)"
+            }
+        }
+    ]
+}

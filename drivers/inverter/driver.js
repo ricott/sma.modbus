@@ -60,16 +60,18 @@ class InverterDriver extends Driver {
             }
         });
 
-        const set_max_active_power = this.homey.flow.getActionCard('set_max_active_power');
-        set_max_active_power.registerRunListener(async (args) => {
-            this.log(`[${args.device.getName()}] Action 'set_max_active_power' triggered`);
+        const set_target_power = this.homey.flow.getActionCard('set_target_power');
+        set_target_power.registerRunListener(async (args) => {
+            this.log(`[${args.device.getName()}] Action 'set_target_power' triggered`);
             this.log(`[${args.device.getName()}] - power: '${args.power}'`);
 
-            return args.device.smaApi.setMaxActivePowerOutput(args.power)
+            // Adjust active power to be <= max power
+            const activePower = Math.min(Number(args.device.getSetting('maxPower')), args.power);
+            return args.device.smaApi.setMaxActivePowerOutput(activePower)
                 .then(function (result) {
                     return Promise.resolve(true);
                 }).catch(reason => {
-                    return Promise.reject(`Failed to limit the max active power output. Reason: ${reason.message}`);
+                    return Promise.reject(`Failed to set the active power output. Reason: ${reason.message}`);
                 });
         });
     }

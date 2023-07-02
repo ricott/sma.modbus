@@ -1,0 +1,33 @@
+{
+    "id": "inverter_condition_changed",
+    "title": {
+        "en": "Condition changed",
+        "nl": "Staat gewijzigd",
+        "sv": "Tillstånd ändrad"
+    },
+    "titleFormatted": {
+        "en": "Condition changed to [[inverter_condition]]",
+        "sv": "Tillstånd ändrades till [[inverter_condition]]"
+    },
+    "tokens": [
+        {
+            "name": "inverter_condition",
+            "type": "string",
+            "title": {
+                "en": "Condition",
+                "nl": "Staat",
+                "sv": "Tillstånd"
+            },
+            "example": {
+                "en": "Ok"
+            }
+        }
+    ],
+    "args": [
+      {
+        "type": "device",
+        "name": "device",
+        "filter": "driver_id=inverter"
+      }
+    ]
+}
