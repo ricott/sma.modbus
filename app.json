@@ -916,6 +916,11 @@
         "small": "drivers/inverter/assets/images/small.png"
       },
       "class": "solarpanel",
+      "energy": {
+        "batteries": [
+          "INTERNAL"
+        ]
+      },
       "capabilities": [
         "measure_battery",
         "target_power",
