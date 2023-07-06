@@ -7,8 +7,8 @@ Supported devices
 - Energy Meter (incl. Home Manager 2)
 - Energy Summary
 
-Inverters
-Ambition is to support all inverters manufactured by SMA. 
+Hybrid/Inverters
+Ambition is to support all inverters manufactured by SMA, including the new Smart Energy hybrid inverters.
 
 Sunny Boy Storage
 Shows operational status, battery, charge, discharge, power drawn, grid feed-in and battery capacity of Sunny Boy Storage products using the modbus protocol.

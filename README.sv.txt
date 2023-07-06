@@ -7,11 +7,11 @@ Enheter som stöds
 - Elmätare
 - Energisammanställning
 
-Växelriktare
-Ambitionen är att stödja alla SMA växelriktare
+Hybrid/Växelriktare
+Ambitionen är att stödja alla SMA växelriktare, inklusive de nya Smart Energy hybridväxelriktarna.
 
-Hybridväxelriktare
-Sunny Boy Storage är den enda testade hybridväxelriktaren
+Batteriväxelriktare
+Sunny Boy Storage är den enda testade batteriväxelriktaren
 
 Elmätare
 För elmätare stöds både SMA Energy Meter och Home Manager 2. Denna enhet visas också som en smart meter i Homey Energi.
