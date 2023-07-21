@@ -1,4 +1,8 @@
 {
+    "2.5.4": {
+        "en": "Voltage for all three phases are now available for energy devices",
+        "sv": "Spänning för alla tre faser är nu tillgängliga för energi enheter"
+    },
     "2.5.3": {
         "en": "It is now possible to set the max active power output for an inverter",
         "sv": "Det är nu möjligt att begränsa den högsta möjliga ut-effekten på en växelriktare"

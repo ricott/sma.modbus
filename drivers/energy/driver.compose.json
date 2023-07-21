@@ -13,10 +13,13 @@
         "measure_power.surplus",
         "measure_power.L1",
         "measure_current.L1",
+        "measure_voltage.L1",
         "measure_power.L2",
         "measure_current.L2",
+        "measure_voltage.L2",
         "measure_power.L3",
         "measure_current.L3",
+        "measure_voltage.L3",
         "frequency",
         "meter_power",
         "meter_power.export"
@@ -46,6 +49,12 @@
                 "sv": "L1 ström"
             }
         },
+        "measure_voltage.L1": {
+            "title": {
+                "en": "L1 voltage",
+                "sv": "L1 spänning"
+            }
+        },
         "measure_power.L2": {
             "title": {
                 "en": "L2 power",
@@ -58,6 +67,12 @@
                 "sv": "L2 ström"
             }
         },
+        "measure_voltage.L2": {
+            "title": {
+                "en": "L2 voltage",
+                "sv": "L2 spänning"
+            }
+        },
         "measure_power.L3": {
             "title": {
                 "en": "L3 power",
@@ -68,6 +83,12 @@
             "title": {
                 "en": "L3 current",
                 "sv": "L3 ström"
+            }
+        },
+        "measure_voltage.L3": {
+            "title": {
+                "en": "L3 voltage",
+                "sv": "L3 spänning"
             }
         },
         "meter_power": {

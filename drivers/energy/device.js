@@ -33,11 +33,15 @@ class EnergyDevice extends Device {
 
     async upgradeDevice() {
         this.log('Upgrading existing device');
-        //v2.0.9 added frequency capability, lets add it to existing devices
+        // v2.0.9 added frequency capability, lets add it to existing devices
         await this.addCapabilityHelper('frequency');
-        //v2.4.1 added meter_power import and export
+        // v2.4.1 added meter_power import and export
         await this.addCapabilityHelper('meter_power');
         await this.addCapabilityHelper('meter_power.export');
+        // v2.5.4 add voltage for all three phases
+        await this.addCapabilityHelper('measure_voltage.L1');
+        await this.addCapabilityHelper('measure_voltage.L2');
+        await this.addCapabilityHelper('measure_voltage.L3');
     }
 
     async removeCapabilityHelper(capability) {
@@ -101,10 +105,13 @@ class EnergyDevice extends Device {
 
             this._updateProperty('measure_power.L1', (readings.pregardL1 - readings.psurplusL1));
             this._updateProperty('measure_current.L1', readings.currentL1);
+            this._updateProperty('measure_voltage.L1', readings.voltageL1);
             this._updateProperty('measure_power.L2', (readings.pregardL2 - readings.psurplusL2));
             this._updateProperty('measure_current.L2', readings.currentL2);
+            this._updateProperty('measure_voltage.L2', readings.voltageL2);
             this._updateProperty('measure_power.L3', (readings.pregardL3 - readings.psurplusL3));
             this._updateProperty('measure_current.L3', readings.currentL3);
+            this._updateProperty('measure_voltage.L3', readings.voltageL3);
             this._updateProperty('frequency', readings.frequency);
 
             this._updateProperty('meter_power', readings.pregardcounter);
