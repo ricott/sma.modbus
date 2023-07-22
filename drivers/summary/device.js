@@ -104,7 +104,7 @@ class SummaryDevice extends Device {
             power_MPPA = power_MPPA + inverter.getCapabilityValue('measure_power.dcA') || 0;
             power_MPPB = power_MPPB + inverter.getCapabilityValue('measure_power.dcB') || 0;
             lifetime_yield = lifetime_yield + inverter.getCapabilityValue('measure_yield');
-            // New hybrid inverters ST PSE have a battery
+            // New hybrid inverters ST PSE have a battery + SBS and SI
             batteryPower = batteryPower + inverter.getCapabilityValue('measure_power.battery') || 0;
         }
 

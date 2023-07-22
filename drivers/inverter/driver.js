@@ -111,9 +111,12 @@ class InverterDriver extends Driver {
 
                 //We can find multiple inverters, this method is called once per inverter found
                 discoveryQuery.on('deviceInfo', inverterInfo => {
-                    //8001: Solar Inverters (DevClss1)
-                    //Filter out storage devices, etc
-                    if (inverterInfo.deviceClass == 8001) {
+                    // 8001: Solar Inverters (DevClss1)
+                    // 8007: Battery Inverter (DevClss7)
+                    // 8009: Hybrid inverter (DevClss9)
+                    if (inverterInfo.deviceClass == 8001 || 
+                        inverterInfo.deviceClass == 8007 ||
+                        inverterInfo.deviceClass == 8009) {
                         if (self.isNewInverter(inverterInfo.serialNo)) {
                             self.log(`Adding to devices: ${inverterInfo.deviceType}`);
                             devices.push({

@@ -1,4 +1,8 @@
 {
+    "2.5.5": {
+        "en": "Battery inverters can be added using the inverter device type",
+        "sv": "Batteriväxelriktare kan läggas till med växelriktar enhetstypen"
+    },
     "2.5.4": {
         "en": "Voltage for all three phases are now available for energy devices",
         "sv": "Spänning för alla tre faser är nu tillgängliga för energi enheter"

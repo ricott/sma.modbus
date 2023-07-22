@@ -17,6 +17,7 @@ const deviceCapabilitesList = [
     'measure_yield',
     'operational_status.health',
     'operational_status',
+    'operational_status.battery',
     'measure_voltage.dcA',
     'measure_voltage.dcB',
     'measure_power.dcA',
@@ -115,6 +116,9 @@ class InverterDevice extends Device {
             //Value here would be UNKNOW (0)
             if (readings.status && readings.status.indexOf('(0)') == -1) {
                 this._updateProperty('operational_status', readings.status);
+            }
+            if (readings.batteryStatus && readings.batteryStatus.indexOf('(0)') == -1) {
+                this._updateProperty('operational_status.battery', readings.batteryStatus);
             }
             this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
             this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);

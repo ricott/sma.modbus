@@ -20,6 +20,7 @@
     "measure_power.battery",
     "operational_status.health",
     "operational_status",
+    "operational_status.battery",
     "measure_voltage.dcA",
     "measure_voltage.dcB",
     "measure_power.dcA",
@@ -98,6 +99,12 @@
       "title": {
         "en": "Battery",
         "sv": "Batteri"
+      }
+    },
+    "operational_status.battery": {
+      "title": {
+        "en": "Battery status",
+        "sv": "Batteristatus"
       }
     }
   },

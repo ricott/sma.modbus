@@ -5,28 +5,17 @@ var net = require('net');
 const decodeData = require('../lib/decodeData.js');
 
 let socket = new net.Socket();
-let client = new modbus.client.TCP(socket, 3, 5000);
+let client = new modbus.client.TCP(socket, 2, 5000);
 let options = {
-    host: "192.168.200.249",
+    host: '192.168.200.241',
     port: 502,
 };
-
-let buffer = Buffer.alloc(4);
-buffer.writeUInt16BE(0, 0);
-buffer.writeUInt16BE(18000, 2);
-//console.log(buffer);
 
 socket.on('connect', function () {
     console.log(`Client connected on IP '${options.host}'`);
     Promise.all([
 
-        //client.writeMultipleRegisters(30233, buffer)
-        // client.writeMultipleRegisters(30837, buffer)
-        //client.readHoldingRegisters(30837, 2)
-        //client.writeMultipleRegisters(40915, buffer)
-        //client.readHoldingRegisters(40915, 2)
-        //client.readHoldingRegisters(41217, 2) //Makes zero export possible?
-        //client.writeMultipleRegisters(41217, buffer)
+        client.readHoldingRegisters(30865, 2)
 
     ]).then((results) => {
 
