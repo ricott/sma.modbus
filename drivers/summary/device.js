@@ -140,14 +140,21 @@ class SummaryDevice extends Device {
     }
 
     _updateProperty(key, value) {
-        if (this.hasCapability(key)) {
-            let oldValue = this.getCapabilityValue(key);
-            if (oldValue != value) {
-                this.setCapabilityValue(key, value);
-                //Placeholder for trigger logic
+        let self = this;
+        if (self.hasCapability(key)) {
+            if (typeof value !== 'undefined' && value !== null) {
+                self.setCapabilityValue(key, value)
+                    .catch(reason => {
+                        self.error(reason);
+                    });
 
+            } else {
+                self.log(`[${self.getName()}] Value for capability '${key}' is 'undefined'`);
             }
         }
+        // else {
+        //     self.log(`[${self.getName()}] Trying to set value for missing capability '${key}'`);
+        // }
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {

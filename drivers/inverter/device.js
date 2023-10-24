@@ -125,7 +125,7 @@ class InverterDevice extends Device {
             this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
             this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
 
-            this._updateProperty('measure_battery', readings.batterySoC || 0);
+            this._updateProperty('measure_battery', Number.isNaN(readings.batterySoC) ? 0 : readings.batterySoC);
             //Adjust active power to be <= max power
             const activePower = Math.min(Number(this.getSetting('maxPower')), readings.targetPower || 0);
             this._updateProperty('target_power', activePower);
@@ -273,29 +273,45 @@ class InverterDevice extends Device {
     }
 
     _updateProperty(key, value) {
-        if (this.hasCapability(key)) {
-            let oldValue = this.getCapabilityValue(key);
-            if (oldValue != value) {
-                //this.log(`[${this.getName()}] Updating capability '${key}' from '${oldValue}' to '${value}'`);
-                this.setCapabilityValue(key, value);
+        let self = this;
+        if (self.hasCapability(key)) {
+            if (typeof value !== 'undefined' && value !== null) {
+                let oldValue = self.getCapabilityValue(key);
+                if (oldValue !== null && oldValue != value) {
 
-                //If oldValue===null then it is a newly added device, lets not trigger flows on that
-                if (oldValue !== null) {
-                    if (key === 'operational_status') {
-                        let tokens = {
-                            inverter_status: value || 'n/a'
-                        }
-                        this._inverter_status_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    self.setCapabilityValue(key, value)
+                        .then(function () {
 
-                    } else if (key === 'operational_status.health') {
-                        let tokens = {
-                            inverter_condition: value || 'n/a'
-                        }
-                        this._inverter_condition_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
-                    }
+                            if (key === 'operational_status') {
+                                let tokens = {
+                                    inverter_status: value || 'n/a'
+                                }
+                                self._inverter_status_changed.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            } else if (key === 'operational_status.health') {
+                                let tokens = {
+                                    inverter_condition: value || 'n/a'
+                                }
+                                self._inverter_condition_changed.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                            }
+
+                        }).catch(reason => {
+                            self.error(reason);
+                        });
+                } else {
+                    self.setCapabilityValue(key, value)
+                        .catch(reason => {
+                            self.error(reason);
+                        });
                 }
+
+            } else {
+                self.log(`[${self.getName()}] Value for capability '${key}' is 'undefined'`);
             }
         }
+        // else {
+        //     self.log(`[${self.getName()}] Trying to set value for missing capability '${key}'`);
+        // }
     }
 
     onDeleted() {

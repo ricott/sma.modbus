@@ -97,15 +97,21 @@ class PVOutputDevice extends Homey.Device {
   }
 
   _updateProperty(key, value) {
-    if (this.hasCapability(key)) {
-      let oldValue = this.getCapabilityValue(key);
-      if (oldValue !== null && oldValue != value) {
-        this.setCapabilityValue(key, value);
+    let self = this;
+    if (self.hasCapability(key)) {
+      if (typeof value !== 'undefined' && value !== null) {
+        self.setCapabilityValue(key, value)
+          .catch(reason => {
+            self.error(reason);
+          });
 
       } else {
-        this.setCapabilityValue(key, value);
+        self.log(`[${self.getName()}] Value for capability '${key}' is 'undefined'`);
       }
     }
+    // else {
+    //   self.log(`[${self.getName()}] Trying to set value for missing capability '${key}'`);
+    // }
   }
 
   onDeleted() {
