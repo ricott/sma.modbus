@@ -9,22 +9,23 @@ const socket = new net.Socket();
 class SmaModbusStorageDevice extends Device {
 
     async onInit() {
+        let self = this;
         // Register device triggers
-        this._changedOperationalStatus = this.homey.flow.getDeviceTriggerCard('changedOperationalStatus');
-        this._changedBattery = this.homey.flow.getDeviceTriggerCard('changedBattery');
-        this._changedBatteryCharging = this.homey.flow.getDeviceTriggerCard('changedBatteryCharging');
-        this._changedBatteryDischarging = this.homey.flow.getDeviceTriggerCard('changedBatteryDischarging');
-        this._changedPowerDrawn = this.homey.flow.getDeviceTriggerCard('changedPowerDrawn');
-        this._changedPowerGridFeedin = this.homey.flow.getDeviceTriggerCard('changedPowerGridFeedin');
-        this._changedBatteryCapacity = this.homey.flow.getDeviceTriggerCard('changedBatteryCapacity');
+        self._changedOperationalStatus = self.homey.flow.getDeviceTriggerCard('changedOperationalStatus');
+        self._changedBattery = self.homey.flow.getDeviceTriggerCard('changedBattery');
+        self._changedBatteryCharging = self.homey.flow.getDeviceTriggerCard('changedBatteryCharging');
+        self._changedBatteryDischarging = self.homey.flow.getDeviceTriggerCard('changedBatteryDischarging');
+        self._changedPowerDrawn = self.homey.flow.getDeviceTriggerCard('changedPowerDrawn');
+        self._changedPowerGridFeedin = self.homey.flow.getDeviceTriggerCard('changedPowerGridFeedin');
+        self._changedBatteryCapacity = self.homey.flow.getDeviceTriggerCard('changedBatteryCapacity');
 
         let options = {
-            'host': this.getSetting('address'),
-            'port': this.getSetting('port'),
+            'host': self.getSetting('address'),
+            'port': self.getSetting('port'),
             'unitId': 3,
             'timeout': 5000,
             'autoReconnect': true,
-            'reconnectTimeout': this.getSetting('polling'),
+            'reconnectTimeout': self.getSetting('polling'),
             'logLabel': 'SMA Sunny Boy Storage',
             'logLevel': 'error',
             'logEnabled': false
@@ -34,9 +35,9 @@ class SmaModbusStorageDevice extends Device {
         socket.connect(options);
 
         socket.on('connect', () => {
-            this.log('Connected ...');
+            self.log('Connected ...');
 
-            this.pollingInterval = this.homey.setInterval(() => {
+            self.pollingInterval = self.homey.setInterval(() => {
                 Promise.all([
                     client.readHoldingRegisters(30955, 2),
                     client.readHoldingRegisters(30845, 2),
@@ -61,145 +62,184 @@ class SmaModbusStorageDevice extends Device {
                     //31401, Battery discharge, Wh (U64, FIX0)
 
                     // OPERATIONAL STATUS
-                    if (this.getCapabilityValue('operational_status') != this.homey.__('Off') && operational_code == 303) {
-                        this.setCapabilityValue('operational_status', this.homey.__('Off'));
-                        let tokens = {
-                            status: this.homey.__('Off')
-                        }
-                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('operational_status') != self.homey.__('Off') && operational_code == 303) {
+                        self.setCapabilityValue('operational_status', self.homey.__('Off'))
+                            .then(function () {
 
-                    } else if (this.getCapabilityValue('operational_status') != this.homey.__('Standby') && operational_code == 2291) {
-                        this.setCapabilityValue('operational_status', this.homey.__('Standby'));
-                        let tokens = {
-                            status: this.homey.__('Standby')
-                        }
-                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                                let tokens = {
+                                    status: self.homey.__('Off')
+                                }
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
 
-                    } else if (this.getCapabilityValue('operational_status') != this.homey.__('Charge') && operational_code == 2292) {
-                        this.setCapabilityValue('operational_status', this.homey.__('Charge'));
-                        let tokens = {
-                            status: this.homey.__('Charge')
-                        }
-                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
 
-                    } else if (this.getCapabilityValue('operational_status') != this.homey.__('Discharge') && operational_code == 2293) {
-                        this.setCapabilityValue('operational_status', this.homey.__('Discharge'));
-                        let tokens = {
-                            status: this.homey.__('Discharge')
-                        }
-                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    } else if (self.getCapabilityValue('operational_status') != self.homey.__('Standby') && operational_code == 2291) {
+                        self.setCapabilityValue('operational_status', self.homey.__('Standby'))
+                            .then(function () {
 
-                    } else if (this.getCapabilityValue('operational_status') != this.homey.__('NA') && operational_code == 16777213) {
-                        this.setCapabilityValue('operational_status', this.homey.__('NA'));
-                        let tokens = {
-                            status: this.homey.__('NA')
-                        }
-                        this._changedOperationalStatus.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                                let tokens = {
+                                    status: self.homey.__('Standby')
+                                }
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
+
+                    } else if (self.getCapabilityValue('operational_status') != self.homey.__('Charge') && operational_code == 2292) {
+                        self.setCapabilityValue('operational_status', self.homey.__('Charge'))
+                            .then(function () {
+
+                                let tokens = {
+                                    status: self.homey.__('Charge')
+                                }
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
+
+                    } else if (self.getCapabilityValue('operational_status') != self.homey.__('Discharge') && operational_code == 2293) {
+                        self.setCapabilityValue('operational_status', self.homey.__('Discharge'))
+                            .then(function () {
+
+                                let tokens = {
+                                    status: self.homey.__('Discharge')
+                                }
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
+
+                    } else if (self.getCapabilityValue('operational_status') != self.homey.__('NA') && operational_code == 16777213) {
+                        self.setCapabilityValue('operational_status', self.homey.__('NA'))
+                            .then(function () {
+
+                                let tokens = {
+                                    status: self.homey.__('NA')
+                                }
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                     // BATTERY
-                    if (this.getCapabilityValue('battery') != battery) {
-                        this.setCapabilityValue('battery', battery);
-                        let tokens = {
-                            charge: battery
-                        }
-                        this._changedBattery.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('battery') != battery) {
+                        self.setCapabilityValue('battery', battery)
+                            .then(function () {
+
+                                let tokens = {
+                                    charge: battery
+                                }
+                                self._changedBattery.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                     // MEASURE_POWER: CHARGE
-                    if (this.getCapabilityValue('measure_power.charge') != charge) {
-                        this.setCapabilityValue('measure_power.charge', charge);
-                        let tokens = {
-                            charging: charge
-                        }
-                        this._changedBatteryCharging.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('measure_power.charge') != charge) {
+                        self.setCapabilityValue('measure_power.charge', charge)
+                            .then(function () {
+
+                                let tokens = {
+                                    charging: charge
+                                }
+                                self._changedBatteryCharging.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                     // MEASURE_POWER: DISCHARGE
-                    if (this.getCapabilityValue('measure_power.discharge') != discharge) {
-                        this.setCapabilityValue('measure_power.discharge', discharge);
-                        let tokens = {
-                            discharging: discharge
-                        }
-                        this._changedBatteryDischarging.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('measure_power.discharge') != discharge) {
+                        self.setCapabilityValue('measure_power.discharge', discharge)
+                            .then(function () {
+
+                                let tokens = {
+                                    discharging: discharge
+                                }
+                                self._changedBatteryDischarging.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                     // POWER DRAWN
-                    if (this.getCapabilityValue('power_drawn') != power_drawn) {
-                        this.setCapabilityValue('power_drawn', power_drawn);
-                        let tokens = {
-                            drawn: power_drawn
-                        }
-                        this._changedPowerDrawn.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('power_drawn') != power_drawn) {
+                        self.setCapabilityValue('power_drawn', power_drawn)
+                            .then(function () {
+
+                                let tokens = {
+                                    drawn: power_drawn
+                                }
+                                self._changedPowerDrawn.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                     // POWERGRID FEED IN
-                    if (this.getCapabilityValue('powergrid_feed_in') != powergrid_feed_in) {
-                        this.setCapabilityValue('powergrid_feed_in', powergrid_feed_in);
-                        let tokens = {
-                            feedin: powergrid_feed_in
-                        }
-                        this._changedPowerGridFeedin.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('powergrid_feed_in') != powergrid_feed_in) {
+                        self.setCapabilityValue('powergrid_feed_in', powergrid_feed_in)
+                            .then(function () {
+
+                                let tokens = {
+                                    feedin: powergrid_feed_in
+                                }
+                                self._changedPowerGridFeedin.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                     // BATTERY CAPACITY
-                    if (this.getCapabilityValue('battery_capacity') != battery_capacity) {
-                        this.setCapabilityValue('battery_capacity', battery_capacity);
-                        let tokens = {
-                            capacity: battery_capacity
-                        }
-                        this._changedBatteryCapacity.trigger(this, tokens, {}).catch(error => { this.error(error) });
+                    if (self.getCapabilityValue('battery_capacity') != battery_capacity) {
+                        self.setCapabilityValue('battery_capacity', battery_capacity)
+                            .then(function () {
+
+                                let tokens = {
+                                    capacity: battery_capacity
+                                }
+                                self._changedBatteryCapacity.trigger(self, tokens, {}).catch(error => { self.error(error) });
+
+                            }).catch(reason => {
+                                self.error(reason);
+                            });
                     }
 
                 }).catch((err) => {
-                    this.log(err);
+                    self.log(err);
                 })
-            }, this.getSetting('polling') * 1000)
-
-        })
+            }, self.getSetting('polling') * 1000);
+        });
 
         socket.on('error', (err) => {
-            this.log(err);
+            self.log(err);
             socket.end();
         })
 
         socket.on('close', () => {
-            this.log('Client closed, retrying in 63 seconds');
+            self.log('Client closed, retrying in 63 seconds');
 
-            this.homey.clearInterval(this.pollingInterval);
-            this.homey.setTimeout(() => {
+            self.homey.clearInterval(self.pollingInterval);
+            self.homey.setTimeout(() => {
                 socket.connect(options);
-                this.log('Reconnecting now ...');
+                self.log('Reconnecting now ...');
             }, 63000)
         })
 
     }
-
-    onDeleted() {
-        this.log(`Deleting SMA storage '${this.getName()}' from Homey.`);
-    }
-
-    async onSettings({ oldSettings, newSettings, changedKeys }) {
-        let change = false;
-        if (changedKeys.indexOf("address") > -1) {
-            this.log('Address value was change to:', newSettings.address);
-            change = true;
-        }
-        if (changedKeys.indexOf("port") > -1) {
-            this.log('Port value was change to:', newSettings.port);
-            change = true;
-        }
-        if (changedKeys.indexOf("polling") > -1) {
-            this.log('Polling value was change to:', newSettings.polling);
-            change = true;
-        }
-
-        if (change) {
-            //We need to re-initialize the SMA session since setting(s) are changed
-            //TODO 
-        }
-    }
-
 }
 
 module.exports = SmaModbusStorageDevice;
