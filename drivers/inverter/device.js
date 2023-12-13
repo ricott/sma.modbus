@@ -207,7 +207,10 @@ class InverterDevice extends Device {
     }
 
     async resetDailyYield() {
-        await this.setStoreValue('totalYieldAtMidnight', 0);
+        await this.setStoreValue('totalYieldAtMidnight', 0)
+            .catch(reason => {
+                this.error(reason);
+            });
     }
 
     async calculateDailyYield(totalYield) {
@@ -215,7 +218,10 @@ class InverterDevice extends Device {
         let totalYieldAtMidnight = this.getStoreValue('totalYieldAtMidnight') || 0;
         if (totalYieldAtMidnight == 0) {
             this.log(`[${this.getName()}] Total yield store value is '0', setting it to '${totalYield}'`);
-            await this.setStoreValue('totalYieldAtMidnight', totalYield);
+            await this.setStoreValue('totalYieldAtMidnight', totalYield)
+                .catch(reason => {
+                    this.error(reason);
+                });
             return 0;
         }
 

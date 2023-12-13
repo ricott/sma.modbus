@@ -1,4 +1,8 @@
 {
+    "2.5.8": {
+        "en": "Support for the Tripower X inverters",
+        "sv": "Stöd för Tripower X växelriktare"
+    },
     "2.5.7": {
         "en": "Battery inverters can be added using the inverter device type",
         "sv": "Batteriväxelriktare kan läggas till med växelriktar enhetstypen"
