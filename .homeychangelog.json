@@ -1,4 +1,8 @@
 {
+    "2.5.9": {
+        "en": "Support for the Tripower CORE1 inverters",
+        "sv": "Stöd för Tripower CORE1 växelriktare"
+    },
     "2.5.8": {
         "en": "Support for the Tripower X inverters",
         "sv": "Stöd för Tripower X växelriktare"
