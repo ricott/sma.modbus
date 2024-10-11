@@ -42,22 +42,26 @@
     },
     "measure_voltage.dcA": {
       "title": {
-        "en": "MPP A (DC)"
+        "en": "MPP A (DC) voltage",
+        "sv": "MPP A (DC) spänning"
       }
     },
     "measure_voltage.dcB": {
       "title": {
-        "en": "MPP B (DC)"
+        "en": "MPP B (DC) voltage",
+        "sv": "MPP B (DC) spänning"
       }
     },
     "measure_power.dcA": {
       "title": {
-        "en": "MPP A (DC)"
+        "en": "MPP A (DC) power",
+        "sv": "MPP A (DC) effekt"
       }
     },
     "measure_power.dcB": {
       "title": {
-        "en": "MPP B (DC)"
+        "en": "MPP B (DC) power",
+        "sv": "MPP B (DC) effekt"
       }
     },
     "measure_power": {
@@ -97,8 +101,8 @@
     },
     "measure_power.battery": {
       "title": {
-        "en": "Battery",
-        "sv": "Batteri"
+        "en": "Battery power",
+        "sv": "Batteri effekt"
       }
     },
     "operational_status.battery": {
