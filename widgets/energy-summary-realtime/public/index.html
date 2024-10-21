@@ -1,0 +1,131 @@
+<html>
+
+<head>
+  <style>
+    .container {
+      display: flex;
+      justify-content: space-around;
+      /* Space between the two items */
+      flex-wrap: wrap;
+      /* Allows items to wrap to the next line */
+    }
+
+    .item-container {
+      margin: 10px 0px;
+      /*flex: 1 1 30%;  Each item takes 30% of the width (adjust as needed) 
+        max-width: 30%;*/
+      flex: 1 1 45%;
+      max-width: 45%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      /* column */
+      /* Ensures elements inside stack vertically */
+      align-items: center;
+      /* Center items horizontally within the container */
+      text-align: center;
+      /* Ensures text aligns in the center */
+    }
+
+    .power-text {
+      margin-left: var(--homey-su-2);
+      font-size: var(--homey-font-size-xlarge);
+      font-weight: var(--homey-font-weight-medium);
+      line-height: var(--homey-line-height-xlarge);
+    }
+
+    .power-text::after {
+      content: ' W';
+    }
+
+    .homey-custom-icon-grid {
+      --homey-icon-size: 40px;
+
+      -webkit-mask-image: url('icons/grid.svg');
+      mask-image: url('icons/grid.svg');
+    }
+
+    .homey-custom-icon-pv {
+      --homey-icon-size: 40px;
+
+      -webkit-mask-image: url('icons/sun.svg');
+      mask-image: url('icons/sun.svg');
+    }
+
+    .homey-custom-icon-battery {
+      --homey-icon-size: 40px;
+
+      -webkit-mask-image: url('icons/battery.svg');
+      mask-image: url('icons/battery.svg');
+    }
+
+    .homey-custom-icon-load {
+      --homey-icon-size: 40px;
+
+      -webkit-mask-image: url('icons/house.svg');
+      mask-image: url('icons/house.svg');
+    }
+  </style>
+</head>
+
+<body class="homey-widget">
+
+  <div id="summary" class="container">
+    <div class="item-container">
+      <div class="homey-custom-icon-load"></div>
+      <div id="load-power" class="power-text"></div>
+    </div>
+    <div class="item-container">
+      <div class="homey-custom-icon-grid"></div>
+      <div id="grid-power" class="power-text"></div>
+    </div>
+    <div class="item-container">
+      <div class="homey-custom-icon-pv"></div>
+      <div id="pv-power" class="power-text"></div>
+    </div>
+    <div class="item-container">
+      <div class="homey-custom-icon-battery"></div>
+      <div id="battery-power" class="power-text"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // const $summaryContainer = document.getElementById('summary');
+    const $pvPower = document.getElementById('pv-power');
+    const $gridPower = document.getElementById('grid-power');
+    const $batteryPower = document.getElementById('battery-power');
+    const $loadPower = document.getElementById('load-power');
+
+    function onHomeyReady(Homey) {
+
+      Homey.on('summary.update', (data) => {
+        $pvPower.textContent = data.power?.pv;
+        $gridPower.textContent = data.power?.grid;
+        $batteryPower.textContent = data.power?.battery;
+        $loadPower.textContent = data.power?.load;
+      });
+
+      // Fetch something from your app.
+      Homey.api('GET', '/', {})
+        .then((data) => {
+          $pvPower.textContent = data.power?.pv;
+          $gridPower.textContent = data.power?.grid;
+          $batteryPower.textContent = data.power?.battery;
+          $loadPower.textContent = data.power?.load;
+        })
+        .catch(err => {
+          console.error(err);
+          if (err.message?.indexOf('Could not get device by device data') > -1) {
+            $summaryContainer.innerHTML = '<div>SMA Summary device is missing</div>';
+          } else {
+            $summaryContainer.innerHTML = `<div>ERROR: ${err.message}</div>`;
+          }
+        })
+        .finally(() => {
+          Homey.ready();
+        });
+    }
+  </script>
+</body>
+
+</html>

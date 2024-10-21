@@ -2,7 +2,7 @@
   "id": "sma.modbus",
   "sdk": 3,
   "version": "2.6.4",
-  "compatibility": ">=5.0.0",
+  "compatibility": ">=12.1.2",
   "name": {
     "en": "SMA Energy",
     "sv": "SMA Energy"

@@ -1,0 +1,13 @@
+{
+  "name": {
+    "en": "Realtime Energy Summary"
+  },
+  "height": 160,
+  "settings": [],
+  "api": {
+    "getSummary": {
+      "method": "GET",
+      "path": "/"
+    }
+  }
+}

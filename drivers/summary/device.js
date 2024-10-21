@@ -130,6 +130,15 @@ class SummaryDevice extends Device {
 
         const lifetime_consumption = (lifetime_import + lifetime_yield) - lifetime_export;
         this._updateProperty('meter_power', lifetime_consumption);
+
+        this.homey.api.realtime('summary.update', {
+            power: {
+                grid: grid,
+                pv: power_pv,
+                load: consumption,
+                battery: battery
+            }
+        });
     }
 
     _initilializeTimers() {
