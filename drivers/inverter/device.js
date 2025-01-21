@@ -104,12 +104,12 @@ class InverterDevice extends Device {
             this._updateProperty('measure_voltage.l3', readings.acVoltageL3 || 0);
             //Ignore occasional 0 values for the total yield
             if (readings.totalYield && readings.totalYield > 0) {
-                this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield || 0.0));
+                this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield));
             }
 
             //New capabilities
             if (readings.condition && !readings.condition.startsWith('UNKNOWN')) {
-                this._updateProperty('operational_status.health', readings.condition || 'n/a');
+                this._updateProperty('operational_status.health', readings.condition);
             }
             //Skip the odd redings that sometimes appear that show 0 as condition
             //There is no mapping for 0, so it is an unknown value

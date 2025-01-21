@@ -1,4 +1,8 @@
 {
+    "2.6.5": {
+        "en": "Support for the Sunny Boy Smart Energy inverters",
+        "sv": "Stöd för Sunny Boy Smart Energy växelriktare"
+    },
     "2.6.4": {
         "en": "Energy Summary widget",
         "sv": "Energisammanställnings widget"
