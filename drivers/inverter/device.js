@@ -20,8 +20,10 @@ const deviceCapabilitesList = [
     'operational_status.battery',
     'measure_voltage.dcA',
     'measure_voltage.dcB',
+    'measure_voltage.dcC',
     'measure_power.dcA',
-    'measure_power.dcB'
+    'measure_power.dcB',
+    'measure_power.dcC'
 ];
 
 const _defaultActivePower = 50000;
@@ -122,8 +124,10 @@ class InverterDevice extends Device {
             }
             this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
             this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
+            this._updateProperty('measure_voltage.dcC', readings.dcVoltageC || 0);
             this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
             this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
+            this._updateProperty('measure_power.dcC', readings.dcPowerC || 0);
 
             this._updateProperty('measure_battery', Number.isNaN(readings.batterySoC) ? 0 : readings.batterySoC);
             //Adjust active power to be <= max power
@@ -249,6 +253,9 @@ class InverterDevice extends Device {
         await this.updateCapabilityOptions('measure_voltage.dcB', { title: { en: this.getSetting('mpp_b_name') } });
         await this.updateCapabilityOptions('measure_power.dcB', { title: { en: this.getSetting('mpp_b_name') } });
 
+        await this.updateCapabilityOptions('measure_voltage.dcC', { title: { en: this.getSetting('mpp_c_name') } });
+        await this.updateCapabilityOptions('measure_power.dcC', { title: { en: this.getSetting('mpp_c_name') } });
+
         this.log(`[${this.getName()}] Updating max target power to '${this.getSetting('maxPower')}'`);
         await this.updateCapabilityOptions('target_power', { max: Number(this.getSetting('maxPower')) });
     }
@@ -315,9 +322,6 @@ class InverterDevice extends Device {
                 self.log(`[${self.getName()}] Value for capability '${key}' is 'undefined'`);
             }
         }
-        // else {
-        //     self.log(`[${self.getName()}] Trying to set value for missing capability '${key}'`);
-        // }
     }
 
     onDeleted() {
@@ -347,6 +351,10 @@ class InverterDevice extends Device {
         }
         if (changedKeys.indexOf("mpp_b_name") > -1) {
             this.log(`[${this.getName()}] MPP B name was change to '${newSettings.mpp_b_name}'`);
+            changeLabel = true;
+        }
+        if (changedKeys.indexOf("mpp_c_name") > -1) {
+            this.log(`[${this.getName()}] MPP C name was change to '${newSettings.mpp_c_name}'`);
             changeLabel = true;
         }
 

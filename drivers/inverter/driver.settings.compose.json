@@ -58,6 +58,14 @@
                 "label": {
                     "en": "MPP B Name"
                 }
+            },
+            {
+                "id": "mpp_c_name",
+                "type": "text",
+                "value": "MPP C (DC)",
+                "label": {
+                    "en": "MPP C Name"
+                }
             }
         ]
     },

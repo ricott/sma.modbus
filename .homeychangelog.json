@@ -1,7 +1,7 @@
 {
     "2.6.6": {
-        "en": "Maintenance",
-        "sv": "Underhåll"
+        "en": "Added support for MPP C voltage and power for inverters with 3 MPPs",
+        "sv": "Lade till stöd för MPP C spänning och effekt för växelriktare med 3 MPPs"
     },
     "2.6.5": {
         "en": "Support for the Sunny Boy Smart Energy inverters",
