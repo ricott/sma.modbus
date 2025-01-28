@@ -144,10 +144,18 @@ class InverterDriver extends Driver {
                 self.#sleep(6000).then(() => {
                     if (devices.length === 0) {
                         self.log('No (new) inverters found using auto-discovery, show manual entry');
-                        session.showView('settings');
+                        try {
+                            session.showView('settings');
+                        } catch (error) {
+                            self.log('Error showing settings view', error);
+                        }
                     } else {
                         self.log(`Found '${devices.length}' inverter(s)`);
-                        session.showView('list_devices');
+                        try {
+                            session.showView('list_devices');
+                        } catch (error) {
+                            self.log('Error showing list_devices view', error);
+                        }
                     }
                 }).catch(reason => {
                     self.log('Timeout error', reason);

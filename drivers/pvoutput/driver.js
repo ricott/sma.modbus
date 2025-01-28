@@ -15,7 +15,11 @@ class PVOutputDriver extends Driver {
 
     session.setHandler('settings', async (data) => {
       settings = data;
-      session.nextView();
+      try {
+        session.nextView();
+      } catch (error) {
+        this.log('Error showing next view', error);
+      }
     });
 
     session.setHandler('list_devices', async (data) => {
