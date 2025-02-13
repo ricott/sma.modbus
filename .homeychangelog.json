@@ -1,4 +1,8 @@
 {
+    "2.6.8": {
+        "en": "Maintenance",
+        "sv": "Underhåll"
+    },
     "2.6.7": {
         "en": "Added support for MPP C voltage and power for inverters with 3 MPPs",
         "sv": "Lade till stöd för MPP C spänning och effekt för växelriktare med 3 MPPs"
