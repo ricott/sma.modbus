@@ -111,21 +111,19 @@ class SummaryDevice extends Device {
         let power_grid = 0, surplus = 0, lifetime_import = 0, lifetime_export = 0;
         for (const em of this.homey.drivers.getDriver('energy').getDevices()) {
             power_grid = power_grid + em.getCapabilityValue('measure_power');
-            surplus = surplus + em.getCapabilityValue('measure_power.surplus');
             lifetime_import = lifetime_import + em.getCapabilityValue('meter_power');
             lifetime_export = lifetime_export + em.getCapabilityValue('meter_power.export');
         }
 
-        let grid = power_grid - surplus;
         let battery = battery_charge - battery_discharge + batteryPower;
-        let consumption = power_pv - battery + grid;
+        let consumption = power_pv - battery + power_grid;
 
         this._updateProperty('measure_power.battery', battery);
         this._updateProperty('measure_power.pv', power_pv);
         this._updateProperty('power_pv.dcA', power_MPPA);
         this._updateProperty('power_pv.dcB', power_MPPB);
         //Will be negative if there is a surplus
-        this._updateProperty('measure_power', grid);
+        this._updateProperty('measure_power', power_grid);
         this._updateProperty('measure_power.consumption', consumption);
 
         const lifetime_consumption = (lifetime_import + lifetime_yield) - lifetime_export;
@@ -133,7 +131,7 @@ class SummaryDevice extends Device {
 
         this.homey.api.realtime('summary.update', {
             power: {
-                grid: grid,
+                grid: power_grid,
                 pv: power_pv,
                 load: consumption,
                 battery: battery

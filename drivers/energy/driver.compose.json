@@ -10,7 +10,6 @@
     "class": "sensor",
     "capabilities": [
         "measure_power",
-        "measure_power.surplus",
         "measure_power.L1",
         "measure_current.L1",
         "measure_voltage.L1",
@@ -29,12 +28,6 @@
             "title": {
                 "en": "Grid power",
                 "sv": "Uttag elnät"
-            }
-        },
-        "measure_power.surplus": {
-            "title": {
-                "en": "Grid feed-in",
-                "sv": "Inmatning elnät"
             }
         },
         "measure_power.L1": {

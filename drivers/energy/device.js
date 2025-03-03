@@ -42,6 +42,9 @@ class EnergyDevice extends Device {
         await this.addCapabilityHelper('measure_voltage.L1');
         await this.addCapabilityHelper('measure_voltage.L2');
         await this.addCapabilityHelper('measure_voltage.L3');
+
+        // v2.6.9 removed surplus power capability, instead show negative value for measure_power
+        await this.removeCapabilityHelper('measure_power.surplus');
     }
 
     async removeCapabilityHelper(capability) {
@@ -100,9 +103,7 @@ class EnergyDevice extends Device {
 
         this.emSession.on('readings', readings => {
 
-            this._updateProperty('measure_power', readings.pregard);
-            this._updateProperty('measure_power.surplus', readings.psurplus);
-
+            this._updateProperty('measure_power', readings.pregard - readings.psurplus);
             this._updateProperty('measure_power.L1', (readings.pregardL1 - readings.psurplusL1));
             this._updateProperty('measure_current.L1', readings.currentL1);
             this._updateProperty('measure_voltage.L1', readings.voltageL1);
