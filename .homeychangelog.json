@@ -1,4 +1,8 @@
 {
+    "2.6.9": {
+        "en": "Removed surplus power capability for the energy device, instead show negative value for grid power",
+        "sv": "Radera surplus effekt för elmätaren, istället visa negativt värde för uttag elnät"
+    },
     "2.6.8": {
         "en": "Maintenance",
         "sv": "Underhåll"
