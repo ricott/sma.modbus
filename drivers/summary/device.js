@@ -108,7 +108,7 @@ class SummaryDevice extends Device {
             batteryPower = batteryPower + inverter.getCapabilityValue('measure_power.battery') || 0;
         }
 
-        let power_grid = 0, surplus = 0, lifetime_import = 0, lifetime_export = 0;
+        let power_grid = 0, lifetime_import = 0, lifetime_export = 0;
         for (const em of this.homey.drivers.getDriver('energy').getDevices()) {
             power_grid = power_grid + em.getCapabilityValue('measure_power');
             lifetime_import = lifetime_import + em.getCapabilityValue('meter_power');
