@@ -3,6 +3,7 @@
 const { Driver } = require('homey');
 const discovery = require('../../lib/deviceDiscovery.js');
 const SMA = require('../../lib/sma.js');
+const decodeData = require('../../lib/decodeData.js');
 
 class InverterDriver extends Driver {
 
@@ -89,13 +90,12 @@ class InverterDriver extends Driver {
     }
 
     async onPair(session) {
-        let self = this;
         let devices = [];
         let mode;
         let settings;
 
         session.setHandler('showView', async (view) => {
-            self.log(`Showing view '${view}'`);
+            this.log(`Showing view '${view}'`);
 
             if (view === 'loading') {
                 mode = 'discovery';
@@ -103,63 +103,54 @@ class InverterDriver extends Driver {
                 devices.splice(0, devices.length);
 
                 //Discover devices using multicast query
-                let discoveryQuery = new discovery({
-                    port: self.homey.settings.get('port'),
+                const discoveryQuery = new discovery({
+                    port: this.homey.settings.get('port'),
                     device: this
                 });
-                discoveryQuery.discover();
 
-                //We can find multiple inverters, this method is called once per inverter found
-                discoveryQuery.on('deviceInfo', inverterInfo => {
-                    // 8001: Solar Inverters (DevClss1)
-                    // 8007: Battery Inverter (DevClss7)
-                    // 8009: Hybrid inverter (DevClss9)
-                    if (inverterInfo.deviceClass == 8001 || 
-                        inverterInfo.deviceClass == 8007 ||
-                        inverterInfo.deviceClass == 8009) {
-                        if (self.isNewInverter(inverterInfo.serialNo)) {
-                            self.log(`Adding to devices: ${inverterInfo.deviceType}`);
-                            devices.push({
-                                name: inverterInfo.deviceType,
-                                data: {
-                                    id: inverterInfo.serialNo
-                                },
-                                settings: {
-                                    address: inverterInfo.address,
-                                    port: Number(inverterInfo.port)
-                                }
-                            });
+                try {
+                    const inverterInfos = await discoveryQuery.discover();
+                    
+                    // Process each discovered inverter
+                    for (const inverterInfo of inverterInfos) {
+                        // 8001: Solar Inverters (DevClss1)
+                        // 8007: Battery Inverter (DevClss7)
+                        // 8009: Hybrid inverter (DevClss9)
+                        if (inverterInfo.deviceClass == 8001 || 
+                            inverterInfo.deviceClass == 8007 ||
+                            inverterInfo.deviceClass == 8009) {
+                            if (this.isNewInverter(inverterInfo.serialNo)) {
+                                this.log(`Adding to devices: ${inverterInfo.deviceType}`);
+                                devices.push({
+                                    name: inverterInfo.deviceType,
+                                    data: {
+                                        id: inverterInfo.serialNo
+                                    },
+                                    settings: {
+                                        address: inverterInfo.address,
+                                        port: Number(inverterInfo.port),
+                                        deviceClass: decodeData.decodeDeviceClass(inverterInfo.deviceClass)
+                                    }
+                                });
+                            } else {
+                                this.log(`Found inverter '${inverterInfo.serialNo}' that is already added to Homey, ignoring it ...`);
+                            }
                         } else {
-                            self.log(`Found inverter '${inverterInfo.serialNo}' that is already added to Homey, ignoring it ...`);
+                            this.log('Found a SMA device that is not an inverter', inverterInfo);
                         }
-                    } else {
-                        self.log('Found a SMA device that is not an inverter', inverterInfo);
                     }
-                });
 
-                discoveryQuery.on('error', error => {
-                    //Ignore the error, if no inverter found we'll do manual entry
-                });
-
-                self.#sleep(6000).then(() => {
                     if (devices.length === 0) {
-                        self.log('No (new) inverters found using auto-discovery, show manual entry');
-                        try {
-                            session.showView('settings');
-                        } catch (error) {
-                            self.log('Error showing settings view', error);
-                        }
+                        this.log('No (new) inverters found using auto-discovery, show manual entry');
+                        await session.showView('settings');
                     } else {
-                        self.log(`Found '${devices.length}' inverter(s)`);
-                        try {
-                            session.showView('list_devices');
-                        } catch (error) {
-                            self.log('Error showing list_devices view', error);
-                        }
+                        this.log(`Found '${devices.length}' inverter(s)`);
+                        await session.showView('list_devices');
                     }
-                }).catch(reason => {
-                    self.log('Timeout error', reason);
-                });
+                } catch (error) {
+                    this.log('Auto-discovery failed, showing manual entry', error);
+                    await session.showView('settings');
+                }
             }
         });
 
@@ -169,35 +160,40 @@ class InverterDriver extends Driver {
             //Make sure devices array is empty
             devices.splice(0, devices.length);
 
-            let smaSession = new SMA({
+            const smaSession = new SMA({
                 host: settings.address,
-                port: self.homey.settings.get('port'),
+                port: this.homey.settings.get('port'),
                 autoClose: true,
                 device: this
             });
 
-            smaSession.on('properties', inverterProperties => {
-                self.log(`Adding to devices: ${inverterProperties.deviceType}`);
-                devices.push({
-                    name: inverterProperties.deviceType,
-                    data: {
-                        id: inverterProperties.serialNo
-                    },
-                    settings: {
-                        address: settings.address,
-                        port: Number(self.homey.settings.get('port'))
-                    }
+            try {
+                await new Promise((resolve, reject) => {
+                    smaSession.on('properties', inverterProperties => {
+                        this.log(`Adding to devices: ${inverterProperties.deviceType}`);
+                        devices.push({
+                            name: inverterProperties.deviceType,
+                            data: {
+                                id: inverterProperties.serialNo
+                            },
+                            settings: {
+                                address: settings.address,
+                                port: Number(this.homey.settings.get('port'))
+                            }
+                        });
+                        resolve();
+                    });
+
+                    smaSession.on('error', error => {
+                        this.log('Failed to read inverter properties', error);
+                        reject(error);
+                    });
                 });
-            });
 
-            smaSession.on('error', error => {
-                self.log('Failed to read inverter properties', error);
-            });
-
-            //Wait 3 seconds to allow properties to be read
-            self.#sleep(3000).then(() => {
-                session.showView('list_devices');
-            });
+                await session.showView('list_devices');
+            } catch (error) {
+                throw new Error('Wrong IP number or port, no SMA inverter found');
+            }
         });
 
         session.setHandler('list_devices', async (data) => {

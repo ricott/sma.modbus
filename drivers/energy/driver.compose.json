@@ -24,12 +24,6 @@
         "meter_power.export"
     ],
     "capabilitiesOptions": {
-        "measure_power": {
-            "title": {
-                "en": "Grid power",
-                "sv": "Uttag elnät"
-            }
-        },
         "measure_power.L1": {
             "title": {
                 "en": "L1 power",

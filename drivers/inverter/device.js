@@ -156,8 +156,8 @@ class InverterDevice extends Device {
                 serialNo: String(properties.serialNo),
                 swVersion: String(properties.swVersion || 'unknown'),
                 maxPower: String(properties.maxPower || _defaultActivePower),
-                gridCountry: String(properties.gridCountry || 'unknown')
-
+                gridCountry: String(properties.gridCountry || 'unknown'),
+                deviceClass: decodeData.decodeDeviceClass(properties.deviceClass || 0)
             }).catch(err => {
                 this.error('Failed to update settings', err);
             });

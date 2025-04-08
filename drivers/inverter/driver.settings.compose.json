@@ -88,6 +88,16 @@
                 "value": ""
             },
             {
+                "id": "deviceClass",
+                "type": "label",
+                "label": {
+                    "en": "Device class",
+                    "nl": "Apparaatklasse",
+                    "sv": "Enhetstyp"
+                },
+                "value": ""
+            },
+            {
                 "id": "serialNo",
                 "type": "label",
                 "label": {
