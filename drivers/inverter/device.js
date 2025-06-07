@@ -29,6 +29,8 @@ const deviceCapabilitesList = [
 
 class InverterDevice extends BaseDevice {
 
+    #capabilityListenersRegistered = false;
+
     async onInit() {
         // Register device triggers
         this._inverter_status_changed = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
@@ -38,18 +40,25 @@ class InverterDevice extends BaseDevice {
     }
 
     async setupCapabilityListeners() {
-        this.registerCapabilityListener('target_power', async (power) => {
-            try {
-                this.log(`[${this.getName()}] Set active power limit to '${power}'`);
-                // Adjust active power to be <= max power
-                const activePower = Math.min(Number(this.getSetting('maxPower')), power);
-                await this.api.setMaxActivePowerOutput(activePower);
-            } catch (reason) {
-                let msg = `Failed to set active power limit! Reason: ${reason.message}`;
-                this.error(msg);
-                throw new Error(msg);
+        if (this.hasCapability('target_power')) {
+            if (this.#capabilityListenersRegistered) {
+                return;
             }
-        });
+
+            this.registerCapabilityListener('target_power', async (power) => {
+                try {
+                    this.log(`[${this.getName()}] Set active power limit to '${power}'`);
+                    // Adjust active power to be <= max power
+                    const activePower = Math.min(Number(this.getSetting('maxPower')), power);
+                    await this.api.setMaxActivePowerOutput(activePower);
+                } catch (reason) {
+                    let msg = `Failed to set active power limit! Reason: ${reason.message}`;
+                    this.error(msg);
+                    throw new Error(msg);
+                }
+            });
+            this.#capabilityListenersRegistered = true;
+        }
     }
 
     async setupSession(address, port, polling) {
@@ -65,6 +74,8 @@ class InverterDevice extends BaseDevice {
 
     async initializeEventListeners() {
         this.api.on('readings', async (readings) => {
+            await this.onDataReceived();
+
             if (this.getSetting('isDailyYieldManual') == 'true') {
                 try {
                     const calculatedDailyYield = await this.calculateDailyYield(readings.totalYield);
@@ -155,6 +166,9 @@ class InverterDevice extends BaseDevice {
 
         this.api.on('error', async (error) => {
             this.error(`[${this.getName()}] Houston we have a problem`, error);
+
+            // Use BaseDevice's communication error handling
+            await this.onCommunicationError(error);
 
             let message = '';
             if (this.isError(error)) {

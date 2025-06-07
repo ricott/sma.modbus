@@ -30,6 +30,8 @@ class BatteryDevice extends BaseDevice {
     async initializeEventListeners() {
         this.api.on('readings', async (readings) => {
 
+            await this.onDataReceived();
+
             const batteryCharge = readings.batteryCharge || 0;
             const batteryDischarge = readings.batteryDischarge || 0;
             // Idle power is 0
@@ -66,6 +68,9 @@ class BatteryDevice extends BaseDevice {
 
         this.api.on('error', async (error) => {
             this.error(`[${this.getName()}] Houston we have a problem`, error);
+
+            // Use BaseDevice's communication error handling
+            await this.onCommunicationError(error);
 
             let message = '';
             if (this.isError(error)) {

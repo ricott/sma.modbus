@@ -1277,11 +1277,11 @@
             {
               "id": "polling",
               "type": "number",
-              "value": 5,
+              "value": 10,
               "step": 1,
               "attr": {
-                "min": 2,
-                "max": 3600
+                "min": 5,
+                "max": 7200
               },
               "label": {
                 "en": "Polling",

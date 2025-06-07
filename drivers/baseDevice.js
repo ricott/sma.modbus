@@ -4,6 +4,9 @@ const { Device } = require('homey');
 
 class BaseDevice extends Device {
 
+    #lastDataReceived = null;
+    #availabilityWatchdog = null;
+
     async onInit() {
         this.logMessage(`SMA device initiated`);
         this.api = null;
@@ -17,6 +20,11 @@ class BaseDevice extends Device {
 
     async initializeSession(address, port, polling) {
         try {
+            // Stop availability watchdog during reconnection
+            this.#stopAvailabilityWatchdog();
+            // Reset availability state
+            this.#lastDataReceived = null;
+
             await this.destroySession();
             await this.setupSession(address, port, polling);
             // Connection successful, make sure device is marked as available
@@ -26,6 +34,10 @@ class BaseDevice extends Device {
                 this.homey.clearTimeout(this._retryTimeout);
                 this._retryTimeout = null;
             }
+
+            // Start availability monitoring after successful connection
+            this.#startAvailabilityWatchdog();
+
         } catch (error) {
             this.error('Failed to initialize device connection:', error);
             // Set device as unavailable with error message
@@ -80,6 +92,8 @@ class BaseDevice extends Device {
         if (this._retryTimeout) {
             this.homey.clearTimeout(this._retryTimeout);
         }
+        // Stop availability watchdog
+        this.#stopAvailabilityWatchdog();
         this.destroySession();
     }
 
@@ -170,6 +184,100 @@ class BaseDevice extends Device {
                 this.error(reason);
             }
         }
+    }
+
+    // Availability tracking methods
+    #startAvailabilityWatchdog() {
+        this.#stopAvailabilityWatchdog();
+
+        const polling = this.getSetting('polling') || 10;
+        // Check availability every refresh interval + 50% buffer
+        const watchdogInterval = (polling * 1.5) * 1000;
+
+        this.logMessage(`Starting availability watchdog with ${watchdogInterval / 1000}s interval`);
+
+        this.#availabilityWatchdog = this.homey.setInterval(() => {
+            this.#checkDataTimeout();
+        }, watchdogInterval);
+    }
+
+    #stopAvailabilityWatchdog() {
+        if (this.#availabilityWatchdog) {
+            this.homey.clearInterval(this.#availabilityWatchdog);
+            this.#availabilityWatchdog = null;
+        }
+    }
+
+    async #checkDataTimeout() {
+        if (!this.#lastDataReceived) {
+            return; // No data received yet, don't mark as unavailable
+        }
+
+        const now = Date.now();
+        const polling = this.getSetting('polling') || 10;
+        const timeoutThreshold = polling * 2 * 1000; // 2x polling interval
+        const timeSinceLastData = now - this.#lastDataReceived;
+
+        if (timeSinceLastData > timeoutThreshold) {
+            if (this.getAvailable()) {
+                this.logMessage(`No data received for ${Math.round(timeSinceLastData / 1000)}s, marking as unavailable`);
+                await this.setUnavailable('No data received from device').catch(err => {
+                    this.error('Failed to set device unavailable:', err);
+                });
+            }
+        }
+    }
+
+    async onDataReceived() {
+        this.#lastDataReceived = Date.now();
+
+        // If device was marked as unavailable, mark it as available again
+        if (!this.getAvailable()) {
+            this.logMessage(`Data received, marking device as available again`);
+            await this.setAvailable().catch(err => {
+                this.error('Failed to set device available:', err);
+            });
+        }
+    }
+
+    // Method for child classes to call when communication errors occur
+    async onCommunicationError(error) {
+        // Only mark as unavailable for actual communication/connectivity errors
+        const isCommunicationError = this.#isCommunicationError(error);
+
+        if (isCommunicationError && this.getAvailable()) {
+            this.logMessage(`Communication error occurred, marking device as unavailable: ${error.message}`);
+            await this.setUnavailable(`Communication error: ${error.message || 'Unknown error'}`).catch(err => {
+                this.error('Failed to set device unavailable:', err);
+            });
+        }
+    }
+
+    // Helper method to determine if an error is communication-related
+    #isCommunicationError(error) {
+        if (!error || !error.message) {
+            return false;
+        }
+
+        const errorMessage = error.message.toLowerCase();
+        const communicationErrorPatterns = [
+            'is not reachable',
+            'connection failed',
+            'connection refused',
+            'connection reset',
+            'connection timeout',
+            'network is unreachable',
+            'host is unreachable',
+            'no route to host',
+            'econnrefused',
+            'etimedout',
+            'econnreset',
+            'ehostunreach',
+            'enetunreach',
+            'enotfound'
+        ];
+
+        return communicationErrorPatterns.some(pattern => errorMessage.includes(pattern));
     }
 }
 module.exports = BaseDevice;
