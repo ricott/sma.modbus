@@ -90,22 +90,18 @@ class SummaryDevice extends Device {
         return mpp;
     }
 
-    updateValues() {
-
-        let battery_charge = 0, battery_discharge = 0;
-        for (const inverter of this.homey.drivers.getDriver('storage').getDevices()) {
-            battery_charge = battery_charge + inverter.getCapabilityValue('measure_power.charge');
-            battery_discharge = battery_discharge + inverter.getCapabilityValue('measure_power.discharge')
+    async updateValues() {
+        let batteryPower = 0;
+        for (const battery of this.homey.drivers.getDriver('battery').getDevices()) {
+            batteryPower = batteryPower + battery.getCapabilityValue('measure_power');
         }
 
-        let power_pv = 0, power_MPPA = 0, power_MPPB = 0, lifetime_yield = 0, batteryPower = 0;
+        let power_pv = 0, power_MPPA = 0, power_MPPB = 0, lifetime_yield = 0;
         for (const inverter of this.homey.drivers.getDriver('inverter').getDevices()) {
             power_pv = power_pv + inverter.getCapabilityValue('measure_power');
             power_MPPA = power_MPPA + inverter.getCapabilityValue('measure_power.dcA') || 0;
             power_MPPB = power_MPPB + inverter.getCapabilityValue('measure_power.dcB') || 0;
             lifetime_yield = lifetime_yield + inverter.getCapabilityValue('measure_yield');
-            // New hybrid inverters ST PSE have a battery + SBS and SI
-            batteryPower = batteryPower + inverter.getCapabilityValue('measure_power.battery') || 0;
         }
 
         let power_grid = 0, lifetime_import = 0, lifetime_export = 0;
@@ -115,53 +111,51 @@ class SummaryDevice extends Device {
             lifetime_export = lifetime_export + em.getCapabilityValue('meter_power.export');
         }
 
-        let battery = battery_charge - battery_discharge + batteryPower;
-        let consumption = power_pv - battery + power_grid;
+        let consumption = power_pv - batteryPower + power_grid;
 
-        this._updateProperty('measure_power.battery', battery);
-        this._updateProperty('measure_power.pv', power_pv);
-        this._updateProperty('power_pv.dcA', power_MPPA);
-        this._updateProperty('power_pv.dcB', power_MPPB);
+        await this._updateProperty('measure_power.battery', batteryPower);
+        await this._updateProperty('measure_power.pv', power_pv);
+        await this._updateProperty('power_pv.dcA', power_MPPA);
+        await this._updateProperty('power_pv.dcB', power_MPPB);
         //Will be negative if there is a surplus
-        this._updateProperty('measure_power', power_grid);
-        this._updateProperty('measure_power.consumption', consumption);
+        await this._updateProperty('measure_power', power_grid);
+        await this._updateProperty('measure_power.consumption', consumption);
 
         const lifetime_consumption = (lifetime_import + lifetime_yield) - lifetime_export;
-        this._updateProperty('meter_power', lifetime_consumption);
+        await this._updateProperty('meter_power', lifetime_consumption);
 
         this.homey.api.realtime('summary.update', {
             power: {
                 grid: power_grid,
                 pv: power_pv,
                 load: consumption,
-                battery: battery
+                battery: batteryPower
             }
         });
     }
 
     _initilializeTimers() {
         this.log('Adding timers');
-        this.homey.setInterval(() => {
-            this.updateValues();
+        this.homey.setInterval(async () => {
+            await this.updateValues();
         }, 1000 * this.getSetting('polling'));
     }
 
-    _updateProperty(key, value) {
-        let self = this;
-        if (self.hasCapability(key)) {
-            if (typeof value !== 'undefined' && value !== null) {
-                self.setCapabilityValue(key, value)
-                    .catch(reason => {
-                        self.error(reason);
-                    });
-
-            } else {
-                self.log(`[${self.getName()}] Value for capability '${key}' is 'undefined'`);
-            }
+    async _updateProperty(key, value) {
+        if (!this.hasCapability(key)) {
+            return;
         }
-        // else {
-        //     self.log(`[${self.getName()}] Trying to set value for missing capability '${key}'`);
-        // }
+
+        if (typeof value === 'undefined' || value === null) {
+            this.log(`[${this.getName()}] Value for capability '${key}' is 'undefined'`);
+            return;
+        }
+
+        try {
+            await this.setCapabilityValue(key, value);
+        } catch (reason) {
+            this.error(reason);
+        }
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
