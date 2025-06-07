@@ -3,7 +3,7 @@
 const { Device } = require('homey');
 const modbus = require('jsmodbus');
 const net = require('net');
-const decodeData = require('../../lib/decodeData.js');
+const decodeData = require('../../lib/modbus/decodeData.js');
 const socket = new net.Socket();
 
 class SmaModbusStorageDevice extends Device {

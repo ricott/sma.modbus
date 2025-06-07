@@ -1,0 +1,118 @@
+[
+    {
+        "type": "group",
+        "label": {
+            "en": "Settings",
+            "nl": "Instellingen",
+            "sv": "Inställningar"
+        },
+        "children": [
+            {
+                "id": "address",
+                "type": "text",
+                "value": "0.0.0.0",
+                "label": {
+                    "en": "IP Address",
+                    "nl": "IP adres",
+                    "sv": "IP Adress"
+                }
+            },
+            {
+                "id": "port",
+                "type": "number",
+                "value": 502,
+                "step": 1,
+                "label": {
+                    "en": "Port",
+                    "nl": "Poort",
+                    "sv": "Port"
+                }
+            },
+            {
+                "id": "polling",
+                "type": "number",
+                "value": 10,
+                "step": 1,
+                "attr": {
+                    "min": 5,
+                    "max": 7200
+                },
+                "label": {
+                    "en": "Polling",
+                    "nl": "Polling",
+                    "sv": "Uppdateringsfrekvens"
+                }
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "label": {
+            "en": "Information",
+            "nl": "Informatie",
+            "sv": "Information"
+        },
+        "children": [
+            {
+                "id": "deviceType",
+                "type": "label",
+                "label": {
+                    "en": "Device type",
+                    "nl": "Soort apparaat",
+                    "sv": "Enhet"
+                },
+                "value": ""
+            },
+            {
+                "id": "deviceClass",
+                "type": "label",
+                "label": {
+                    "en": "Device class",
+                    "nl": "Apparaatklasse",
+                    "sv": "Enhetstyp"
+                },
+                "value": ""
+            },
+            {
+                "id": "serialNo",
+                "type": "label",
+                "label": {
+                    "en": "Serial number",
+                    "nl": "Serienummer",
+                    "sv": "Serienummer"
+                },
+                "value": ""
+            },
+            {
+                "id": "swVersion",
+                "type": "label",
+                "label": {
+                    "en": "Software version",
+                    "nl": "Software versie",
+                    "sv": "Mjukvaruversion"
+                },
+                "value": ""
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "label": {
+            "en": "Debug",
+            "nl": "Debug",
+            "sv": "Felsökning"
+        },
+        "children": [
+            {
+                "id": "last_error",
+                "type": "textarea",
+                "label": {
+                    "en": "Most recent SMA Error",
+                    "nl": "Meest recente SMA-fout",
+                    "sv": "Senaste SMA felmeddelandet"
+                },
+                "value": ""
+            }
+        ]
+    }
+]

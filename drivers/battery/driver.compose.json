@@ -1,0 +1,55 @@
+{
+    "name": {
+        "en": "Battery",
+        "sv": "Batteri"
+    },
+    "images": {
+        "xlarge": "drivers/battery/assets/images/xlarge.png",
+        "large": "drivers/battery/assets/images/large.png",
+        "small": "drivers/battery/assets/images/small.png"
+    },
+    "class": "battery",
+    "platforms": [
+        "local"
+    ],
+    "connectivity": [
+        "lan"
+    ],
+    "energy": {
+        "homeBattery": true
+    },
+    "capabilities": [
+        "measure_battery",
+        "measure_power",
+        "measure_voltage",
+        "measure_current",
+        "battery_charging_state",
+        "measure_temperature"
+    ],
+    "pair": [
+        {
+            "id": "start",
+            "navigation": {
+                "next": "loading"
+            }
+        },
+        {
+            "id": "loading",
+            "template": "loading"
+        },
+        {
+            "id": "settings"
+        },
+        {
+            "id": "list_devices",
+            "template": "list_devices",
+            "navigation": {
+                "next": "add_devices"
+            }
+        },
+        {
+            "id": "add_devices",
+            "template": "add_devices"
+        }
+    ]
+}

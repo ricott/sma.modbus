@@ -1,10 +1,11 @@
 'use strict';
 
-const { Device } = require('homey');
 const spacetime = require('spacetime');
-const SMA = require('../../lib/sma.js');
-const decodeData = require('../../lib/decodeData.js');
+const BaseDevice = require('../baseDevice.js');
+const Inverter = require('../../lib/devices/inverter.js');
+const decodeData = require('../../lib/modbus/decodeData.js');
 
+const _defaultActivePower = 50000;
 const deviceCapabilitesList = [
     'measure_battery',
     'target_power',
@@ -26,113 +27,97 @@ const deviceCapabilitesList = [
     'measure_power.dcC'
 ];
 
-const _defaultActivePower = 50000;
-
-class InverterDevice extends Device {
+class InverterDevice extends BaseDevice {
 
     async onInit() {
-        this.log(`[${this.getName()}] SMA inverter initiated`);
-        this.smaApi = null;
-
         // Register device triggers
         this._inverter_status_changed = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
         this._inverter_condition_changed = this.homey.flow.getDeviceTriggerCard('inverter_condition_changed');
-
-        this.setupSMASession();
+        await super.onInit();
         this.resetAtMidnight();
     }
 
     async setupCapabilityListeners() {
-
         this.registerCapabilityListener('target_power', async (power) => {
-            this.log(`[${this.getName()}] Set active power limit to '${power}'`);
-            // Adjust active power to be <= max power
-            const activePower = Math.min(Number(this.getSetting('maxPower')), power);
-            await this.smaApi.setMaxActivePowerOutput(activePower)
-                .catch(reason => {
-                    let msg = `Failed to set active power limit! Reason: ${reason.message}`;
-                    this.error(msg);
-                    return Promise.reject(new Error(msg));
-                });
+            try {
+                this.log(`[${this.getName()}] Set active power limit to '${power}'`);
+                // Adjust active power to be <= max power
+                const activePower = Math.min(Number(this.getSetting('maxPower')), power);
+                await this.api.setMaxActivePowerOutput(activePower);
+            } catch (reason) {
+                let msg = `Failed to set active power limit! Reason: ${reason.message}`;
+                this.error(msg);
+                throw new Error(msg);
+            }
         });
     }
 
-    setupSMASession() {
-        this.smaApi = new SMA({
-            host: this.getSetting('address'),
-            port: this.getSetting('port'),
-            refreshInterval: this.getSetting('polling'),
+    async setupSession(address, port, polling) {
+        this.api = new Inverter({
+            host: address,
+            port: port,
+            refreshInterval: polling,
             device: this
         });
 
-        this.initializeEventListeners();
-    }
-    destroySMASession() {
-        if (this.smaApi) {
-            this.log(`[${this.getName()}] Disconnecting the inverter`);
-            this.smaApi.disconnect();
-        }
-    }
-    reinitializeSMASession() {
-        this.destroySMASession();
-        this.setupSMASession();
+        await this.initializeEventListeners();
     }
 
-    initializeEventListeners() {
+    async initializeEventListeners() {
 
-        this.smaApi.on('readings', (readings) => {
-            var self = this;
+        this.api.on('readings', async (readings) => {
 
-            if (self.getSetting('isDailyYieldManual') == 'true') {
-                self.calculateDailyYield(readings.totalYield)
-                    .then(function (dailyYield) {
-                        //self.log(`[${self.getName()}] Calculated daily yield '${dailyYield}'`);
-                        //Fishy values coming for at least one user with negative daily yield
-                        //Lets make sure it is not negative
-                        dailyYield = Math.max(dailyYield, 0.0);
-                        self._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
-                    });
+            if (this.getSetting('isDailyYieldManual') == 'true') {
+                try {
+                    const calculatedDailyYield = await this.calculateDailyYield(readings.totalYield);
+                    //this.log(`[${this.getName()}] Calculated daily yield '${calculatedDailyYield}'`);
+                    //Fishy values coming for at least one user with negative daily yield
+                    //Lets make sure it is not negative
+                    const dailyYield = Math.max(calculatedDailyYield, 0.0);
+                    await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
+                } catch (error) {
+                    this.error('Failed to calculate daily yield:', error);
+                }
             } else {
                 //Fishy values coming for at least one user with negative daily yield
                 //Lets make sure it is not negative
-                let dailyYield = readings.dailyYield || 0.0;
-                dailyYield = Math.max(dailyYield, 0.0);
-                this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
+                const dailyYield = Math.max(readings.dailyYield || 0.0, 0.0);
+                await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
             }
 
-            this._updateProperty('measure_power', readings.acPowerTotal || 0);
-            this._updateProperty('measure_voltage', readings.acVoltageL1 || 0);
-            this._updateProperty('measure_voltage.l2', readings.acVoltageL2 || 0);
-            this._updateProperty('measure_voltage.l3', readings.acVoltageL3 || 0);
+            await this._updateProperty('measure_power', readings.acPowerTotal || 0);
+            await this._updateProperty('measure_voltage', readings.acVoltageL1 || 0);
+            await this._updateProperty('measure_voltage.l2', readings.acVoltageL2 || 0);
+            await this._updateProperty('measure_voltage.l3', readings.acVoltageL3 || 0);
             //Ignore occasional 0 values for the total yield
             if (readings.totalYield && readings.totalYield > 0) {
-                this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield));
+                await this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield));
             }
 
             //New capabilities
             if (readings.condition && !readings.condition.startsWith('UNKNOWN')) {
-                this._updateProperty('operational_status.health', readings.condition);
+                await this._updateProperty('operational_status.health', readings.condition);
             }
             //Skip the odd redings that sometimes appear that show 0 as condition
             //There is no mapping for 0, so it is an unknown value
             //Value here would be UNKNOW (0)
             if (readings.status && readings.status.indexOf('(0)') == -1) {
-                this._updateProperty('operational_status', readings.status);
+                await this._updateProperty('operational_status', readings.status);
             }
             if (readings.batteryStatus && readings.batteryStatus.indexOf('(0)') == -1) {
-                this._updateProperty('operational_status.battery', readings.batteryStatus);
+                await this._updateProperty('operational_status.battery', readings.batteryStatus);
             }
-            this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
-            this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
-            this._updateProperty('measure_voltage.dcC', readings.dcVoltageC || 0);
-            this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
-            this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
-            this._updateProperty('measure_power.dcC', readings.dcPowerC || 0);
+            await this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
+            await this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
+            await this._updateProperty('measure_voltage.dcC', readings.dcVoltageC || 0);
+            await this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
+            await this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
+            await this._updateProperty('measure_power.dcC', readings.dcPowerC || 0);
 
-            this._updateProperty('measure_battery', Number.isNaN(readings.batterySoC) ? 0 : readings.batterySoC);
+            await this._updateProperty('measure_battery', Number.isNaN(readings.batterySoC) ? 0 : readings.batterySoC);
             //Adjust active power to be <= max power
             const activePower = Math.min(Number(this.getSetting('maxPower')), readings.targetPower || 0);
-            this._updateProperty('target_power', activePower);
+            await this._updateProperty('target_power', activePower);
 
             const batteryCharge = readings.batteryCharge || 0;
             const batteryDischarge = readings.batteryDischarge || 0;
@@ -145,34 +130,32 @@ class InverterDevice extends Device {
                 // We are discharging, make discharge negative
                 batteryPower = (batteryDischarge * -1);
             }
-            this._updateProperty('measure_power.battery', batteryPower);
+            await this._updateProperty('measure_power.battery', batteryPower);
 
         });
 
-        this.smaApi.on('properties', async (properties) => {
+        this.api.on('properties', async (properties) => {
+            try {
+                await this.setSettings({
+                    deviceType: String(properties.deviceType),
+                    serialNo: String(properties.serialNo),
+                    swVersion: String(properties.swVersion || 'unknown'),
+                    maxPower: String(properties.maxPower || _defaultActivePower),
+                    gridCountry: String(properties.gridCountry || 'unknown'),
+                    deviceClass: decodeData.decodeDeviceClass(properties.deviceClass || 0)
+                });
 
-            await this.setSettings({
-                deviceType: String(properties.deviceType),
-                serialNo: String(properties.serialNo),
-                swVersion: String(properties.swVersion || 'unknown'),
-                maxPower: String(properties.maxPower || _defaultActivePower),
-                gridCountry: String(properties.gridCountry || 'unknown'),
-                deviceClass: decodeData.decodeDeviceClass(properties.deviceClass || 0)
-            }).catch(err => {
+                //When properties are read we have the device type needed to know capabilities
+                await this.setupCapabilities();
+                await this.updateCapabilityProperties();
+                await this.shouldWeCalculateDailyYield();
+                await this.setupCapabilityListeners();
+            } catch (err) {
                 this.error('Failed to update settings', err);
-            });
-
-            //When properties are read we have the device type needed to know capabilities
-            await this.setupCapabilities();
-            await this.updateCapabilityProperties();
-            await this.shouldWeCalculateDailyYield();
-            await this.setupCapabilityListeners();
-
-            //Update all the required properties first, then we start the timers to get readings
-            this.smaApi.initilializeTimers();
+            }
         });
 
-        this.smaApi.on('error', (error) => {
+        this.api.on('error', async (error) => {
             this.error(`[${this.getName()}] Houston we have a problem`, error);
 
             let message = '';
@@ -188,10 +171,11 @@ class InverterDevice extends Device {
             }
 
             const dateTime = new Date().toISOString();
-            this.setSettings({ sma_last_error: dateTime + '\n' + message })
-                .catch(err => {
-                    this.error('Failed to update settings sma_last_error', err);
-                });
+            try {
+                await this.setSettings({ sma_last_error: dateTime + '\n' + message });
+            } catch (err) {
+                this.error('Failed to update settings sma_last_error', err);
+            }
         });
     }
 
@@ -235,7 +219,7 @@ class InverterDevice extends Device {
     }
 
     async shouldWeCalculateDailyYield() {
-        const manual = this.smaApi.isDailyYieldManual();
+        const manual = this.api.isDailyYieldManual();
         this.log(`[${this.getName()}] Calculate manual daily yield: '${manual}'`);
         await this.setSettings({
             isDailyYieldManual: String(manual || 'false')
@@ -263,7 +247,7 @@ class InverterDevice extends Device {
     async setupCapabilities() {
         this.log(`[${this.getName()}] Setting up capabilities`);
 
-        let capabilities = this.smaApi.getDeviceCapabilities();
+        let capabilities = this.api.getDeviceCapabilities();
         let capabilityKeys = Object.values(capabilities);
 
         for (const capability of deviceCapabilitesList) {
@@ -281,70 +265,23 @@ class InverterDevice extends Device {
         }
     }
 
-    isError(err) {
-        return (err && err.stack && err.message);
-    }
-
-    _updateProperty(key, value) {
-        let self = this;
-        if (self.hasCapability(key)) {
-            if (typeof value !== 'undefined' && value !== null) {
-                let oldValue = self.getCapabilityValue(key);
-                if (oldValue !== null && oldValue != value) {
-
-                    self.setCapabilityValue(key, value)
-                        .then(function () {
-
-                            if (key === 'operational_status') {
-                                let tokens = {
-                                    inverter_status: value || 'n/a'
-                                }
-                                self._inverter_status_changed.trigger(self, tokens, {}).catch(error => { self.error(error) });
-
-                            } else if (key === 'operational_status.health') {
-                                let tokens = {
-                                    inverter_condition: value || 'n/a'
-                                }
-                                self._inverter_condition_changed.trigger(self, tokens, {}).catch(error => { self.error(error) });
-                            }
-
-                        }).catch(reason => {
-                            self.error(reason);
-                        });
-                } else {
-                    self.setCapabilityValue(key, value)
-                        .catch(reason => {
-                            self.error(reason);
-                        });
-                }
-
-            } else {
-                self.log(`[${self.getName()}] Value for capability '${key}' is 'undefined'`);
+    async triggerDeviceTriggers(key, value) {
+        if (key === 'operational_status') {
+            let tokens = {
+                inverter_status: value || 'n/a'
             }
-        }
-    }
+            this._inverter_status_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
 
-    onDeleted() {
-        this.log(`[${this.getName()}] Deleting this SMA inverter from Homey.`);
-        this.destroySMASession();
+        } else if (key === 'operational_status.health') {
+            let tokens = {
+                inverter_condition: value || 'n/a'
+            }
+            this._inverter_condition_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
+        }
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
-        let changeConn = false;
         let changeLabel = false;
-        if (changedKeys.indexOf("address") > -1) {
-            this.log(`[${this.getName()}] Address value was change to '${newSettings.address}'`);
-            changeConn = true;
-        }
-        if (changedKeys.indexOf("port") > -1) {
-            this.log(`[${this.getName()}] Port value was change to '${newSettings.port}'`);
-            changeConn = true;
-        }
-        if (changedKeys.indexOf("polling") > -1) {
-            this.log(`[${this.getName()}] Polling value was change to '${newSettings.polling}'`);
-            changeConn = true;
-        }
-
         if (changedKeys.indexOf("mpp_a_name") > -1) {
             this.log(`[${this.getName()}] MPP A name was change to '${newSettings.mpp_a_name}'`);
             changeLabel = true;
@@ -358,47 +295,11 @@ class InverterDevice extends Device {
             changeLabel = true;
         }
 
-        if (changeConn) {
-            //We need to re-initialize the SMA session since setting(s) are changed
-            this.reinitializeSMASession();
-        }
-
         if (changeLabel) {
             await this.updateCapabilityProperties();
         }
-    }
 
-    async removeCapabilityHelper(capability) {
-        if (this.hasCapability(capability)) {
-            try {
-                this.log(`[${this.getName()}] Remove existing capability '${capability}'`);
-                await this.removeCapability(capability);
-            } catch (reason) {
-                this.error(reason);
-            }
-        }
-    }
-    async addCapabilityHelper(capability) {
-        if (!this.hasCapability(capability)) {
-            try {
-                this.log(`[${this.getName()}] Adding missing capability '${capability}'`);
-                await this.addCapability(capability);
-            } catch (reason) {
-                this.error(reason);
-            }
-        }
-    }
-
-    async updateCapabilityOptions(capability, options) {
-        if (this.hasCapability(capability)) {
-            try {
-                this.log(`[${this.getName()}] Updating capability options '${capability}'`);
-                await this.setCapabilityOptions(capability, options);
-            } catch (reason) {
-                this.error(reason);
-            }
-        }
+        await super.onSettings({ oldSettings, newSettings, changedKeys });
     }
 }
-
 module.exports = InverterDevice;

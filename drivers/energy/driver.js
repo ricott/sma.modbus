@@ -1,7 +1,7 @@
 'use strict';
 
 const { Driver } = require('homey');
-const EnergyMeter = require('../../lib/sma_em.js');
+const EnergyMeter = require('../../lib/devices/energyMeter.js');
 
 class EnergyDriver extends Driver {
 

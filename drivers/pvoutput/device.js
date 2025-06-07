@@ -3,7 +3,7 @@
 const Homey = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
 const utility = require('../../lib/util.js');
-const decodeData = require('../../lib/decodeData.js');
+const decodeData = require('../../lib/modbus/decodeData.js');
 //Encryption settings
 const crypto = require('crypto');
 const crypto_algorithm = 'aes-256-ctr';

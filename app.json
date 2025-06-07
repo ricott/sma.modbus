@@ -2,8 +2,8 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "sma.modbus",
   "sdk": 3,
-  "version": "2.7.0",
-  "compatibility": ">=12.3.0",
+  "version": "2.7.1",
+  "compatibility": ">=12.4.5",
   "name": {
     "en": "SMA Energy",
     "sv": "SMA Energy"
@@ -662,6 +662,180 @@
     ]
   },
   "drivers": [
+    {
+      "name": {
+        "en": "Battery",
+        "sv": "Batteri"
+      },
+      "images": {
+        "xlarge": "drivers/battery/assets/images/xlarge.png",
+        "large": "drivers/battery/assets/images/large.png",
+        "small": "drivers/battery/assets/images/small.png"
+      },
+      "class": "battery",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "energy": {
+        "homeBattery": true
+      },
+      "capabilities": [
+        "measure_battery",
+        "measure_power",
+        "measure_voltage",
+        "measure_current",
+        "battery_charging_state",
+        "measure_temperature"
+      ],
+      "pair": [
+        {
+          "id": "start",
+          "navigation": {
+            "next": "loading"
+          }
+        },
+        {
+          "id": "loading",
+          "template": "loading"
+        },
+        {
+          "id": "settings"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "battery",
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Settings",
+            "nl": "Instellingen",
+            "sv": "Inställningar"
+          },
+          "children": [
+            {
+              "id": "address",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP Address",
+                "nl": "IP adres",
+                "sv": "IP Adress"
+              }
+            },
+            {
+              "id": "port",
+              "type": "number",
+              "value": 502,
+              "step": 1,
+              "label": {
+                "en": "Port",
+                "nl": "Poort",
+                "sv": "Port"
+              }
+            },
+            {
+              "id": "polling",
+              "type": "number",
+              "value": 10,
+              "step": 1,
+              "attr": {
+                "min": 5,
+                "max": 7200
+              },
+              "label": {
+                "en": "Polling",
+                "nl": "Polling",
+                "sv": "Uppdateringsfrekvens"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Information",
+            "nl": "Informatie",
+            "sv": "Information"
+          },
+          "children": [
+            {
+              "id": "deviceType",
+              "type": "label",
+              "label": {
+                "en": "Device type",
+                "nl": "Soort apparaat",
+                "sv": "Enhet"
+              },
+              "value": ""
+            },
+            {
+              "id": "deviceClass",
+              "type": "label",
+              "label": {
+                "en": "Device class",
+                "nl": "Apparaatklasse",
+                "sv": "Enhetstyp"
+              },
+              "value": ""
+            },
+            {
+              "id": "serialNo",
+              "type": "label",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer",
+                "sv": "Serienummer"
+              },
+              "value": ""
+            },
+            {
+              "id": "swVersion",
+              "type": "label",
+              "label": {
+                "en": "Software version",
+                "nl": "Software versie",
+                "sv": "Mjukvaruversion"
+              },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Debug",
+            "nl": "Debug",
+            "sv": "Felsökning"
+          },
+          "children": [
+            {
+              "id": "last_error",
+              "type": "textarea",
+              "label": {
+                "en": "Most recent SMA Error",
+                "nl": "Meest recente SMA-fout",
+                "sv": "Senaste SMA felmeddelandet"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
     {
       "name": {
         "en": "Energy Meter",
@@ -1512,6 +1686,7 @@
           "id": "start"
         }
       ],
+      "deprecated": true,
       "id": "storage",
       "settings": [
         {

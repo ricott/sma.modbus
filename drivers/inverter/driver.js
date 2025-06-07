@@ -1,9 +1,9 @@
 'use strict';
 
 const { Driver } = require('homey');
-const discovery = require('../../lib/deviceDiscovery.js');
-const SMA = require('../../lib/sma.js');
-const decodeData = require('../../lib/decodeData.js');
+const discovery = require('../../lib/devices/deviceDiscovery.js');
+const Inverter = require('../../lib/devices/inverter.js');
+const decodeData = require('../../lib/modbus/decodeData.js');
 
 class InverterDriver extends Driver {
 
@@ -160,7 +160,7 @@ class InverterDriver extends Driver {
             //Make sure devices array is empty
             devices.splice(0, devices.length);
 
-            const smaSession = new SMA({
+            const smaSession = new Inverter({
                 host: settings.address,
                 port: this.homey.settings.get('port'),
                 autoClose: true,
