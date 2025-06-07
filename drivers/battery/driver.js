@@ -1,7 +1,7 @@
 'use strict';
 
 const { Driver } = require('homey');
-const discovery = require('../../lib/devices/deviceDiscovery.js');
+const BatteryDiscovery = require('../../lib/devices/batteryDiscovery.js');
 const Battery = require('../../lib/devices/battery.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
 
@@ -43,7 +43,7 @@ class BatteryDriver extends Driver {
                 devices.splice(0, devices.length);
 
                 //Discover devices using multicast query
-                const discoveryQuery = new discovery({
+                const discoveryQuery = new BatteryDiscovery({
                     port: this.homey.settings.get('port'),
                     device: this
                 });

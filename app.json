@@ -2071,7 +2071,7 @@
       "setable": true,
       "getable": true,
       "insights": true,
-      "uiComponent": "slider",
+      "uiComponent": null,
       "chartType": "stepLine"
     }
   }

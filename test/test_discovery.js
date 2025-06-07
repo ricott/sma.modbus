@@ -1,8 +1,8 @@
 'use strict';
 
-const Discovery = require('../lib/deviceDiscovery.js');
+const InverterDiscovery = require('../lib/devices/inverterDiscovery.js');
 
-let discoveryQuery = new Discovery({
+let discoveryQuery = new InverterDiscovery({
     port: 502
   });
 

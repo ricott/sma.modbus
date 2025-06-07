@@ -64,9 +64,7 @@ class InverterDevice extends BaseDevice {
     }
 
     async initializeEventListeners() {
-
         this.api.on('readings', async (readings) => {
-
             if (this.getSetting('isDailyYieldManual') == 'true') {
                 try {
                     const calculatedDailyYield = await this.calculateDailyYield(readings.totalYield);

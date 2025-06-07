@@ -1,7 +1,7 @@
 'use strict';
 
 const { Driver } = require('homey');
-const discovery = require('../../lib/devices/deviceDiscovery.js');
+const InverterDiscovery = require('../../lib/devices/inverterDiscovery.js');
 const Inverter = require('../../lib/devices/inverter.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
 
@@ -103,7 +103,7 @@ class InverterDriver extends Driver {
                 devices.splice(0, devices.length);
 
                 //Discover devices using multicast query
-                const discoveryQuery = new discovery({
+                const discoveryQuery = new InverterDiscovery({
                     port: this.homey.settings.get('port'),
                     device: this
                 });
