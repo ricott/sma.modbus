@@ -1,7 +1,7 @@
 'use strict';
 
 const spacetime = require('spacetime');
-const BaseDevice = require('../baseDevice.js');
+const ModbusDevice = require('../modbusDevice.js');
 const Inverter = require('../../lib/devices/inverter.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
 
@@ -27,14 +27,11 @@ const deviceCapabilitesList = [
     'measure_power.dcC'
 ];
 
-class InverterDevice extends BaseDevice {
+class InverterDevice extends ModbusDevice {
 
     #capabilityListenersRegistered = false;
 
     async onInit() {
-        // Register device triggers
-        this._inverter_status_changed = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
-        this._inverter_condition_changed = this.homey.flow.getDeviceTriggerCard('inverter_condition_changed');
         await super.onInit();
         this.resetAtMidnight();
     }
@@ -73,122 +70,154 @@ class InverterDevice extends BaseDevice {
     }
 
     async initializeEventListeners() {
-        this.api.on('readings', async (readings) => {
+        this.api.on('readings', this.handleReadingsEvent.bind(this));
+        this.api.on('properties', this.handlePropertiesEvent.bind(this));
+        this.api.on('error', this._handleErrorEvent.bind(this));
+    }
+
+    async handleReadingsEvent(readings) {
+        try {
+            // Update availability tracking
             await this.onDataReceived();
 
-            if (this.getSetting('isDailyYieldManual') == 'true') {
-                try {
-                    const calculatedDailyYield = await this.calculateDailyYield(readings.totalYield);
-                    //this.log(`[${this.getName()}] Calculated daily yield '${calculatedDailyYield}'`);
-                    //Fishy values coming for at least one user with negative daily yield
-                    //Lets make sure it is not negative
-                    const dailyYield = Math.max(calculatedDailyYield, 0.0);
-                    await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
-                } catch (error) {
-                    this.error('Failed to calculate daily yield:', error);
-                }
-            } else {
-                //Fishy values coming for at least one user with negative daily yield
-                //Lets make sure it is not negative
-                const dailyYield = Math.max(readings.dailyYield || 0.0, 0.0);
-                await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
+            // Handle daily yield calculation
+            await this.handleDailyYield(readings);
+
+            // Destructure readings for cleaner access
+            const {
+                acPowerTotal = 0,
+                acVoltageL1 = 0,
+                acVoltageL2 = 0,
+                acVoltageL3 = 0,
+                totalYield = 0,
+                condition,
+                status,
+                batteryStatus,
+                dcVoltageA = 0,
+                dcVoltageB = 0,
+                dcVoltageC = 0,
+                dcPowerA = 0,
+                dcPowerB = 0,
+                dcPowerC = 0,
+                batterySoC = 0,
+                targetPower = 0,
+                batteryCharge = 0,
+                batteryDischarge = 0
+            } = readings;
+
+            // Update basic power and voltage readings
+            await this._updateProperty('measure_power', acPowerTotal);
+            await this._updateProperty('measure_voltage', acVoltageL1);
+            await this._updateProperty('measure_voltage.l2', acVoltageL2);
+            await this._updateProperty('measure_voltage.l3', acVoltageL3);
+
+            // Update total yield (ignore occasional 0 values)
+            if (totalYield > 0) {
+                await this._updateProperty('measure_yield', decodeData.formatWHasKWH(totalYield));
             }
 
-            await this._updateProperty('measure_power', readings.acPowerTotal || 0);
-            await this._updateProperty('measure_voltage', readings.acVoltageL1 || 0);
-            await this._updateProperty('measure_voltage.l2', readings.acVoltageL2 || 0);
-            await this._updateProperty('measure_voltage.l3', readings.acVoltageL3 || 0);
-            //Ignore occasional 0 values for the total yield
-            if (readings.totalYield && readings.totalYield > 0) {
-                await this._updateProperty('measure_yield', decodeData.formatWHasKWH(readings.totalYield));
-            }
+            // Update operational status capabilities
+            await this.updateOperationalStatus(condition, status, batteryStatus);
 
-            //New capabilities
-            if (readings.condition && !readings.condition.startsWith('UNKNOWN')) {
-                await this._updateProperty('operational_status.health', readings.condition);
-            }
-            //Skip the odd redings that sometimes appear that show 0 as condition
-            //There is no mapping for 0, so it is an unknown value
-            //Value here would be UNKNOW (0)
-            if (readings.status && readings.status.indexOf('(0)') == -1) {
-                await this._updateProperty('operational_status', readings.status);
-            }
-            if (readings.batteryStatus && readings.batteryStatus.indexOf('(0)') == -1) {
-                await this._updateProperty('operational_status.battery', readings.batteryStatus);
-            }
-            await this._updateProperty('measure_voltage.dcA', readings.dcVoltageA || 0);
-            await this._updateProperty('measure_voltage.dcB', readings.dcVoltageB || 0);
-            await this._updateProperty('measure_voltage.dcC', readings.dcVoltageC || 0);
-            await this._updateProperty('measure_power.dcA', readings.dcPowerA || 0);
-            await this._updateProperty('measure_power.dcB', readings.dcPowerB || 0);
-            await this._updateProperty('measure_power.dcC', readings.dcPowerC || 0);
+            // Update DC voltage and power readings
+            await this.updateDCReadings({ dcVoltageA, dcVoltageB, dcVoltageC, dcPowerA, dcPowerB, dcPowerC });
 
-            await this._updateProperty('measure_battery', Number.isNaN(readings.batterySoC) ? 0 : readings.batterySoC);
-            //Adjust active power to be <= max power
-            const activePower = Math.min(Number(this.getSetting('maxPower')), readings.targetPower || 0);
+            // Update battery and target power
+            await this._updateProperty('measure_battery', Number.isNaN(batterySoC) ? 0 : batterySoC);
+
+            // Adjust active power to be <= max power
+            const maxPower = Number(this.getSetting('maxPower'));
+            const activePower = Math.min(maxPower, targetPower);
             await this._updateProperty('target_power', activePower);
 
-            const batteryCharge = readings.batteryCharge || 0;
-            const batteryDischarge = readings.batteryDischarge || 0;
-            // Idle power is 0
-            let batteryPower = 0;
-            if (batteryCharge > 0) {
-                // We are charging
-                batteryPower = batteryCharge;
-            } else if (batteryDischarge > 0) {
-                // We are discharging, make discharge negative
-                batteryPower = (batteryDischarge * -1);
-            }
+            // Calculate and update battery power
+            const batteryPower = this.calculateBatteryPower(batteryCharge, batteryDischarge);
             await this._updateProperty('measure_power.battery', batteryPower);
 
-        });
+        } catch (error) {
+            this.error('Failed to process inverter readings event:', error);
+        }
+    }
 
-        this.api.on('properties', async (properties) => {
+    async handleDailyYield(readings) {
+        const isManualCalculation = this.getSetting('isDailyYieldManual') === 'true';
+
+        if (isManualCalculation) {
             try {
-                await this.setSettings({
-                    deviceType: String(properties.deviceType),
-                    serialNo: String(properties.serialNo),
-                    swVersion: String(properties.swVersion || 'unknown'),
-                    maxPower: String(properties.maxPower || _defaultActivePower),
-                    gridCountry: String(properties.gridCountry || 'unknown'),
-                    deviceClass: decodeData.decodeDeviceClass(properties.deviceClass || 0)
-                });
-
-                //When properties are read we have the device type needed to know capabilities
-                await this.setupCapabilities();
-                await this.updateCapabilityProperties();
-                await this.shouldWeCalculateDailyYield();
-                await this.setupCapabilityListeners();
-            } catch (err) {
-                this.error('Failed to update settings', err);
+                const calculatedDailyYield = await this.calculateDailyYield(readings.totalYield);
+                // Ensure non-negative values (fishy values coming for at least one user)
+                const dailyYield = Math.max(calculatedDailyYield, 0.0);
+                await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
+            } catch (error) {
+                this.error('Failed to calculate daily yield:', error);
             }
-        });
+        } else {
+            // Ensure non-negative values (fishy values coming for at least one user)
+            const dailyYield = Math.max(readings.dailyYield || 0.0, 0.0);
+            await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
+        }
+    }
 
-        this.api.on('error', async (error) => {
-            this.error(`[${this.getName()}] Houston we have a problem`, error);
+    async updateOperationalStatus(condition, status, batteryStatus) {
+        // Update condition if valid and not unknown
+        if (condition && !condition.startsWith('UNKNOWN')) {
+            await this._updateProperty('operational_status.health', condition);
+        }
 
-            // Use BaseDevice's communication error handling
-            await this.onCommunicationError(error);
+        // Update status, skip odd readings that show 0 as condition
+        // There is no mapping for 0, so it is an unknown value (UNKNOWN (0))
+        if (status && !status.includes('(0)')) {
+            await this._updateProperty('operational_status', status);
+        }
 
-            let message = '';
-            if (this.isError(error)) {
-                message = error.stack;
-            } else {
-                try {
-                    message = JSON.stringify(error, null, "  ");
-                } catch (e) {
-                    this.log('Failed to stringify object', e);
-                    message = error.toString();
-                }
-            }
+        // Update battery status, skip invalid readings
+        if (batteryStatus && !batteryStatus.includes('(0)')) {
+            await this._updateProperty('operational_status.battery', batteryStatus);
+        }
+    }
 
-            const dateTime = new Date().toISOString();
-            try {
-                await this.setSettings({ sma_last_error: dateTime + '\n' + message });
-            } catch (err) {
-                this.error('Failed to update settings sma_last_error', err);
-            }
-        });
+    async updateDCReadings({ dcVoltageA, dcVoltageB, dcVoltageC, dcPowerA, dcPowerB, dcPowerC }) {
+        await Promise.all([
+            this._updateProperty('measure_voltage.dcA', dcVoltageA),
+            this._updateProperty('measure_voltage.dcB', dcVoltageB),
+            this._updateProperty('measure_voltage.dcC', dcVoltageC),
+            this._updateProperty('measure_power.dcA', dcPowerA),
+            this._updateProperty('measure_power.dcB', dcPowerB),
+            this._updateProperty('measure_power.dcC', dcPowerC)
+        ]);
+    }
+
+    calculateBatteryPower(batteryCharge, batteryDischarge) {
+        // Idle power is 0
+        if (batteryCharge > 0) {
+            // We are charging
+            return batteryCharge;
+        } else if (batteryDischarge > 0) {
+            // We are discharging, make discharge negative
+            return -batteryDischarge;
+        }
+        return 0;
+    }
+
+    async handlePropertiesEvent(properties) {
+        try {
+            await this.setSettings({
+                deviceType: String(properties.deviceType),
+                serialNo: String(properties.serialNo),
+                swVersion: String(properties.swVersion || 'unknown'),
+                maxPower: String(properties.maxPower || _defaultActivePower),
+                gridCountry: String(properties.gridCountry || 'unknown'),
+                deviceClass: decodeData.decodeDeviceClass(properties.deviceClass || 0)
+            });
+
+            //When properties are read we have the device type needed to know capabilities
+            await this.setupCapabilities();
+            await this.updateCapabilityProperties();
+            await this.shouldWeCalculateDailyYield();
+            await this.setupCapabilityListeners();
+        } catch (err) {
+            this.error('Failed to process inverter properties event:', err);
+        }
     }
 
     resetAtMidnight() {
@@ -207,21 +236,23 @@ class InverterDevice extends BaseDevice {
     }
 
     async resetDailyYield() {
-        await this.setStoreValue('totalYieldAtMidnight', 0)
-            .catch(reason => {
-                this.error(reason);
-            });
+        try {
+            await this.setStoreValue('totalYieldAtMidnight', 0);
+        } catch (reason) {
+            this.error(reason);
+        }
     }
 
     async calculateDailyYield(totalYield) {
-        //Check if we have totalYield from midnight saved
-        let totalYieldAtMidnight = this.getStoreValue('totalYieldAtMidnight') || 0;
+        // Check if we have totalYield from midnight saved
+        const totalYieldAtMidnight = this.getStoreValue('totalYieldAtMidnight') || 0;
         if (totalYieldAtMidnight == 0) {
             this.log(`[${this.getName()}] Total yield store value is '0', setting it to '${totalYield}'`);
-            await this.setStoreValue('totalYieldAtMidnight', totalYield)
-                .catch(reason => {
-                    this.error(reason);
-                });
+            try {
+                await this.setStoreValue('totalYieldAtMidnight', totalYield);
+            } catch (reason) {
+                this.error(reason);
+            }
             return 0;
         }
 
@@ -277,18 +308,18 @@ class InverterDevice extends BaseDevice {
         }
     }
 
-    async triggerDeviceTriggers(key, value) {
+    async _handlePropertyTriggers(key, value) {
         if (key === 'operational_status') {
-            let tokens = {
+            const tokens = {
                 inverter_status: value || 'n/a'
-            }
-            this._inverter_status_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
+            };
+            await this.driver.triggerInverterStatusChanged(this, tokens).catch(error => { this.error(error) });
 
         } else if (key === 'operational_status.health') {
-            let tokens = {
+            const tokens = {
                 inverter_condition: value || 'n/a'
-            }
-            this._inverter_condition_changed.trigger(this, tokens, {}).catch(error => { this.error(error) });
+            };
+            await this.driver.triggerInverterConditionChanged(this, tokens).catch(error => { this.error(error) });
         }
     }
 

@@ -1,15 +1,13 @@
 'use strict';
 
-const { Device } = require('homey');
 const EnergyMeter = require('../../lib/devices/energyMeter.js');
+const utilFunctions = require('../../lib/util.js');
+const BaseDevice = require('../baseDevice.js');
 
-class EnergyDevice extends Device {
+class EnergyDevice extends BaseDevice {
 
     async onInit() {
         this.log(`[${this.getName()}] SMA energy meter initiated`);
-
-        // Register device triggers
-        this._phase_threshold_triggered = this.homey.flow.getDeviceTriggerCard('phase_threshold_triggered');
 
         this.phaseAlerts = {
             L1: false,
@@ -20,11 +18,7 @@ class EnergyDevice extends Device {
         this.emSession = null;
 
         //Update serial number setting
-        this.setSettings({ serialNo: String(this.getData().id) })
-            .catch(err => {
-                this.error('Failed to update settings serialNo', err);
-            });
-
+        await this.updateSetting('serialNo', this.getData().id);
         await this.upgradeDevice();
         await this.registerFlowTokens();
 
@@ -47,29 +41,6 @@ class EnergyDevice extends Device {
         await this.removeCapabilityHelper('measure_power.surplus');
     }
 
-    async removeCapabilityHelper(capability) {
-        if (this.hasCapability(capability)) {
-            try {
-                this.log(`Remove existing capability '${capability}'`);
-                await this.removeCapability(capability);
-            } catch (reason) {
-                this.error(`Failed to removed capability '${capability}'`);
-                this.error(reason);
-            }
-        }
-    }
-    async addCapabilityHelper(capability) {
-        if (!this.hasCapability(capability)) {
-            try {
-                this.log(`Adding missing capability '${capability}'`);
-                await this.addCapability(capability);
-            } catch (reason) {
-                this.error(`Failed to add capability '${capability}'`);
-                this.error(reason);
-            }
-        }
-    }
-
     async registerFlowTokens() {
         this.log('Registering flow tokens');
         this.availCurrentToken = await this.homey.flow.createToken(`${this.getData().id}.availableCurrent`,
@@ -89,133 +60,105 @@ class EnergyDevice extends Device {
             });
     }
 
-    setupEMSession() {
+    async setupEMSession() {
         this.emSession = new EnergyMeter({
             serialNo: this.getData().id,
             refreshInterval: this.getSetting('polling'),
             device: this
         });
 
-        this.initializeEventListeners();
+        await this.initializeEventListeners();
     }
 
-    initializeEventListeners() {
+    async initializeEventListeners() {
+        this.emSession.on('readings', this.handleReadingsEvent.bind(this));
+        this.emSession.on('error', this._handleErrorEvent.bind(this));
+    }
 
-        this.emSession.on('readings', readings => {
+    async handleReadingsEvent(readings) {
+        try {
+            // Destructure readings for cleaner code
+            const {
+                pregard, psurplus, frequency, pregardcounter, psurpluscounter, swVersion,
+                pregardL1, psurplusL1, currentL1, voltageL1,
+                pregardL2, psurplusL2, currentL2, voltageL2,
+                pregardL3, psurplusL3, currentL3, voltageL3
+            } = readings;
 
-            this._updateProperty('measure_power', readings.pregard - readings.psurplus);
-            this._updateProperty('measure_power.L1', (readings.pregardL1 - readings.psurplusL1));
-            this._updateProperty('measure_current.L1', readings.currentL1);
-            this._updateProperty('measure_voltage.L1', readings.voltageL1);
-            this._updateProperty('measure_power.L2', (readings.pregardL2 - readings.psurplusL2));
-            this._updateProperty('measure_current.L2', readings.currentL2);
-            this._updateProperty('measure_voltage.L2', readings.voltageL2);
-            this._updateProperty('measure_power.L3', (readings.pregardL3 - readings.psurplusL3));
-            this._updateProperty('measure_current.L3', readings.currentL3);
-            this._updateProperty('measure_voltage.L3', readings.voltageL3);
-            this._updateProperty('frequency', readings.frequency);
+            // Update all capabilities in parallel
+            await Promise.all([
+                // Total power and frequency
+                this._updateProperty('measure_power', pregard - psurplus),
+                this._updateProperty('frequency', frequency),
+                this._updateProperty('meter_power', pregardcounter),
+                this._updateProperty('meter_power.export', psurpluscounter),
 
-            this._updateProperty('meter_power', readings.pregardcounter);
-            this._updateProperty('meter_power.export', readings.psurpluscounter);
+                // Phase L1
+                this._updateProperty('measure_power.L1', pregardL1 - psurplusL1),
+                this._updateProperty('measure_current.L1', currentL1),
+                this._updateProperty('measure_voltage.L1', voltageL1),
 
-            if (readings.swVersion != 0) {
-                this.setSettings({ swVersion: `${readings.swVersion}` })
-                    .catch(err => {
-                        this.error('Failed to update settings swVersion', err);
-                    });
+                // Phase L2
+                this._updateProperty('measure_power.L2', pregardL2 - psurplusL2),
+                this._updateProperty('measure_current.L2', currentL2),
+                this._updateProperty('measure_voltage.L2', voltageL2),
+
+                // Phase L3
+                this._updateProperty('measure_power.L3', pregardL3 - psurplusL3),
+                this._updateProperty('measure_current.L3', currentL3),
+                this._updateProperty('measure_voltage.L3', voltageL3)
+            ]);
+
+            // Update software version if available
+            if (swVersion !== 0) {
+                await this.updateSetting('swVersion', swVersion);
             }
 
-            //Update tokes to be used in flows
-            this.pRegardCounterToken.setValue(readings.pregardcounter);
-            this.pSurplusCounterToken.setValue(readings.psurpluscounter);
+            // Update flow tokens
+            this.pRegardCounterToken.setValue(pregardcounter);
+            this.pSurplusCounterToken.setValue(psurpluscounter);
 
-            //Available current token, largest phase utilization vs main fuse vs offset
-            let currentL1 = readings.currentL1;
-            let currentL2 = readings.currentL2;
-            let currentL3 = readings.currentL3;
-            if (readings.psurplusL1 > 0) {
-                currentL1 = 0;
-            }
-            if (readings.psurplusL2 > 0) {
-                currentL2 = 0;
-            }
-            if (readings.psurplusL3 > 0) {
-                currentL3 = 0;
-            }
+            // Calculate available current (zero out phases with surplus)
+            const adjustedCurrents = [
+                psurplusL1 > 0 ? 0 : currentL1,
+                psurplusL2 > 0 ? 0 : currentL2,
+                psurplusL3 > 0 ? 0 : currentL3
+            ];
+
+            const { mainFuse, offset } = this.getSettings();
+            const maxCurrent = Math.max(...adjustedCurrents);
+            const availableCurrent = Math.max(0, Math.round(mainFuse - maxCurrent - offset));
+
+            this.availCurrentToken.setValue(availableCurrent);
+        } catch (error) {
+            this.error('Failed to process readings event:', error);
+        }
+    }
+
+    async _handlePropertyTriggers(key, value) {
+        if (key === 'measure_current.L1' ||
+            key === 'measure_current.L2' ||
+            key === 'measure_current.L3') {
 
             const mainFuse = this.getSetting('mainFuse');
-            const offset = this.getSetting('offset');
-            let availableCurrent = mainFuse - Math.max(currentL1, currentL2, currentL3);
-            availableCurrent = availableCurrent - offset;
-            if (availableCurrent < 0) {
-                availableCurrent = 0;
-            } else {
-                availableCurrent = parseFloat(availableCurrent.toFixed(0));
-            }
-            this.availCurrentToken.setValue(availableCurrent);
-        });
-
-        this.emSession.on('error', error => {
-            this.error('Houston we have a problem', error);
-
-            let message = '';
-            if (this.isError(error)) {
-                message = error.stack;
-            } else {
-                try {
-                    message = JSON.stringify(error, null, "  ");
-                } catch (e) {
-                    this.log('Failed to stringify object', e);
-                    message = error.toString();
-                }
-            }
-
-            let dateTime = new Date().toISOString();
-            this.setSettings({ sma_last_error: dateTime + '\n' + message })
-                .catch(err => {
-                    this.error('Failed to update settings sma_last_error', err);
-                });
-        });
-    }
-
-    isError(err) {
-        return (err && err.stack && err.message);
-    }
-
-    _updateProperty(key, value) {
-        if (this.hasCapability(key)) {
-            let oldValue = this.getCapabilityValue(key);
-            if (oldValue !== null && oldValue != value) {
-                this.setCapabilityValue(key, value);
-
-                if (key === 'measure_current.L1' ||
-                    key === 'measure_current.L2' ||
-                    key === 'measure_current.L3') {
-
-                    const mainFuse = this.getSetting('mainFuse');
-                    const threshold = this.getSetting('threshold');
-                    let phase = key.substring(key.indexOf('.') + 1);
-                    let utilization = (value / mainFuse) * 100;
-                    if (utilization >= threshold) {
-                        if (this.phaseAlerts[phase] === false) {
-                            //Only trigger if this is new threshold alert
-                            utilization = parseFloat(utilization.toFixed(2));
-                            this.phaseAlerts[phase] = true;
-                            let tokens = {
-                                phase: phase,
-                                percentageUtilized: utilization
-                            }
-                            this._phase_threshold_triggered.trigger(this, tokens, {}).catch(error => { this.error(error) });
-                        }
-                    } else if (this.phaseAlerts[phase] === true) {
-                        //Reset alert
-                        this.log(`Resetting phase alert state for '${key}'`);
-                        this.phaseAlerts[phase] = false;
+            const threshold = this.getSetting('threshold');
+            let phase = key.substring(key.indexOf('.') + 1);
+            let utilization = (value / mainFuse) * 100;
+            if (utilization >= threshold) {
+                if (this.phaseAlerts[phase] === false) {
+                    //Only trigger if this is new threshold alert
+                    utilization = parseFloat(utilization.toFixed(2));
+                    this.phaseAlerts[phase] = true;
+                    let tokens = {
+                        phase: phase,
+                        percentageUtilized: utilization
                     }
+                    await this.driver.triggerPhaseThresholdTriggered(this, tokens).catch(error => { this.error(error) });
                 }
-
-            } else {
-                this.setCapabilityValue(key, value);
+            } else if (this.phaseAlerts[phase] === true) {
+                //Reset alert
+                this.log(`Resetting phase alert state for '${key}'`);
+                this.phaseAlerts[phase] = false;
             }
         }
     }

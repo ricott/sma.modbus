@@ -14,7 +14,6 @@ class BatteryDriver extends Driver {
         if (!this.homey.settings.get('port')) {
             this.homey.settings.set('port', 502);
         }
-
     }
 
     isDeviceNew(deviceId) {

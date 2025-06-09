@@ -8,7 +8,7 @@ const decodeData = require('../../lib/modbus/decodeData.js');
 class InverterDriver extends Driver {
 
     async onInit() {
-        this.log('SMA Inverter driver has been initialized');
+        this.log('Inverter driver has been initialized');
 
         //First time app starts, set default port to 502.
         if (!this.homey.settings.get('port')) {
@@ -18,8 +18,20 @@ class InverterDriver extends Driver {
         this._registerFlows();
     }
 
+    async triggerInverterStatusChanged(device, tokens) {
+        await this._inverter_status_changed.trigger(device, {}, tokens).catch(error => { this.error(error) });
+    }
+
+    async triggerInverterConditionChanged(device, tokens) {
+        await this._inverter_condition_changed.trigger(device, {}, tokens).catch(error => { this.error(error) });
+    }
+
     _registerFlows() {
         this.log('Registering flows');
+
+        // Register device triggers
+        this._inverter_status_changed = this.homey.flow.getDeviceTriggerCard('inverter_status_changed');
+        this._inverter_condition_changed = this.homey.flow.getDeviceTriggerCard('inverter_condition_changed');
 
         const isInverterDailyYield = this.homey.flow.getConditionCard('isInverterDailyYield');
         isInverterDailyYield.registerRunListener(async (args, state) => {
@@ -110,14 +122,12 @@ class InverterDriver extends Driver {
 
                 try {
                     const inverterInfos = await discoveryQuery.discover();
-                    
+
                     // Process each discovered inverter
                     for (const inverterInfo of inverterInfos) {
                         // 8001: Solar Inverters (DevClss1)
-                        // 8007: Battery Inverter (DevClss7)
                         // 8009: Hybrid inverter (DevClss9)
-                        if (inverterInfo.deviceClass == 8001 || 
-                            inverterInfo.deviceClass == 8007 ||
+                        if (inverterInfo.deviceClass == 8001 ||
                             inverterInfo.deviceClass == 8009) {
                             if (this.isNewInverter(inverterInfo.serialNo)) {
                                 this.log(`Adding to devices: ${inverterInfo.deviceType}`);
@@ -204,10 +214,5 @@ class InverterDriver extends Driver {
             return devices;
         });
     }
-
-    #sleep(time) {
-        return new Promise((resolve) => this.homey.setTimeout(resolve, time));
-    }
 }
-
 module.exports = InverterDriver;

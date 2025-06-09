@@ -10,8 +10,15 @@ class EnergyDriver extends Driver {
         this._registerFlows();
     }
 
+    async triggerPhaseThresholdTriggered(device, tokens) {
+        await this._phase_threshold_triggered.trigger(device, {}, tokens).catch(error => { this.error(error) });
+    }
+
     _registerFlows() {
         this.log('Registering flows');
+
+        // Register device triggers
+        this._phase_threshold_triggered = this.homey.flow.getDeviceTriggerCard('phase_threshold_triggered');
 
         //Register conditions
         const phaseUtilized = this.homey.flow.getConditionCard('phaseUtilized');

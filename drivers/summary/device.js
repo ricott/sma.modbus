@@ -1,8 +1,8 @@
 'use strict';
 
-const { Device } = require('homey');
+const BaseDevice = require('../baseDevice.js');
 
-class SummaryDevice extends Device {
+class SummaryDevice extends BaseDevice {
 
     async onInit() {
         this.log(`[${this.getName()}] SMA summary initiated`);
@@ -37,38 +37,6 @@ class SummaryDevice extends Device {
     async upgradeDevice() {
         this.log('Upgrading existing device');
         await this.addCapabilityHelper('meter_power');
-    }
-
-    async removeCapabilityHelper(capability) {
-        if (this.hasCapability(capability)) {
-            try {
-                this.log(`[${this.getName()}] Remove existing capability '${capability}'`);
-                await this.removeCapability(capability);
-            } catch (reason) {
-                this.error(reason);
-            }
-        }
-    }
-    async addCapabilityHelper(capability) {
-        if (!this.hasCapability(capability)) {
-            try {
-                this.log(`[${this.getName()}] Adding missing capability '${capability}'`);
-                await this.addCapability(capability);
-            } catch (reason) {
-                this.error(reason);
-            }
-        }
-    }
-
-    async updateCapabilityOptions(capability, options) {
-        if (this.hasCapability(capability)) {
-            try {
-                this.log(`[${this.getName()}] Updating capability options '${capability}'`);
-                await this.setCapabilityOptions(capability, options);
-            } catch (reason) {
-                this.error(reason);
-            }
-        }
     }
 
     getInverterMPPConfig() {
@@ -139,23 +107,6 @@ class SummaryDevice extends Device {
         this.homey.setInterval(async () => {
             await this.updateValues();
         }, 1000 * this.getSetting('polling'));
-    }
-
-    async _updateProperty(key, value) {
-        if (!this.hasCapability(key)) {
-            return;
-        }
-
-        if (typeof value === 'undefined' || value === null) {
-            this.log(`[${this.getName()}] Value for capability '${key}' is 'undefined'`);
-            return;
-        }
-
-        try {
-            await this.setCapabilityValue(key, value);
-        } catch (reason) {
-            this.error(reason);
-        }
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
