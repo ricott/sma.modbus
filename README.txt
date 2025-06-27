@@ -3,15 +3,11 @@ Use your SMA Energy Meter or Home Manager 2 as a smart meter in Homey Energy. Ta
 
 Supported devices
 - Inverters
-- Sunny Boy Storage
+- Hybrid/Batteri inverters
 - Energy Meter (incl. Home Manager 2)
 - Energy Summary
 
-Hybrid/Inverters
 Ambition is to support all inverters manufactured by SMA, including the new Smart Energy hybrid inverters.
-
-Sunny Boy Storage
-Shows operational status, battery, charge, discharge, power drawn, grid feed-in and battery capacity of Sunny Boy Storage products using the modbus protocol.
 
 Energy Meter
 The Energy Meter device type supports both the Energy Meter and the Home Manager 2.0 products. Both products generate the same multicast datagrams required to access the built-in meter information.

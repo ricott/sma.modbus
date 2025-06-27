@@ -1,4 +1,8 @@
 {
+    "2.7.3": {
+        "en": "Maintenance",
+        "sv": "Underhåll"
+    },
     "2.7.2": {
         "en": "Added support for Homey Energy through a new battery device type. The old storage device type is deprecated and will be removed in a future version.",
         "sv": "Lade till stöd för Homey Energy via en ny batteri enhetstyp. Den gamla lagrings enhetstypen är föråldrad och kommer att tas bort i en framtidig version."
