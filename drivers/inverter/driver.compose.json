@@ -10,7 +10,10 @@
   },
   "class": "solarpanel",
   "energy": {
-    "meterPowerExportedCapability": "meter_power"
+    "meterPowerExportedCapability": "meter_power",
+    "batteries": [
+      "INTERNAL"
+    ]
   },
   "capabilities": [
     "measure_battery",
