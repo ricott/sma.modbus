@@ -1,4 +1,8 @@
 {
+    "2.7.4": {
+        "en": "Fixed bug related to setting the max active power output",
+        "sv": "Fixat bugg relaterad till att sätta den högsta aktiva ut-effekten"
+    },
     "2.7.3": {
         "en": "Maintenance",
         "sv": "Underhåll"

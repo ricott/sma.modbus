@@ -80,10 +80,11 @@ class InverterDriver extends Driver {
 
             // Adjust active power to be <= max power
             const activePower = Math.min(Number(args.device.getSetting('maxPower')), args.power);
-            return args.device.smaApi.setMaxActivePowerOutput(activePower)
+            return args.device.api.setMaxActivePowerOutput(activePower)
                 .then(function (result) {
                     return Promise.resolve(true);
                 }).catch(reason => {
+                    this.error(reason);
                     return Promise.reject(`Failed to set the active power output. Reason: ${reason.message}`);
                 });
         });
