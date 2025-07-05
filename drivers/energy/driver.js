@@ -11,7 +11,7 @@ class EnergyDriver extends Driver {
     }
 
     async triggerPhaseThresholdTriggered(device, tokens) {
-        await this._phase_threshold_triggered.trigger(device, {}, tokens).catch(error => { this.error(error) });
+        await this._phase_threshold_triggered.trigger(device, tokens, {}).catch(error => { this.error(error) });
     }
 
     _registerFlows() {

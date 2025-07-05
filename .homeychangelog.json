@@ -1,4 +1,8 @@
 {
+    "2.7.5": {
+        "en": "Fixed bug related to flow tokens for trigger cards",
+        "sv": "Fixat bugg relaterad till flödesvärden för triggers"
+    },
     "2.7.4": {
         "en": "Fixed bug related to setting the max active power output",
         "sv": "Fixat bugg relaterad till att sätta den högsta aktiva ut-effekten"

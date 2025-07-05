@@ -19,11 +19,11 @@ class InverterDriver extends Driver {
     }
 
     async triggerInverterStatusChanged(device, tokens) {
-        await this._inverter_status_changed.trigger(device, {}, tokens).catch(error => { this.error(error) });
+        await this._inverter_status_changed.trigger(device, tokens, {}).catch(error => { this.error(error) });
     }
 
     async triggerInverterConditionChanged(device, tokens) {
-        await this._inverter_condition_changed.trigger(device, {}, tokens).catch(error => { this.error(error) });
+        await this._inverter_condition_changed.trigger(device, tokens, {}).catch(error => { this.error(error) });
     }
 
     _registerFlows() {
