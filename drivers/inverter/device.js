@@ -7,10 +7,8 @@ const decodeData = require('../../lib/modbus/decodeData.js');
 
 const _defaultActivePower = 50000;
 const deviceCapabilitesList = [
-    'measure_battery',
     'target_power',
     'measure_power',
-    'measure_power.battery',
     'meter_power',
     'measure_voltage',
     'measure_voltage.l2',
@@ -18,7 +16,6 @@ const deviceCapabilitesList = [
     'measure_yield',
     'operational_status.health',
     'operational_status',
-    'operational_status.battery',
     'measure_voltage.dcA',
     'measure_voltage.dcB',
     'measure_voltage.dcC',
@@ -72,7 +69,15 @@ class InverterDevice extends ModbusDevice {
     async initializeEventListeners() {
         this.api.on('readings', this.handleReadingsEvent.bind(this));
         this.api.on('properties', this.handlePropertiesEvent.bind(this));
-        this.api.on('error', this._handleErrorEvent.bind(this));
+        this.api.on('error', this.handleErrorEvent.bind(this));
+    }
+
+    async handleErrorEvent(error) {
+        // Handle the error with base device error handling
+        await this._handleErrorEvent(error);
+
+        // Also check if this is a communication error that should trigger reconnection
+        await this.onCommunicationError(error);
     }
 
     async handleReadingsEvent(readings) {
@@ -92,17 +97,13 @@ class InverterDevice extends ModbusDevice {
                 totalYield = 0,
                 condition,
                 status,
-                batteryStatus,
                 dcVoltageA = 0,
                 dcVoltageB = 0,
                 dcVoltageC = 0,
                 dcPowerA = 0,
                 dcPowerB = 0,
                 dcPowerC = 0,
-                batterySoC = 0,
-                targetPower = 0,
-                batteryCharge = 0,
-                batteryDischarge = 0
+                targetPower = 0
             } = readings;
 
             // Update basic power and voltage readings
@@ -117,22 +118,15 @@ class InverterDevice extends ModbusDevice {
             }
 
             // Update operational status capabilities
-            await this.updateOperationalStatus(condition, status, batteryStatus);
+            await this.updateOperationalStatus(condition, status);
 
             // Update DC voltage and power readings
             await this.updateDCReadings({ dcVoltageA, dcVoltageB, dcVoltageC, dcPowerA, dcPowerB, dcPowerC });
-
-            // Update battery and target power
-            await this._updateProperty('measure_battery', Number.isNaN(batterySoC) ? 0 : batterySoC);
 
             // Adjust active power to be <= max power
             const maxPower = Number(this.getSetting('maxPower'));
             const activePower = Math.min(maxPower, targetPower);
             await this._updateProperty('target_power', activePower);
-
-            // Calculate and update battery power
-            const batteryPower = this.calculateBatteryPower(batteryCharge, batteryDischarge);
-            await this._updateProperty('measure_power.battery', batteryPower);
 
         } catch (error) {
             this.error('Failed to process inverter readings event:', error);
@@ -158,7 +152,7 @@ class InverterDevice extends ModbusDevice {
         }
     }
 
-    async updateOperationalStatus(condition, status, batteryStatus) {
+    async updateOperationalStatus(condition, status) {
         // Update condition if valid and not unknown
         if (condition && !condition.startsWith('UNKNOWN')) {
             await this._updateProperty('operational_status.health', condition);
@@ -168,11 +162,6 @@ class InverterDevice extends ModbusDevice {
         // There is no mapping for 0, so it is an unknown value (UNKNOWN (0))
         if (status && !status.includes('(0)')) {
             await this._updateProperty('operational_status', status);
-        }
-
-        // Update battery status, skip invalid readings
-        if (batteryStatus && !batteryStatus.includes('(0)')) {
-            await this._updateProperty('operational_status.battery', batteryStatus);
         }
     }
 
@@ -185,18 +174,6 @@ class InverterDevice extends ModbusDevice {
             this._updateProperty('measure_power.dcB', dcPowerB),
             this._updateProperty('measure_power.dcC', dcPowerC)
         ]);
-    }
-
-    calculateBatteryPower(batteryCharge, batteryDischarge) {
-        // Idle power is 0
-        if (batteryCharge > 0) {
-            // We are charging
-            return batteryCharge;
-        } else if (batteryDischarge > 0) {
-            // We are discharging, make discharge negative
-            return -batteryDischarge;
-        }
-        return 0;
     }
 
     async handlePropertiesEvent(properties) {

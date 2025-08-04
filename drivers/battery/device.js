@@ -20,7 +20,15 @@ class BatteryDevice extends ModbusDevice {
     async initializeEventListeners() {
         this.api.on('readings', this.handleReadingsEvent.bind(this));
         this.api.on('properties', this.handlePropertiesEvent.bind(this));
-        this.api.on('error', this._handleErrorEvent.bind(this));
+        this.api.on('error', this.handleErrorEvent.bind(this));
+    }
+
+    async handleErrorEvent(error) {
+        // Handle the error with base device error handling
+        await this._handleErrorEvent(error);
+        
+        // Also check if this is a communication error that should trigger reconnection
+        await this.onCommunicationError(error);
     }
 
     async handleReadingsEvent(readings) {

@@ -10,18 +10,12 @@
   },
   "class": "solarpanel",
   "energy": {
-    "meterPowerExportedCapability": "meter_power",
-    "batteries": [
-      "INTERNAL"
-    ]
+    "meterPowerExportedCapability": "meter_power"
   },
   "capabilities": [
-    "measure_battery",
     "target_power",
-    "measure_power.battery",
     "operational_status.health",
     "operational_status",
-    "operational_status.battery",
     "measure_voltage.dcA",
     "measure_voltage.dcB",
     "measure_voltage.dcC",
@@ -112,18 +106,6 @@
         "en": "Daily Yield",
         "nl": "Dagelijkse opbrengst",
         "sv": "Dagens produktion"
-      }
-    },
-    "measure_power.battery": {
-      "title": {
-        "en": "Battery power",
-        "sv": "Batteri effekt"
-      }
-    },
-    "operational_status.battery": {
-      "title": {
-        "en": "Battery status",
-        "sv": "Batteristatus"
       }
     }
   },

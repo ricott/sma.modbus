@@ -6,6 +6,9 @@ class ModbusDevice extends BaseDevice {
 
     #lastDataReceived = null;
     #availabilityWatchdog = null;
+    #retryCount = 0;
+    #maxRetries = 30; // Maximum number of consecutive retry attempts
+    #isReconnecting = false;
 
     async onInit() {
         this.logMessage(`SMA device initiated`);
@@ -27,8 +30,12 @@ class ModbusDevice extends BaseDevice {
 
             await this.destroySession();
             await this.setupSession(address, port, polling);
-            // Connection successful, make sure device is marked as available
+            
+            // Connection successful, reset retry count and mark as available
+            this.#retryCount = 0;
+            this.#isReconnecting = false;
             await this.setAvailable();
+            
             // Clear any existing retry timer on successful connection
             if (this._retryTimeout) {
                 this.homey.clearTimeout(this._retryTimeout);
@@ -43,17 +50,8 @@ class ModbusDevice extends BaseDevice {
             // Set device as unavailable with error message
             await this.setUnavailable(error.message || 'Connection failed');
 
-            // Clear any existing retry timer before setting a new one
-            if (this._retryTimeout) {
-                this.homey.clearTimeout(this._retryTimeout);
-            }
-
-            // Schedule a retry after 5 minutes
-            this._retryTimeout = this.homey.setTimeout(() => {
-                this.logMessage('Retrying connection...');
-                this.initializeSession(address, port, polling)
-                    .catch(err => this.error('Retry failed:', err));
-            }, 5 * 60 * 1000); // 10 minutes
+            // Schedule retry with exponential backoff
+            this.#scheduleReconnection(address, port, polling);
         }
     }
 
@@ -69,10 +67,53 @@ class ModbusDevice extends BaseDevice {
         // Clear any pending retry timer
         if (this._retryTimeout) {
             this.homey.clearTimeout(this._retryTimeout);
+            this._retryTimeout = null;
         }
+        // Reset reconnection state
+        this.#isReconnecting = false;
+        this.#retryCount = 0;
         // Stop availability watchdog
         this.#stopAvailabilityWatchdog();
         this.destroySession();
+    }
+
+    // Schedules reconnection with exponential backoff
+    #scheduleReconnection(address, port, polling) {
+        // Don't schedule new reconnection if already reconnecting or max retries reached
+        if (this.#isReconnecting) {
+            return;
+        }
+
+        this.#retryCount++;
+        
+        if (this.#retryCount > this.#maxRetries) {
+            this.logMessage(`Maximum retry attempts (${this.#maxRetries}) reached. Stopping reconnection attempts.`);
+            return;
+        }
+
+        this.#isReconnecting = true;
+
+        // Clear any existing retry timer before setting a new one
+        if (this._retryTimeout) {
+            this.homey.clearTimeout(this._retryTimeout);
+        }
+
+        // Calculate exponential backoff delay: 30s, 1m, 2m, 4m, 8m, max 10m
+        const baseDelay = 30 * 1000; // 30 seconds base
+        const maxDelay = 10 * 60 * 1000; // 10 minutes maximum
+        const delay = Math.min(baseDelay * Math.pow(2, this.#retryCount - 1), maxDelay);
+
+        this.logMessage(`Scheduling reconnection attempt ${this.#retryCount}/${this.#maxRetries} in ${Math.round(delay / 1000)}s`);
+
+        this._retryTimeout = this.homey.setTimeout(async () => {
+            this.logMessage(`Retry attempt ${this.#retryCount}/${this.#maxRetries}: Attempting to reconnect...`);
+            this.#isReconnecting = false;
+            try {
+                await this.initializeSession(address, port, polling);
+            } catch (err) {
+                this.error('Reconnection attempt failed:', err);
+            }
+        }, delay);
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
@@ -138,10 +179,17 @@ class ModbusDevice extends BaseDevice {
 
         if (timeSinceLastData > timeoutThreshold) {
             if (this.getAvailable()) {
-                this.logMessage(`No data received for ${Math.round(timeSinceLastData / 1000)}s, marking as unavailable`);
+                this.logMessage(`No data received for ${Math.round(timeSinceLastData / 1000)}s, marking as unavailable and attempting reconnection`);
                 await this.setUnavailable('No data received from device').catch(err => {
                     this.error('Failed to set device unavailable:', err);
                 });
+                
+                // Trigger reconnection due to data timeout
+                this.#scheduleReconnection(
+                    this.getSetting('address'),
+                    this.getSetting('port'),
+                    this.getSetting('polling')
+                );
             }
         }
     }
@@ -154,6 +202,15 @@ class ModbusDevice extends BaseDevice {
             this.logMessage(`Data received, marking device as available again`);
             try {
                 await this.setAvailable();
+                // Reset retry count on successful data reception
+                this.#retryCount = 0;
+                this.#isReconnecting = false;
+                
+                // Clear any pending retry timer since we're receiving data again
+                if (this._retryTimeout) {
+                    this.homey.clearTimeout(this._retryTimeout);
+                    this._retryTimeout = null;
+                }
             } catch (err) {
                 this.error('Failed to set device available:', err);
             }
@@ -166,10 +223,17 @@ class ModbusDevice extends BaseDevice {
         const isCommunicationError = this.#isCommunicationError(error);
 
         if (isCommunicationError && this.getAvailable()) {
-            this.logMessage(`Communication error occurred, marking device as unavailable: ${error.message}`);
+            this.logMessage(`Communication error occurred, marking device as unavailable and attempting reconnection: ${error.message}`);
             await this.setUnavailable(`Communication error: ${error.message || 'Unknown error'}`).catch(err => {
                 this.error('Failed to set device unavailable:', err);
             });
+
+            // Trigger reconnection due to communication error
+            this.#scheduleReconnection(
+                this.getSetting('address'),
+                this.getSetting('port'),
+                this.getSetting('polling')
+            );
         }
     }
 
