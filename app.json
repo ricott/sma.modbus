@@ -2,7 +2,7 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "sma.modbus",
   "sdk": 3,
-  "version": "2.7.6",
+  "version": "2.7.7",
   "compatibility": ">=12.4.5",
   "name": {
     "en": "SMA Energy",
@@ -639,6 +639,10 @@
         "titleFormatted": {
           "en": "Limit the active power output to [[power]]",
           "sv": "Begränsa den aktiva effekten till [[power]]"
+        },
+        "hint": {
+          "en": "Not recommended to use too frequently since it will wear out the FLASH storage inside the inverter.",
+          "sv": "Skall inte användas frekvent då risken finns att lokala (FLASH) lagringen i växelriktaren slits ut."
         },
         "args": [
           {

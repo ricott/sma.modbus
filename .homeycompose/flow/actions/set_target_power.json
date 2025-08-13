@@ -8,6 +8,10 @@
         "en": "Limit the active power output to [[power]]",
         "sv": "Begränsa den aktiva effekten till [[power]]"
     },
+    "hint": {
+        "en": "Not recommended to use too frequently since it will wear out the FLASH storage inside the inverter.",
+        "sv": "Skall inte användas frekvent då risken finns att lokala (FLASH) lagringen i växelriktaren slits ut."
+    },
     "args": [
         {
             "name": "power",

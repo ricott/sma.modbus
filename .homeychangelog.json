@@ -1,4 +1,7 @@
 {
+    "2.7.7": {
+        "en": "Added a hint to the limit of active power output action, informing users of the use of local FLASH storage inside the inverter."
+    },
     "2.7.6": {
         "en": "Removed battery related capabilities and properties",
         "sv": "Radera batteri relaterade egenskaper och egenskaper"
