@@ -15,14 +15,14 @@ class EnergyDevice extends BaseDevice {
             L3: false
         };
 
-        this.emSession = null;
+        this.api = null;
 
         //Update serial number setting
         await this.updateSetting('serialNo', this.getData().id);
         await this.upgradeDevice();
         await this.registerFlowTokens();
 
-        this.setupEMSession();
+        this.setupEMAPI();
     }
 
     async upgradeDevice() {
@@ -60,8 +60,8 @@ class EnergyDevice extends BaseDevice {
             });
     }
 
-    async setupEMSession() {
-        this.emSession = new EnergyMeter({
+    async setupEMAPI() {
+        this.api = new EnergyMeter({
             serialNo: this.getData().id,
             refreshInterval: this.getSetting('polling'),
             device: this
@@ -71,8 +71,8 @@ class EnergyDevice extends BaseDevice {
     }
 
     async initializeEventListeners() {
-        this.emSession.on('readings', this.handleReadingsEvent.bind(this));
-        this.emSession.on('error', this._handleErrorEvent.bind(this));
+        this.api.on('readings', this.handleReadingsEvent.bind(this));
+        this.api.on('error', this._handleErrorEvent.bind(this));
     }
 
     async handleReadingsEvent(readings) {
@@ -168,15 +168,15 @@ class EnergyDevice extends BaseDevice {
         this.homey.flow.unregisterToken(this.availCurrentToken);
         this.homey.flow.unregisterToken(this.pRegardCounterToken);
         this.homey.flow.unregisterToken(this.pSurplusCounterToken);
-        this.emSession.disconnect();
-        this.emSession = null;
+        this.api.disconnect();
+        this.api = null;
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
         let change = false;
         if (changedKeys.indexOf("polling") > -1) {
             this.log('Polling value was change to:', newSettings.polling);
-            this.emSession.setRefreshInterval(newSettings.polling);
+            this.api.setRefreshInterval(newSettings.polling);
         }
 
         if (changedKeys.indexOf("offset") > -1) {

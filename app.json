@@ -631,6 +631,39 @@
     ],
     "actions": [
       {
+        "id": "set_export_limit",
+        "title": {
+          "en": "Set the export limit",
+          "sv": "Sätt export gräns"
+        },
+        "titleFormatted": {
+          "en": "Set the export limit to [[limit]]",
+          "sv": "Sätt export gräns till [[limit]]"
+        },
+        "hint": {
+          "en": "The limit is set in percentage of the total power of all PV inverters connected to the Home Manager device. The Home Manager device needs to be configured for this to work.",
+          "sv": "Gränsen sätts i procent av den totala effekten av alla växelriktare som är anslutna till Home Manager-enheten. Home Manager-enheten måste konfigureras för detta att fungera."
+        },
+        "args": [
+          {
+            "name": "limit",
+            "type": "number",
+            "title": {
+              "en": "Limit (%)",
+              "sv": "Gräns (%)"
+            },
+            "min": 0,
+            "max": 100,
+            "step": 1
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=energy"
+          }
+        ]
+      },
+      {
         "id": "set_target_power",
         "title": {
           "en": "Limit the active power output",

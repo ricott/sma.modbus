@@ -1,4 +1,8 @@
 {
+    "2.7.9": {
+        "en": "Added a new action card to set the export limit for the energy device. The limit is set in percentage of the total power of all PV inverters connected to the Home Manager device. The Home Manager device needs to be configured for this to work.",
+        "sv": "Lade till en ny händelse för att sätta export gränsen för energi enheten. Gränsen sätts i procent av den totala effekten av alla växelriktare som är anslutna till Home Manager-enheten. Home Manager-enheten måste konfigureras för detta att fungera."
+    },
     "2.7.8": {
         "en": "Added a hint to the limit of active power output action, informing users of the use of local FLASH storage inside the inverter.",
         "sv": "Lade till en hint till begränsa aktiv ut-effekt händelse, informerar användare om användningen av lokal FLASH lagring i växelriktaren."

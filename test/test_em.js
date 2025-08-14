@@ -1,6 +1,6 @@
 'use strict';
 
-const EnergyMeter = require('../lib/sma_em.js');
+const EnergyMeter = require('../lib/devices/energyMeter.js');
 var config = require('./config');
 
 let emSession = new EnergyMeter({

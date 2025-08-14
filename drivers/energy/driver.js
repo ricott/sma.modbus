@@ -53,6 +53,21 @@ class EnergyDriver extends Driver {
                 return false;
             }
         });
+
+        const set_export_limit = this.homey.flow.getActionCard('set_export_limit');
+        set_export_limit.registerRunListener(async (args) => {
+            this.log(`[${args.device.getName()}] Action 'set_export_limit' triggered`);
+            this.log(`[${args.device.getName()}] - limit: '${args.limit}'`);
+
+            // Adjust active power to be <= max power
+            return args.device.api.writeExportLimit(args.limit, {})
+                .then(function (result) {
+                    return Promise.resolve(true);
+                }).catch(reason => {
+                    this.error(reason);
+                    return Promise.reject(`Failed to set the export limit. Reason: ${reason.message}`);
+                });
+        });
     }
 
     async onPair(session) {
