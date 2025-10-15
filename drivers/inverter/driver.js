@@ -215,5 +215,111 @@ class InverterDriver extends Driver {
             return devices;
         });
     }
+
+    async onRepair(session, device) {
+        this.log(`[${device.getName()}] Starting repair process`);
+        
+        let repairDevices = [];
+        let mode = 'discovery';
+        const deviceData = device.getData();
+        const currentSerial = deviceData.id;
+
+        session.setHandler('showView', async (view) => {
+            this.log(`Repair: Showing view '${view}'`);
+
+            if (view === 'loading') {
+                mode = 'discovery';
+                repairDevices.splice(0, repairDevices.length);
+
+                // Use the same discovery mechanism as pairing
+                const discoveryQuery = new InverterDiscovery({
+                    port: this.homey.settings.get('port'),
+                    device: this
+                });
+
+                try {
+                    const inverterInfos = await discoveryQuery.discover();
+
+                    // Look for the specific device we're trying to repair
+                    for (const inverterInfo of inverterInfos) {
+                        // Check if this is the same device (matching serial number)
+                        if (inverterInfo.serialNo === currentSerial) {
+                            this.log(`Found matching device: ${inverterInfo.deviceType} at ${inverterInfo.address}`);
+                            repairDevices.push({
+                                name: inverterInfo.deviceType,
+                                data: deviceData, // Keep the same device data
+                                settings: {
+                                    address: inverterInfo.address,
+                                    port: Number(inverterInfo.port),
+                                    deviceClass: decodeData.decodeDeviceClass(inverterInfo.deviceClass)
+                                }
+                            });
+                            break;
+                        }
+                    }
+
+                    if (repairDevices.length === 0) {
+                        this.log('Device not found using auto-discovery, show manual entry');
+                        await session.showView('settings');
+                    } else {
+                        this.log('Found device for repair, updating settings');
+                        // Complete repair with the new settings
+                        const deviceSettings = repairDevices[0].settings;
+                        this.log('Repair completed with settings:', deviceSettings);
+                        await session.done(deviceSettings);
+                    }
+                } catch (error) {
+                    this.log('Auto-discovery failed during repair, showing manual entry', error);
+                    await session.showView('settings');
+                }
+            }
+        });
+
+        session.setHandler('settings', async (data) => {
+            mode = 'manual';
+            repairDevices.splice(0, repairDevices.length);
+
+            const smaSession = new Inverter({
+                host: data.address,
+                port: this.homey.settings.get('port'),
+                autoClose: true,
+                device: this
+            });
+
+            try {
+                await new Promise((resolve, reject) => {
+                    smaSession.on('properties', inverterProperties => {
+                        // Verify this is the same device
+                        if (inverterProperties.serialNo === currentSerial) {
+                            this.log(`Manual entry verified: ${inverterProperties.deviceType}`);
+                            repairDevices.push({
+                                name: inverterProperties.deviceType,
+                                data: deviceData, // Keep the same device data
+                                settings: {
+                                    address: data.address,
+                                    port: Number(this.homey.settings.get('port'))
+                                }
+                            });
+                            resolve();
+                        } else {
+                            reject(new Error(`Device serial number mismatch. Expected: ${currentSerial}, Found: ${inverterProperties.serialNo}`));
+                        }
+                    });
+
+                    smaSession.on('error', error => {
+                        this.log('Failed to read inverter properties during repair', error);
+                        reject(error);
+                    });
+                });
+
+                // Complete repair with the updated settings
+                const deviceSettings = repairDevices[0].settings;
+                this.log('Manual repair completed with settings:', deviceSettings);
+                await session.done(deviceSettings);
+            } catch (error) {
+                throw new Error(`Unable to verify device identity. ${error.message}`);
+            }
+        });
+    }
 }
 module.exports = InverterDriver;

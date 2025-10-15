@@ -12,6 +12,20 @@
     "polling": "Uppdateringsfrekvens",
     "connect": "Anslut"
   },
+  "repair": {
+    "title": "Reparera SMA växelriktare",
+    "nosettings": "Var vänlig fyll i alla obligatoriska fält",
+    "intro": "Ange den nya IP adressen för din SMA växelriktare",
+    "address": "IP Adress",
+    "connect": "Anslut"
+  },
+  "battery_repair": {
+    "title": "Reparera SMA batteri",
+    "nosettings": "Var vänlig fyll i alla obligatoriska fält",
+    "intro": "Ange den nya IP adressen för ditt SMA batteri",
+    "address": "IP Adress",
+    "connect": "Anslut"
+  },
   "Unreachable": "Onåbar",
   "Off": "Av",
   "Standby": "Batteri standby",

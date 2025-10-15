@@ -12,6 +12,20 @@
     "polling": "Polling frequentie",
     "connect": "Verbind"
   },
+  "repair": {
+    "title": "SMA omvormer repareren",
+    "nosettings": "Vul a.u.b. alle verplichte velden in.",
+    "intro": "Voer het nieuwe IP adres in van je SMA omvormer.",
+    "address": "IP adres",
+    "connect": "Verbind"
+  },
+  "battery_repair": {
+    "title": "SMA batterij repareren",
+    "nosettings": "Vul a.u.b. alle verplichte velden in.",
+    "intro": "Voer het nieuwe IP adres in van je SMA batterij.",
+    "address": "IP adres",
+    "connect": "Verbind"
+  },
   "Unreachable": "Onbereikbaar",
   "Off": "Uit",
   "Standby": "Batterij standby",

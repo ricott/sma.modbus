@@ -12,6 +12,20 @@
     "polling": "Polling Frequency",
     "connect": "Connect"
   },
+  "repair": {
+    "title": "Repair SMA Inverter",
+    "nosettings": "Please fill in all the required fields.",
+    "intro": "Enter the new IP address of your SMA inverter.",
+    "address": "IP Address",
+    "connect": "Connect"
+  },
+  "battery_repair": {
+    "title": "Repair SMA Battery",
+    "nosettings": "Please fill in all the required fields.",
+    "intro": "Enter the new IP address of your SMA battery.",
+    "address": "IP Address",
+    "connect": "Connect"
+  },
   "Unreachable": "Unreachable",
   "Off": "Off",
   "Standby": "Battery Standby",

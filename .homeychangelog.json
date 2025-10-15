@@ -1,4 +1,8 @@
 {
+    "2.8.0": {
+        "en": "Added repair functionality for inverter and battery drivers, including UI enhancements and localization support",
+        "sv": "Lade till reparationsfunktion för växelriktare och batteridrivrutiner, inklusive UI förbättringar och lokalisering"
+    },
     "2.7.9": {
         "en": "Added a new action card to set the export limit for the energy device. The limit is set in percentage of the total power of all PV inverters connected to the Home Manager device. The Home Manager device needs to be configured for this to work.",
         "sv": "Lade till en ny händelse för att sätta export gränsen för energi enheten. Gränsen sätts i procent av den totala effekten av alla växelriktare som är anslutna till Home Manager-enheten. Home Manager-enheten måste konfigureras för detta att fungera."

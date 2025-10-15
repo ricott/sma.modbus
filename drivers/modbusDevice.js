@@ -50,8 +50,11 @@ class ModbusDevice extends BaseDevice {
             // Set device as unavailable with error message
             await this.setUnavailable(error.message || 'Connection failed');
 
-            // Schedule retry with exponential backoff
-            this.#scheduleReconnection(address, port, polling);
+            // Only schedule retry if this is the initial connection attempt (not from a retry)
+            // Retries are handled in the timeout callback now
+            if (!this.#isReconnecting) {
+                this.#scheduleReconnection(address, port, polling);
+            }
         }
     }
 
@@ -109,9 +112,34 @@ class ModbusDevice extends BaseDevice {
             this.logMessage(`Retry attempt ${this.#retryCount}/${this.#maxRetries}: Attempting to reconnect...`);
             this.#isReconnecting = false;
             try {
-                await this.initializeSession(address, port, polling);
+                // Stop availability watchdog during reconnection
+                this.#stopAvailabilityWatchdog();
+                // Reset availability state
+                this.#lastDataReceived = null;
+
+                await this.destroySession();
+                await this.setupSession(address, port, polling);
+                
+                // Connection successful, reset retry count and mark as available
+                this.#retryCount = 0;
+                this.#isReconnecting = false;
+                await this.setAvailable();
+                
+                // Clear any existing retry timer on successful connection
+                if (this._retryTimeout) {
+                    this.homey.clearTimeout(this._retryTimeout);
+                    this._retryTimeout = null;
+                }
+
+                // Start availability monitoring after successful connection
+                this.#startAvailabilityWatchdog();
             } catch (err) {
                 this.error('Reconnection attempt failed:', err);
+                // Set device as unavailable with error message
+                await this.setUnavailable(err.message || 'Connection failed');
+
+                // Schedule next retry with exponential backoff
+                this.#scheduleReconnection(address, port, polling);
             }
         }, delay);
     }

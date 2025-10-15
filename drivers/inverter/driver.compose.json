@@ -134,5 +134,20 @@
       "id": "add_devices",
       "template": "add_devices"
     }
+  ],
+  "repair": [
+    {
+      "id": "start",
+      "navigation": {
+        "next": "loading"
+      }
+    },
+    {
+      "id": "loading",
+      "template": "loading"
+    },
+    {
+      "id": "settings"
+    }
   ]
 }

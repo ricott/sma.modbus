@@ -1,0 +1,87 @@
+<script type="text/javascript">
+    Homey.setTitle(__('battery_repair.title'));
+    $(function () {
+        $('#connect').click(function () {
+            $('.sma-error').hide();
+            var inputaddress = $('#address').val();
+            if (inputaddress != '') {
+                var settings = {
+                    address: inputaddress
+                };
+                Homey.emit('settings', settings).then(function (result) {
+                    //Afraid we will never see anything but null here
+                    console.log(result);
+                    $('.sma-error').show();
+                    $('.sma-error-msg').html('Verifying device connection ...');
+
+                    //if (!result) {
+                    //    $('.sma-error').show();
+                    //    $('.sma-error-msg').html('Failed to connect to the battery!');
+                    //}
+                });
+            } else {
+                $('.sma-error').show();
+                $('.sma-error-msg').html(__('battery_repair.nosettings'));
+            }
+        });
+    })
+</script>
+
+<style type="text/css">
+    .form-group {
+        width: 100%;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .form-group label {
+        display: block;
+    }
+
+    .sma-status,
+    .sma-info {
+        display: none;
+    }
+
+    .sma-info {
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .sma-info .info-label {
+        min-width: 150px;
+        font-weight: 700;
+    }
+
+    .buttons,
+    .messages {
+        padding-top: 14px;
+    }
+
+    .button:disabled {
+        color: #ccc;
+    }
+
+    .button:enabled {
+        background-color: #00c139 !important;
+        color: #fff;
+    }
+</style>
+
+<p data-i18n="battery_repair.intro">Enter the new IP address of your SMA Battery.</p>
+<div class="sma-pairing">
+    <div class="form-group">
+        <label for="address" data-i18n="battery_repair.address">IP address</label>
+        <input type="text" class="form-control" id="address" placeholder="192.168.0.0" required>
+    </div>
+    <div class="form-group buttons">
+        <button id="connect" class="button" data-i18n="battery_repair.connect">Connect</button>
+    </div>
+</div>
+
+<div class="messages">
+    <p class="sma-status sma-error" style="color: #ff6300;">
+        <i class="fa fa-times"></i> 
+        <span class="sma-error-msg"></span>
+    </p>
+</div>
