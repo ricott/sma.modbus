@@ -65,7 +65,7 @@ class EnergyDriver extends Driver {
                     return Promise.resolve(true);
                 }).catch(reason => {
                     this.error(reason);
-                    return Promise.reject(`Failed to set the export limit. Reason: ${reason.message}`);
+                    throw new Error(`Failed to set the export limit. Reason: ${reason.message}`);
                 });
         });
     }

@@ -50,7 +50,9 @@ class PVOutputDriver extends Driver {
               });
               return devices;
             } else {
-              throw new Error(result.response);
+              // Handle error response properly - it might be an Error object or string
+              const errorMessage = result.response instanceof Error ? result.response.message : result.response;
+              throw new Error(errorMessage);
             }
           });
       } else {

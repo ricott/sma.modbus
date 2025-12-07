@@ -74,7 +74,9 @@ class PVOutputDevice extends Homey.Device {
             self._updateProperty('connected', false);
 
             let dateTime = new Date().toISOString();
-            self.setSettings({ last_error: dateTime + '\n' + result.response })
+            // Handle error response properly - it might be an Error object or string
+            const errorMessage = result.response instanceof Error ? result.response.message : result.response;
+            self.setSettings({ last_error: dateTime + '\n' + errorMessage })
               .catch(err => {
                 self.error('Failed to update settings last_error', err);
               });

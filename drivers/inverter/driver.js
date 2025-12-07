@@ -85,7 +85,7 @@ class InverterDriver extends Driver {
                     return Promise.resolve(true);
                 }).catch(reason => {
                     this.error(reason);
-                    return Promise.reject(`Failed to set the active power output. Reason: ${reason.message}`);
+                    throw new Error(`Failed to set the active power output. Reason: ${reason.message}`);
                 });
         });
     }
@@ -218,7 +218,7 @@ class InverterDriver extends Driver {
 
     async onRepair(session, device) {
         this.log(`[${device.getName()}] Starting repair process`);
-        
+
         let repairDevices = [];
         let mode = 'discovery';
         const deviceData = device.getData();
