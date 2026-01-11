@@ -7,6 +7,9 @@ class SmaModbusApp extends App {
 
   async onInit() {
     this.homeyLog = new Log({ homey: this.homey });
+    if (process.env.DEBUG == '1') {
+      require('inspector').open(9222, '0.0.0.0', true);
+    }
     this.setupGlobalFetch();
     this.log('Initializing SMA Modbus app ...');
   }

@@ -98,10 +98,9 @@ class EnergyDriver extends Driver {
                 }
 
                 if (devices.length == 0) {
-                    throw new Error('No SMA Energy Meters found!')
-                } else {
-                    return devices;
+                    this.log(`No SMA Energy Meters found!`);
                 }
+                return devices;
 
             }).catch(reason => {
                 this.log('Timeout error', reason);
