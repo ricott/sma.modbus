@@ -1,4 +1,8 @@
 {
+    "2.8.1": {
+        "en": "Improved error handling when no energy meters are found",
+        "sv": "Förbättrad felhantering när ingen energimätare hittas"
+    },
     "2.8.0": {
         "en": "Added repair functionality for inverter and battery drivers, including UI enhancements and localization support",
         "sv": "Lade till reparationsfunktion för växelriktare och batteridrivrutiner, inklusive UI förbättringar och lokalisering"
