@@ -6,7 +6,6 @@
   "dependencies": {
     "homey-log": "^2.1.0",
     "jsmodbus": "^4.0.10",
-    "node-fetch": "^3.3.2",
     "spacetime": "^7.12.0"
   },
   "scripts": {

@@ -1,4 +1,8 @@
 {
+    "2.8.2": {
+        "en": "Maintenance",
+        "sv": "Underhåll"
+    },
     "2.8.1": {
         "en": "Improved error handling when no energy meters are found",
         "sv": "Förbättrad felhantering när ingen energimätare hittas"

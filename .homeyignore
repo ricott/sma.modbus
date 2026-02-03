@@ -1,0 +1,10 @@
+# Test files
+/test/
+
+# Documentation (not needed in app bundle)
+README.*
+
+# Development files
+.gitignore
+.github/
+sma.code-workspace
