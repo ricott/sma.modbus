@@ -19,11 +19,11 @@ class InverterDriver extends Driver {
     }
 
     async triggerInverterStatusChanged(device, tokens) {
-        await this._inverter_status_changed.trigger(device, tokens, {}).catch(error => { this.error(error) });
+        await this._inverter_status_changed.trigger(device, tokens, {}).catch(error => { this.error(error.message || String(error)) });
     }
 
     async triggerInverterConditionChanged(device, tokens) {
-        await this._inverter_condition_changed.trigger(device, tokens, {}).catch(error => { this.error(error) });
+        await this._inverter_condition_changed.trigger(device, tokens, {}).catch(error => { this.error(error.message || String(error)) });
     }
 
     _registerFlows() {
@@ -84,7 +84,7 @@ class InverterDriver extends Driver {
                 .then(function (result) {
                     return Promise.resolve(true);
                 }).catch(reason => {
-                    this.error(reason);
+                    this.error(reason.message || String(reason));
                     throw new Error(`Failed to set the active power output. Reason: ${reason.message}`);
                 });
         });
@@ -159,7 +159,7 @@ class InverterDriver extends Driver {
                         await session.showView('list_devices');
                     }
                 } catch (error) {
-                    this.log('Auto-discovery failed, showing manual entry', error);
+                    this.log(`Auto-discovery failed, showing manual entry: ${error.message || error}`);
                     await session.showView('settings');
                 }
             }
@@ -196,7 +196,7 @@ class InverterDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log('Failed to read inverter properties', error);
+                        this.log(`Failed to read inverter properties: ${error.message || error}`);
                         reject(error);
                     });
                 });
@@ -269,7 +269,7 @@ class InverterDriver extends Driver {
                         await session.done(deviceSettings);
                     }
                 } catch (error) {
-                    this.log('Auto-discovery failed during repair, showing manual entry', error);
+                    this.log(`Auto-discovery failed during repair, showing manual entry: ${error.message || error}`);
                     await session.showView('settings');
                 }
             }
@@ -307,7 +307,7 @@ class InverterDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log('Failed to read inverter properties during repair', error);
+                        this.log(`Failed to read inverter properties during repair: ${error.message || error}`);
                         reject(error);
                     });
                 });

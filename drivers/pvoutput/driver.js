@@ -18,7 +18,7 @@ class PVOutputDriver extends Driver {
       try {
         session.nextView();
       } catch (error) {
-        this.log('Error showing next view', error);
+        this.log(`Error showing next view: ${error.message || error}`);
       }
     });
 

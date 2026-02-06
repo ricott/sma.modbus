@@ -6,7 +6,7 @@ const utilFunctions = require('../lib/util.js');
 class BaseDevice extends Device {
 
     async _handleErrorEvent(error) {
-        this.error('Houston we have a problem', error);
+        this.error(`Houston we have a problem: ${error.message || error}`);
 
         const errorMessage = this._formatErrorMessage(error);
         const timeString = new Date().toLocaleString('sv-SE', {
@@ -19,7 +19,7 @@ class BaseDevice extends Device {
                 last_error: `${timeString}\n${errorMessage}`
             });
         } catch (settingsError) {
-            this.error('Failed to update error settings:', settingsError);
+            this.error(`Failed to update error settings: ${settingsError.message || settingsError}`);
         }
     }
 
@@ -31,7 +31,7 @@ class BaseDevice extends Device {
         try {
             return JSON.stringify(error, null, '  ');
         } catch (stringifyError) {
-            this.log('Failed to stringify error object:', stringifyError);
+            this.log(`Failed to stringify error object: ${stringifyError.message || stringifyError}`);
             return 'Unknown error';
         }
     }
@@ -54,7 +54,7 @@ class BaseDevice extends Device {
             }
 
         } catch (error) {
-            this.error(`Failed to update property ${key}:`, error);
+            this.error(`Failed to update property ${key}: ${error.message || error}`);
         }
     }
 
@@ -81,7 +81,7 @@ class BaseDevice extends Device {
         let obj = {};
         obj[key] = String(value);
         this.setSettings(obj).catch(err => {
-            this.error(`Failed to update setting '${key}' with value '${value}'`, err);
+            this.error(`Failed to update setting '${key}' with value '${value}': ${err.message || err}`);
         });
     }
 
@@ -107,8 +107,7 @@ class BaseDevice extends Device {
                 this.logMessage(`Adding missing capability '${capability}'`);
                 await this.addCapability(capability);
             } catch (reason) {
-                this.error(`Failed to add capability '${capability}'`);
-                this.error(reason);
+                this.error(`Failed to add capability '${capability}': ${reason.message || reason}`);
             }
         }
     }
@@ -119,8 +118,7 @@ class BaseDevice extends Device {
                 this.logMessage(`Remove existing capability '${capability}'`);
                 await this.removeCapability(capability);
             } catch (reason) {
-                this.error(`Failed to removed capability '${capability}'`);
-                this.error(reason);
+                this.error(`Failed to removed capability '${capability}': ${reason.message || reason}`);
             }
         }
     }
@@ -131,8 +129,7 @@ class BaseDevice extends Device {
                 this.logMessage(`Updating capability options '${capability}'`);
                 await this.setCapabilityOptions(capability, options);
             } catch (reason) {
-                this.error(`Failed to update capability options for '${capability}'`);
-                this.error(reason);
+                this.error(`Failed to update capability options for '${capability}': ${reason.message || reason}`);
             }
         }
     }

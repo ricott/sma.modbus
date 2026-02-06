@@ -69,10 +69,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     status: self.homey.__('Off')
                                 }
-                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
 
                     } else if (self.getCapabilityValue('operational_status') != self.homey.__('Standby') && operational_code == 2291) {
@@ -82,10 +82,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     status: self.homey.__('Standby')
                                 }
-                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
 
                     } else if (self.getCapabilityValue('operational_status') != self.homey.__('Charge') && operational_code == 2292) {
@@ -95,10 +95,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     status: self.homey.__('Charge')
                                 }
-                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
 
                     } else if (self.getCapabilityValue('operational_status') != self.homey.__('Discharge') && operational_code == 2293) {
@@ -108,10 +108,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     status: self.homey.__('Discharge')
                                 }
-                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
 
                     } else if (self.getCapabilityValue('operational_status') != self.homey.__('NA') && operational_code == 16777213) {
@@ -121,10 +121,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     status: self.homey.__('NA')
                                 }
-                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedOperationalStatus.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
@@ -136,10 +136,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     charge: battery
                                 }
-                                self._changedBattery.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedBattery.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
@@ -151,10 +151,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     charging: charge
                                 }
-                                self._changedBatteryCharging.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedBatteryCharging.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
@@ -166,10 +166,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     discharging: discharge
                                 }
-                                self._changedBatteryDischarging.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedBatteryDischarging.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
@@ -181,10 +181,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     drawn: power_drawn
                                 }
-                                self._changedPowerDrawn.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedPowerDrawn.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
@@ -196,10 +196,10 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     feedin: powergrid_feed_in
                                 }
-                                self._changedPowerGridFeedin.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedPowerGridFeedin.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
@@ -211,21 +211,21 @@ class SmaModbusStorageDevice extends Device {
                                 let tokens = {
                                     capacity: battery_capacity
                                 }
-                                self._changedBatteryCapacity.trigger(self, tokens, {}).catch(error => { self.error(error) });
+                                self._changedBatteryCapacity.trigger(self, tokens, {}).catch(error => { self.error(error.message || String(error)) });
 
                             }).catch(reason => {
-                                self.error(reason);
+                                self.error(reason.message || String(reason));
                             });
                     }
 
                 }).catch((err) => {
-                    self.log(err);
+                    self.log(err.message || String(err));
                 })
             }, self.getSetting('polling') * 1000);
         });
 
         socket.on('error', (err) => {
-            self.log(err);
+            self.log(err.message || String(err));
             socket.end();
         })
 

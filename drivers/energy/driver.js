@@ -11,7 +11,7 @@ class EnergyDriver extends Driver {
     }
 
     async triggerPhaseThresholdTriggered(device, tokens) {
-        await this._phase_threshold_triggered.trigger(device, tokens, {}).catch(error => { this.error(error) });
+        await this._phase_threshold_triggered.trigger(device, tokens, {}).catch(error => { this.error(error.message || String(error)) });
     }
 
     _registerFlows() {
@@ -64,7 +64,7 @@ class EnergyDriver extends Driver {
                 .then(function (result) {
                     return Promise.resolve(true);
                 }).catch(reason => {
-                    this.error(reason);
+                    this.error(reason.message || String(reason));
                     throw new Error(`Failed to set the export limit. Reason: ${reason.message}`);
                 });
         });
@@ -94,7 +94,7 @@ class EnergyDriver extends Driver {
                 try {
                     emSession.disconnect();
                 } catch (err) {
-                    this.log(err);
+                    this.log(err.message || String(err));
                 }
 
                 if (devices.length == 0) {
@@ -103,7 +103,7 @@ class EnergyDriver extends Driver {
                 return devices;
 
             }).catch(reason => {
-                this.log('Timeout error', reason);
+                this.log(`Timeout error: ${reason.message || reason}`);
             });
 
         });

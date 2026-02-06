@@ -46,7 +46,7 @@ class ModbusDevice extends BaseDevice {
             this.#startAvailabilityWatchdog();
 
         } catch (error) {
-            this.error('Failed to initialize device connection:', error);
+            this.error(`Failed to initialize device connection: ${error.message || error}`);
             // Set device as unavailable with error message
             await this.setUnavailable(error.message || 'Connection failed');
 
@@ -134,7 +134,7 @@ class ModbusDevice extends BaseDevice {
                 // Start availability monitoring after successful connection
                 this.#startAvailabilityWatchdog();
             } catch (err) {
-                this.error('Reconnection attempt failed:', err);
+                this.error(`Reconnection attempt failed: ${err.message || err}`);
                 // Set device as unavailable with error message
                 await this.setUnavailable(err.message || 'Connection failed');
 
@@ -209,7 +209,7 @@ class ModbusDevice extends BaseDevice {
             if (this.getAvailable()) {
                 this.logMessage(`No data received for ${Math.round(timeSinceLastData / 1000)}s, marking as unavailable and attempting reconnection`);
                 await this.setUnavailable('No data received from device').catch(err => {
-                    this.error('Failed to set device unavailable:', err);
+                    this.error(`Failed to set device unavailable: ${err.message || err}`);
                 });
                 
                 // Trigger reconnection due to data timeout
@@ -240,7 +240,7 @@ class ModbusDevice extends BaseDevice {
                     this._retryTimeout = null;
                 }
             } catch (err) {
-                this.error('Failed to set device available:', err);
+                this.error(`Failed to set device available: ${err.message || err}`);
             }
         }
     }
@@ -253,7 +253,7 @@ class ModbusDevice extends BaseDevice {
         if (isCommunicationError && this.getAvailable()) {
             this.logMessage(`Communication error occurred, marking device as unavailable and attempting reconnection: ${error.message}`);
             await this.setUnavailable(`Communication error: ${error.message || 'Unknown error'}`).catch(err => {
-                this.error('Failed to set device unavailable:', err);
+                this.error(`Failed to set device unavailable: ${err.message || err}`);
             });
 
             // Trigger reconnection due to communication error

@@ -78,7 +78,7 @@ class PVOutputDevice extends Homey.Device {
             const errorMessage = result.response instanceof Error ? result.response.message : result.response;
             self.setSettings({ last_error: dateTime + '\n' + errorMessage })
               .catch(err => {
-                self.error('Failed to update settings last_error', err);
+                self.error(`Failed to update settings last_error: ${err.message || err}`);
               });
           }
         });
@@ -104,7 +104,7 @@ class PVOutputDevice extends Homey.Device {
       if (typeof value !== 'undefined' && value !== null) {
         self.setCapabilityValue(key, value)
           .catch(reason => {
-            self.error(reason);
+            self.error(reason.message || String(reason));
           });
 
       } else {

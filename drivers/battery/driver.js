@@ -84,7 +84,7 @@ class BatteryDriver extends Driver {
                         await session.showView('list_devices');
                     }
                 } catch (error) {
-                    this.log('Auto-discovery failed, showing manual entry', error);
+                    this.log(`Auto-discovery failed, showing manual entry: ${error.message || error}`);
                     await session.showView('settings');
                 }
             }
@@ -121,7 +121,7 @@ class BatteryDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log('Failed to read device properties', error);
+                        this.log(`Failed to read device properties: ${error.message || error}`);
                         reject(error);
                     });
                 });
@@ -194,7 +194,7 @@ class BatteryDriver extends Driver {
                         await session.done(deviceSettings);
                     }
                 } catch (error) {
-                    this.log('Auto-discovery failed during repair, showing manual entry', error);
+                    this.log(`Auto-discovery failed during repair, showing manual entry: ${error.message || error}`);
                     await session.showView('settings');
                 }
             }
@@ -232,7 +232,7 @@ class BatteryDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log('Failed to read device properties during repair', error);
+                        this.log(`Failed to read device properties during repair: ${error.message || error}`);
                         reject(error);
                     });
                 });

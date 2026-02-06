@@ -131,7 +131,7 @@ class EnergyDevice extends BaseDevice {
 
             this.availCurrentToken.setValue(availableCurrent);
         } catch (error) {
-            this.error('Failed to process readings event:', error);
+            this.error(`Failed to process readings event: ${error.message || error}`);
         }
     }
 
@@ -153,7 +153,7 @@ class EnergyDevice extends BaseDevice {
                         phase: phase,
                         percentageUtilized: utilization
                     }
-                    await this.driver.triggerPhaseThresholdTriggered(this, tokens).catch(error => { this.error(error) });
+                    await this.driver.triggerPhaseThresholdTriggered(this, tokens).catch(error => { this.error(error.message || String(error)) });
                 }
             } else if (this.phaseAlerts[phase] === true) {
                 //Reset alert

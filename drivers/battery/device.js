@@ -57,7 +57,7 @@ class BatteryDevice extends ModbusDevice {
                 this._updateProperty('measure_temperature', readings.batteryTemperature || 0)
             ]);
         } catch (err) {
-            this.error('Failed to update readings', err);
+            this.error(`Failed to update readings: ${err.message || err}`);
         }
     }
 
@@ -70,7 +70,7 @@ class BatteryDevice extends ModbusDevice {
                 swVersion: String(properties.swVersion || 'unknown')
             });
         } catch (err) {
-            this.error('Failed to update settings', err);
+            this.error(`Failed to update settings: ${err.message || err}`);
         }
     }
 }
