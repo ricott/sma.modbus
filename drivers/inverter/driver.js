@@ -4,6 +4,7 @@ const { Driver } = require('homey');
 const InverterDiscovery = require('../../lib/devices/inverterDiscovery.js');
 const Inverter = require('../../lib/devices/inverter.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
+const utilFunctions = require('../../lib/util.js');
 
 class InverterDriver extends Driver {
 
@@ -19,11 +20,11 @@ class InverterDriver extends Driver {
     }
 
     async triggerInverterStatusChanged(device, tokens) {
-        await this._inverter_status_changed.trigger(device, tokens, {}).catch(error => { this.error(error.message || String(error)) });
+        await this._inverter_status_changed.trigger(device, tokens, {}).catch(error => { this.error(utilFunctions.formatError(error)) });
     }
 
     async triggerInverterConditionChanged(device, tokens) {
-        await this._inverter_condition_changed.trigger(device, tokens, {}).catch(error => { this.error(error.message || String(error)) });
+        await this._inverter_condition_changed.trigger(device, tokens, {}).catch(error => { this.error(utilFunctions.formatError(error)) });
     }
 
     _registerFlows() {
@@ -84,8 +85,8 @@ class InverterDriver extends Driver {
                 .then(function (result) {
                     return Promise.resolve(true);
                 }).catch(reason => {
-                    this.error(reason.message || String(reason));
-                    throw new Error(`Failed to set the active power output. Reason: ${reason.message}`);
+                    this.error(utilFunctions.formatError(reason));
+                    throw new Error(`Failed to set the active power output. Reason: ${utilFunctions.formatError(reason)}`);
                 });
         });
     }
@@ -147,7 +148,7 @@ class InverterDriver extends Driver {
                                 this.log(`Found inverter '${inverterInfo.serialNo}' that is already added to Homey, ignoring it ...`);
                             }
                         } else {
-                            this.log('Found a SMA device that is not an inverter', inverterInfo);
+                            this.log(`Found a SMA device that is not an inverter: ${utilFunctions.formatError(inverterInfo)}`);
                         }
                     }
 
@@ -159,7 +160,7 @@ class InverterDriver extends Driver {
                         await session.showView('list_devices');
                     }
                 } catch (error) {
-                    this.log(`Auto-discovery failed, showing manual entry: ${error.message || error}`);
+                    this.log(`Auto-discovery failed, showing manual entry: ${utilFunctions.formatError(error)}`);
                     await session.showView('settings');
                 }
             }
@@ -196,7 +197,7 @@ class InverterDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log(`Failed to read inverter properties: ${error.message || error}`);
+                        this.log(`Failed to read inverter properties: ${utilFunctions.formatError(error)}`);
                         reject(error);
                     });
                 });
@@ -265,11 +266,11 @@ class InverterDriver extends Driver {
                         this.log('Found device for repair, updating settings');
                         // Complete repair with the new settings
                         const deviceSettings = repairDevices[0].settings;
-                        this.log('Repair completed with settings:', deviceSettings);
+                        this.log(`Repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                         await session.done(deviceSettings);
                     }
                 } catch (error) {
-                    this.log(`Auto-discovery failed during repair, showing manual entry: ${error.message || error}`);
+                    this.log(`Auto-discovery failed during repair, showing manual entry: ${utilFunctions.formatError(error)}`);
                     await session.showView('settings');
                 }
             }
@@ -307,17 +308,17 @@ class InverterDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log(`Failed to read inverter properties during repair: ${error.message || error}`);
+                        this.log(`Failed to read inverter properties during repair: ${utilFunctions.formatError(error)}`);
                         reject(error);
                     });
                 });
 
                 // Complete repair with the updated settings
                 const deviceSettings = repairDevices[0].settings;
-                this.log('Manual repair completed with settings:', deviceSettings);
+                this.log(`Manual repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                 await session.done(deviceSettings);
             } catch (error) {
-                throw new Error(`Unable to verify device identity. ${error.message}`);
+                throw new Error(`Unable to verify device identity. ${utilFunctions.formatError(error)}`);
             }
         });
     }

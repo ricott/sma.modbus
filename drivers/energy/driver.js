@@ -2,6 +2,7 @@
 
 const { Driver } = require('homey');
 const EnergyMeter = require('../../lib/devices/energyMeter.js');
+const utilFunctions = require('../../lib/util.js');
 
 class EnergyDriver extends Driver {
 
@@ -11,7 +12,7 @@ class EnergyDriver extends Driver {
     }
 
     async triggerPhaseThresholdTriggered(device, tokens) {
-        await this._phase_threshold_triggered.trigger(device, tokens, {}).catch(error => { this.error(error.message || String(error)) });
+        await this._phase_threshold_triggered.trigger(device, tokens, {}).catch(error => { this.error(utilFunctions.formatError(error)) });
     }
 
     _registerFlows() {
@@ -64,8 +65,8 @@ class EnergyDriver extends Driver {
                 .then(function (result) {
                     return Promise.resolve(true);
                 }).catch(reason => {
-                    this.error(reason.message || String(reason));
-                    throw new Error(`Failed to set the export limit. Reason: ${reason.message}`);
+                    this.error(utilFunctions.formatError(reason));
+                    throw new Error(`Failed to set the export limit. Reason: ${utilFunctions.formatError(reason)}`);
                 });
         });
     }
@@ -94,7 +95,7 @@ class EnergyDriver extends Driver {
                 try {
                     emSession.disconnect();
                 } catch (err) {
-                    this.log(err.message || String(err));
+                    this.log(utilFunctions.formatError(err));
                 }
 
                 if (devices.length == 0) {
@@ -103,7 +104,7 @@ class EnergyDriver extends Driver {
                 return devices;
 
             }).catch(reason => {
-                this.log(`Timeout error: ${reason.message || reason}`);
+                this.log(`Timeout error: ${utilFunctions.formatError(reason)}`);
             });
 
         });

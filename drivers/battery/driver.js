@@ -4,6 +4,7 @@ const { Driver } = require('homey');
 const BatteryDiscovery = require('../../lib/devices/batteryDiscovery.js');
 const Battery = require('../../lib/devices/battery.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
+const utilFunctions = require('../../lib/util.js');
 
 class BatteryDriver extends Driver {
 
@@ -72,7 +73,7 @@ class BatteryDriver extends Driver {
                                 this.log(`Found device '${device.serialNo}' that is already added to Homey, ignoring it ...`);
                             }
                         } else {
-                            this.log('Found a SMA device that is not a battery', device);
+                            this.log(`Found a SMA device that is not a battery: ${utilFunctions.formatError(device)}`);
                         }
                     }
 
@@ -84,7 +85,7 @@ class BatteryDriver extends Driver {
                         await session.showView('list_devices');
                     }
                 } catch (error) {
-                    this.log(`Auto-discovery failed, showing manual entry: ${error.message || error}`);
+                    this.log(`Auto-discovery failed, showing manual entry: ${utilFunctions.formatError(error)}`);
                     await session.showView('settings');
                 }
             }
@@ -121,7 +122,7 @@ class BatteryDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log(`Failed to read device properties: ${error.message || error}`);
+                        this.log(`Failed to read device properties: ${utilFunctions.formatError(error)}`);
                         reject(error);
                     });
                 });
@@ -190,11 +191,11 @@ class BatteryDriver extends Driver {
                         this.log('Found device for repair, updating settings');
                         // Complete repair with the new settings
                         const deviceSettings = repairDevices[0].settings;
-                        this.log('Repair completed with settings:', deviceSettings);
+                        this.log(`Repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                         await session.done(deviceSettings);
                     }
                 } catch (error) {
-                    this.log(`Auto-discovery failed during repair, showing manual entry: ${error.message || error}`);
+                    this.log(`Auto-discovery failed during repair, showing manual entry: ${utilFunctions.formatError(error)}`);
                     await session.showView('settings');
                 }
             }
@@ -232,14 +233,14 @@ class BatteryDriver extends Driver {
                     });
 
                     smaSession.on('error', error => {
-                        this.log(`Failed to read device properties during repair: ${error.message || error}`);
+                        this.log(`Failed to read device properties during repair: ${utilFunctions.formatError(error)}`);
                         reject(error);
                     });
                 });
 
                 // Complete repair with the updated settings
                 const deviceSettings = repairDevices[0].settings;
-                this.log('Manual repair completed with settings:', deviceSettings);
+                this.log(`Manual repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                 await session.done(deviceSettings);
             } catch (error) {
                 throw new Error(`Unable to verify device identity. ${error.message}`);

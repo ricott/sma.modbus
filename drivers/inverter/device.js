@@ -4,6 +4,7 @@ const spacetime = require('spacetime');
 const ModbusDevice = require('../modbusDevice.js');
 const Inverter = require('../../lib/devices/inverter.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
+const utilFunctions = require('../../lib/util.js');
 
 const _defaultActivePower = 50000;
 const deviceCapabilitesList = [
@@ -46,7 +47,7 @@ class InverterDevice extends ModbusDevice {
                     const activePower = Math.min(Number(this.getSetting('maxPower')), power);
                     await this.api.setMaxActivePowerOutput(activePower);
                 } catch (reason) {
-                    let msg = `Failed to set active power limit! Reason: ${reason.message}`;
+                    let msg = `Failed to set active power limit! Reason: ${utilFunctions.formatError(reason)}`;
                     this.error(msg);
                     throw new Error(msg);
                 }
@@ -129,7 +130,7 @@ class InverterDevice extends ModbusDevice {
             await this._updateProperty('target_power', activePower);
 
         } catch (error) {
-            this.error(`Failed to process inverter readings event: ${error.message || error}`);
+            this.error(`Failed to process inverter readings event: ${utilFunctions.formatError(error)}`);
         }
     }
 
@@ -143,7 +144,7 @@ class InverterDevice extends ModbusDevice {
                 const dailyYield = Math.max(calculatedDailyYield, 0.0);
                 await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyYield));
             } catch (error) {
-                this.error(`Failed to calculate daily yield: ${error.message || error}`);
+                this.error(`Failed to calculate daily yield: ${utilFunctions.formatError(error)}`);
             }
         } else {
             // Ensure non-negative values (fishy values coming for at least one user)
@@ -193,7 +194,7 @@ class InverterDevice extends ModbusDevice {
             await this.shouldWeCalculateDailyYield();
             await this.setupCapabilityListeners();
         } catch (err) {
-            this.error(`Failed to process inverter properties event: ${err.message || err}`);
+            this.error(`Failed to process inverter properties event: ${utilFunctions.formatError(err)}`);
         }
     }
 
@@ -216,7 +217,7 @@ class InverterDevice extends ModbusDevice {
         try {
             await this.setStoreValue('totalYieldAtMidnight', 0);
         } catch (reason) {
-            this.error(reason.message || String(reason));
+            this.error(utilFunctions.formatError(reason));
         }
     }
 
@@ -228,7 +229,7 @@ class InverterDevice extends ModbusDevice {
             try {
                 await this.setStoreValue('totalYieldAtMidnight', totalYield);
             } catch (reason) {
-                this.error(reason.message || String(reason));
+                this.error(utilFunctions.formatError(reason));
             }
             return 0;
         }
@@ -245,7 +246,7 @@ class InverterDevice extends ModbusDevice {
             isDailyYieldManual: String(manual || 'false')
 
         }).catch(err => {
-            this.error(`Failed to update isDailyYieldManual: ${err.message || err}`);
+            this.error(`Failed to update isDailyYieldManual: ${utilFunctions.formatError(err)}`);
         });
     }
 
@@ -290,13 +291,13 @@ class InverterDevice extends ModbusDevice {
             const tokens = {
                 inverter_status: value || 'n/a'
             };
-            await this.driver.triggerInverterStatusChanged(this, tokens).catch(error => { this.error(error.message || String(error)) });
+            await this.driver.triggerInverterStatusChanged(this, tokens).catch(error => { this.error(utilFunctions.formatError(error)) });
 
         } else if (key === 'operational_status.health') {
             const tokens = {
                 inverter_condition: value || 'n/a'
             };
-            await this.driver.triggerInverterConditionChanged(this, tokens).catch(error => { this.error(error.message || String(error)) });
+            await this.driver.triggerInverterConditionChanged(this, tokens).catch(error => { this.error(utilFunctions.formatError(error)) });
         }
     }
 

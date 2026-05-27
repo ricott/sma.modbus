@@ -2,6 +2,7 @@
 
 const { Driver } = require('homey');
 const PVOutputClient = require('../../lib/pvoutputClient.js');
+const utility = require('../../lib/util.js');
 
 class PVOutputDriver extends Driver {
 
@@ -18,7 +19,7 @@ class PVOutputDriver extends Driver {
       try {
         session.nextView();
       } catch (error) {
-        this.log(`Error showing next view: ${error.message || error}`);
+        this.log(`Error showing next view: ${utility.formatError(error)}`);
       }
     });
 
@@ -51,8 +52,7 @@ class PVOutputDriver extends Driver {
               return devices;
             } else {
               // Handle error response properly - it might be an Error object or string
-              const errorMessage = result.response instanceof Error ? result.response.message : result.response;
-              throw new Error(errorMessage);
+              throw new Error(utility.formatError(result.response));
             }
           });
       } else {

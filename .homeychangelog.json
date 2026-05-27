@@ -1,4 +1,8 @@
 {
+    "2.8.4": {
+        "en": "Hardened error logging to never produce '[object Object]' for non-Error rejections",
+        "sv": "Förbättrad felloggning så att '[object Object]' inte längre kan visas för fel som inte är Error-objekt"
+    },
     "2.8.3": {
         "en": "Maintenance",
         "sv": "Underhåll"

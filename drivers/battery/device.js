@@ -3,6 +3,7 @@
 const ModbusDevice = require('../modbusDevice.js');
 const Battery = require('../../lib/devices/battery.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
+const utilFunctions = require('../../lib/util.js');
 
 class BatteryDevice extends ModbusDevice {
 
@@ -57,7 +58,7 @@ class BatteryDevice extends ModbusDevice {
                 this._updateProperty('measure_temperature', readings.batteryTemperature || 0)
             ]);
         } catch (err) {
-            this.error(`Failed to update readings: ${err.message || err}`);
+            this.error(`Failed to update readings: ${utilFunctions.formatError(err)}`);
         }
     }
 
@@ -70,7 +71,7 @@ class BatteryDevice extends ModbusDevice {
                 swVersion: String(properties.swVersion || 'unknown')
             });
         } catch (err) {
-            this.error(`Failed to update settings: ${err.message || err}`);
+            this.error(`Failed to update settings: ${utilFunctions.formatError(err)}`);
         }
     }
 }

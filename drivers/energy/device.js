@@ -3,7 +3,6 @@
 const EnergyMeter = require('../../lib/devices/energyMeter.js');
 const utilFunctions = require('../../lib/util.js');
 const BaseDevice = require('../baseDevice.js');
-
 class EnergyDevice extends BaseDevice {
 
     async onInit() {
@@ -131,7 +130,7 @@ class EnergyDevice extends BaseDevice {
 
             this.availCurrentToken.setValue(availableCurrent);
         } catch (error) {
-            this.error(`Failed to process readings event: ${error.message || error}`);
+            this.error(`Failed to process readings event: ${utilFunctions.formatError(error)}`);
         }
     }
 
@@ -153,7 +152,7 @@ class EnergyDevice extends BaseDevice {
                         phase: phase,
                         percentageUtilized: utilization
                     }
-                    await this.driver.triggerPhaseThresholdTriggered(this, tokens).catch(error => { this.error(error.message || String(error)) });
+                    await this.driver.triggerPhaseThresholdTriggered(this, tokens).catch(error => { this.error(utilFunctions.formatError(error)) });
                 }
             } else if (this.phaseAlerts[phase] === true) {
                 //Reset alert
@@ -175,22 +174,22 @@ class EnergyDevice extends BaseDevice {
     async onSettings({ oldSettings, newSettings, changedKeys }) {
         let change = false;
         if (changedKeys.indexOf("polling") > -1) {
-            this.log('Polling value was change to:', newSettings.polling);
+            this.log(`Polling value was change to: ${newSettings.polling}`);
             this.api.setRefreshInterval(newSettings.polling);
         }
 
         if (changedKeys.indexOf("offset") > -1) {
-            this.log('Offset value was change to:', newSettings.offset);
+            this.log(`Offset value was change to: ${newSettings.offset}`);
             change = true;
         }
 
         if (changedKeys.indexOf("mainFuse") > -1) {
-            this.log('Main fuse value was change to:', newSettings.mainFuse);
+            this.log(`Main fuse value was change to: ${newSettings.mainFuse}`);
             change = true;
         }
 
         if (changedKeys.indexOf("threshold") > -1) {
-            this.log('Threshold value was change to:', newSettings.threshold);
+            this.log(`Threshold value was change to: ${newSettings.threshold}`);
             change = true;
         }
 

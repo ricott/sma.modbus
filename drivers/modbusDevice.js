@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseDevice = require('./baseDevice.js');
+const utilFunctions = require('../lib/util.js');
 
 class ModbusDevice extends BaseDevice {
 
@@ -46,9 +47,9 @@ class ModbusDevice extends BaseDevice {
             this.#startAvailabilityWatchdog();
 
         } catch (error) {
-            this.error(`Failed to initialize device connection: ${error.message || error}`);
+            this.error(`Failed to initialize device connection: ${utilFunctions.formatError(error)}`);
             // Set device as unavailable with error message
-            await this.setUnavailable(error.message || 'Connection failed');
+            await this.setUnavailable(utilFunctions.formatError(error) || 'Connection failed');
 
             // Only schedule retry if this is the initial connection attempt (not from a retry)
             // Retries are handled in the timeout callback now
@@ -134,9 +135,9 @@ class ModbusDevice extends BaseDevice {
                 // Start availability monitoring after successful connection
                 this.#startAvailabilityWatchdog();
             } catch (err) {
-                this.error(`Reconnection attempt failed: ${err.message || err}`);
+                this.error(`Reconnection attempt failed: ${utilFunctions.formatError(err)}`);
                 // Set device as unavailable with error message
-                await this.setUnavailable(err.message || 'Connection failed');
+                await this.setUnavailable(utilFunctions.formatError(err) || 'Connection failed');
 
                 // Schedule next retry with exponential backoff
                 this.#scheduleReconnection(address, port, polling);
@@ -209,7 +210,7 @@ class ModbusDevice extends BaseDevice {
             if (this.getAvailable()) {
                 this.logMessage(`No data received for ${Math.round(timeSinceLastData / 1000)}s, marking as unavailable and attempting reconnection`);
                 await this.setUnavailable('No data received from device').catch(err => {
-                    this.error(`Failed to set device unavailable: ${err.message || err}`);
+                    this.error(`Failed to set device unavailable: ${utilFunctions.formatError(err)}`);
                 });
                 
                 // Trigger reconnection due to data timeout
@@ -240,7 +241,7 @@ class ModbusDevice extends BaseDevice {
                     this._retryTimeout = null;
                 }
             } catch (err) {
-                this.error(`Failed to set device available: ${err.message || err}`);
+                this.error(`Failed to set device available: ${utilFunctions.formatError(err)}`);
             }
         }
     }
@@ -251,9 +252,10 @@ class ModbusDevice extends BaseDevice {
         const isCommunicationError = this.#isCommunicationError(error);
 
         if (isCommunicationError && this.getAvailable()) {
-            this.logMessage(`Communication error occurred, marking device as unavailable and attempting reconnection: ${error.message}`);
-            await this.setUnavailable(`Communication error: ${error.message || 'Unknown error'}`).catch(err => {
-                this.error(`Failed to set device unavailable: ${err.message || err}`);
+            const formatted = utilFunctions.formatError(error);
+            this.logMessage(`Communication error occurred, marking device as unavailable and attempting reconnection: ${formatted}`);
+            await this.setUnavailable(`Communication error: ${formatted || 'Unknown error'}`).catch(err => {
+                this.error(`Failed to set device unavailable: ${utilFunctions.formatError(err)}`);
             });
 
             // Trigger reconnection due to communication error
