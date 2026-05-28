@@ -3,6 +3,7 @@
 
 # Documentation (not needed in app bundle)
 README.*
+/docs/
 
 # Development files
 .gitignore

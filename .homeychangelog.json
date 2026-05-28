@@ -1,4 +1,8 @@
 {
+    "2.8.5": {
+        "en": "The 'Limit the active power output' action now writes to volatile RAM (register 40212) instead of flash memory (40915). This eliminates flash wear and the 20-hour-per-write lockout that could occur after ~1000 writes. Note: the limit now resets to the inverter's maximum power on inverter reboot.",
+        "sv": "Händelsen 'Begränsa den aktiva effekten' skriver nu till flyktigt RAM (register 40212) istället för flashminne (40915). Detta eliminerar slitage på flashminnet och den 20-timmars låsning per skrivning som kunde uppstå efter ca 1000 skrivningar. Obs: gränsen återställs nu till växelriktarens maxeffekt vid omstart."
+    },
     "2.8.4": {
         "en": "Hardened error logging to never produce '[object Object]' for non-Error rejections",
         "sv": "Förbättrad felloggning så att '[object Object]' inte längre kan visas för fel som inte är Error-objekt"
