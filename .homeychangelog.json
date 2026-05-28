@@ -1,7 +1,11 @@
 {
+    "2.9.0": {
+        "en": "New action 'Set active power curtailment (%)' for repeated/automated inverter control without flash memory wear (writes register 40023). Requires external control to be enabled in EnnexOS or Sunny Portal beforehand. The existing 'Limit the active power output' action remains for one-time setup; its hint now clearly warns about flash wear with repeated use.",
+        "sv": "Ny händelse 'Sätt aktiv effektbegränsning (%)' för upprepad/automatiserad styrning av växelriktaren utan slitage på flashminnet (skriver till register 40023). Kräver att extern styrning aktiverats i EnnexOS eller Sunny Portal i förväg. Den befintliga händelsen 'Begränsa den aktiva effekten' finns kvar för engångsinställning; dess beskrivning varnar nu tydligt för flashslitage vid upprepad användning."
+    },
     "2.8.5": {
-        "en": "The 'Limit the active power output' action now writes to volatile RAM (register 40212) instead of flash memory (40915). This eliminates flash wear and the 20-hour-per-write lockout that could occur after ~1000 writes. Note: the limit now resets to the inverter's maximum power on inverter reboot.",
-        "sv": "Händelsen 'Begränsa den aktiva effekten' skriver nu till flyktigt RAM (register 40212) istället för flashminne (40915). Detta eliminerar slitage på flashminnet och den 20-timmars låsning per skrivning som kunde uppstå efter ca 1000 skrivningar. Obs: gränsen återställs nu till växelriktarens maxeffekt vid omstart."
+        "en": "Modernised internal code for storage and PVOutput devices, cleaned up unused dependencies, and removed bundled documentation from the published bundle.",
+        "sv": "Moderniserad intern kod för storage och PVOutput-enheter, ryckte bort oanvända beroenden, och tog bort medföljande dokumentation från det publicerade paketet."
     },
     "2.8.4": {
         "en": "Hardened error logging to never produce '[object Object]' for non-Error rejections",

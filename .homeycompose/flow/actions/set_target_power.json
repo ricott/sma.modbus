@@ -9,8 +9,8 @@
         "sv": "Begränsa den aktiva effekten till [[power]]"
     },
     "hint": {
-        "en": "The active power limit is written to volatile memory (RAM register 40212), so it is not persisted across inverter reboots. After a reboot the limit returns to the inverter's maximum power. Use this card freely from automations without flash memory wear.",
-        "sv": "Effektgränsen skrivs till flyktigt minne (RAM-register 40212) och kvarstår inte efter att växelriktaren startat om. Vid omstart återställs gränsen till växelriktarens maximala effekt. Du kan därför använda detta kort från automationer utan att slita på flashminnet."
+        "en": "Writes the manual active power limit to the inverter's flash memory (register 40915). \n\nWARNING: SMA's flash memory has a finite write count. After ~1000 lifetime parameter writes the inverter restricts further changes to 1 per 20 operating hours, to protect the hardware from final damage. \n\nUse this action sparingly (e.g. one-time setup or rare adjustments). For continuous or flow-based control, use the 'Set active power curtailment (%)' action instead, which writes to a dedicated curtailment register without flash wear.",
+        "sv": "Skriver den manuella aktiva effektgränsen till växelriktarens flashminne (register 40915). \n\nVARNING: SMA:s flashminne har ett begränsat antal skrivningar. Efter ca 1000 parameterändringar under livstiden begränsar växelriktaren ytterligare ändringar till 1 per 20 driftstimmar, för att skydda hårdvaran från slutgiltig skada. \n\nAnvänd denna händelse sparsamt (t.ex. engångsinställning eller sällsynta justeringar). För kontinuerlig eller flödesbaserad styrning, använd händelsen 'Sätt aktiv effektbegränsning (%)' istället, som skriver till ett dedikerat begränsningsregister utan flashslitage."
     },
     "args": [
         {

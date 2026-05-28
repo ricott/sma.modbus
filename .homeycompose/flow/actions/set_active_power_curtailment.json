@@ -1,0 +1,37 @@
+{
+    "id": "set_active_power_curtailment",
+    "title": {
+        "en": "Set active power curtailment (%)",
+        "sv": "Sätt aktiv effektbegränsning (%)"
+    },
+    "titleFormatted": {
+        "en": "Curtail active power to [[percent]] % of the manual power limit",
+        "sv": "Begränsa aktiv effekt till [[percent]] % av den manuella effektgränsen"
+    },
+    "hint": {
+        "en": "Writes a curtailment percentage to register 40023. The value is applied as a fraction of the manual power limit (register 40915), e.g. 50 % of a 5000 W limit = 2500 W. \n\nThis is SMA's intended pattern for repeated/automated power control and does NOT wear the flash memory. \n\nPREREQUISITES: External control must be enabled and a fallback value/time configured in EnnexOS or Sunny Portal beforehand. If no write occurs within the fallback time (typically 10 min), the inverter automatically returns to 100 %. Sufficient user rights (installer level) are required to enable external control.",
+        "sv": "Skriver en begränsningsprocent till register 40023. Värdet appliceras som en andel av den manuella effektgränsen (register 40915), t.ex. 50 % av en gräns på 5000 W = 2500 W. \n\nDetta är SMA:s avsedda mönster för upprepad/automatiserad effektstyrning och sliter INTE på flashminnet. \n\nFÖRUTSÄTTNINGAR: Extern styrning måste aktiveras och ett återställningsvärde/-tid konfigureras i EnnexOS eller Sunny Portal i förväg. Om ingen skrivning sker inom återställningstiden (vanligtvis 10 min) återgår växelriktaren automatiskt till 100 %. Installatörsrättigheter krävs för att aktivera extern styrning."
+    },
+    "args": [
+        {
+            "name": "percent",
+            "type": "number",
+            "title": {
+                "en": "Percent (0–100)",
+                "sv": "Procent (0–100)"
+            },
+            "min": 0,
+            "max": 100,
+            "step": 0.01,
+            "placeholder": {
+                "en": "100 = no limit, 0 = zero export",
+                "sv": "100 = ingen begränsning, 0 = noll-export"
+            }
+        },
+        {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=inverter"
+        }
+    ]
+}

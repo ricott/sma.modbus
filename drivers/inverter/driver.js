@@ -89,6 +89,20 @@ class InverterDriver extends Driver {
                     throw new Error(`Failed to set the active power output. Reason: ${utilFunctions.formatError(reason)}`);
                 });
         });
+
+        const set_active_power_curtailment = this.homey.flow.getActionCard('set_active_power_curtailment');
+        set_active_power_curtailment.registerRunListener(async (args) => {
+            this.log(`[${args.device.getName()}] Action 'set_active_power_curtailment' triggered`);
+            this.log(`[${args.device.getName()}] - percent: '${args.percent}'`);
+
+            try {
+                await args.device.api.setActivePowerCurtailment(args.percent);
+                return true;
+            } catch (reason) {
+                this.error(utilFunctions.formatError(reason));
+                throw new Error(`Failed to set the active power curtailment. Reason: ${utilFunctions.formatError(reason)}`);
+            }
+        });
     }
 
     isNewInverter(inverterId) {

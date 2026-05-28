@@ -2,7 +2,7 @@
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "sma.modbus",
   "sdk": 3,
-  "version": "2.8.5",
+  "version": "2.9.0",
   "compatibility": ">=12.9.0",
   "name": {
     "en": "SMA Energy",
@@ -631,6 +631,43 @@
     ],
     "actions": [
       {
+        "id": "set_active_power_curtailment",
+        "title": {
+          "en": "Set active power curtailment (%)",
+          "sv": "Sätt aktiv effektbegränsning (%)"
+        },
+        "titleFormatted": {
+          "en": "Curtail active power to [[percent]] % of the manual power limit",
+          "sv": "Begränsa aktiv effekt till [[percent]] % av den manuella effektgränsen"
+        },
+        "hint": {
+          "en": "Writes a curtailment percentage to register 40023. The value is applied as a fraction of the manual power limit (register 40915), e.g. 50 % of a 5000 W limit = 2500 W. \n\nThis is SMA's intended pattern for repeated/automated power control and does NOT wear the flash memory. \n\nPREREQUISITES: External control must be enabled and a fallback value/time configured in EnnexOS or Sunny Portal beforehand. If no write occurs within the fallback time (typically 10 min), the inverter automatically returns to 100 %. Sufficient user rights (installer level) are required to enable external control.",
+          "sv": "Skriver en begränsningsprocent till register 40023. Värdet appliceras som en andel av den manuella effektgränsen (register 40915), t.ex. 50 % av en gräns på 5000 W = 2500 W. \n\nDetta är SMA:s avsedda mönster för upprepad/automatiserad effektstyrning och sliter INTE på flashminnet. \n\nFÖRUTSÄTTNINGAR: Extern styrning måste aktiveras och ett återställningsvärde/-tid konfigureras i EnnexOS eller Sunny Portal i förväg. Om ingen skrivning sker inom återställningstiden (vanligtvis 10 min) återgår växelriktaren automatiskt till 100 %. Installatörsrättigheter krävs för att aktivera extern styrning."
+        },
+        "args": [
+          {
+            "name": "percent",
+            "type": "number",
+            "title": {
+              "en": "Percent (0–100)",
+              "sv": "Procent (0–100)"
+            },
+            "min": 0,
+            "max": 100,
+            "step": 0.01,
+            "placeholder": {
+              "en": "100 = no limit, 0 = zero export",
+              "sv": "100 = ingen begränsning, 0 = noll-export"
+            }
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=inverter"
+          }
+        ]
+      },
+      {
         "id": "set_export_limit",
         "title": {
           "en": "Set the export limit",
@@ -674,8 +711,8 @@
           "sv": "Begränsa den aktiva effekten till [[power]]"
         },
         "hint": {
-          "en": "The active power limit is written to volatile memory (RAM register 40212), so it is not persisted across inverter reboots. After a reboot the limit returns to the inverter's maximum power. Use this card freely from automations without flash memory wear.",
-          "sv": "Effektgränsen skrivs till flyktigt minne (RAM-register 40212) och kvarstår inte efter att växelriktaren startat om. Vid omstart återställs gränsen till växelriktarens maximala effekt. Du kan därför använda detta kort från automationer utan att slita på flashminnet."
+          "en": "Writes the manual active power limit to the inverter's flash memory (register 40915). \n\nWARNING: SMA's flash memory has a finite write count. After ~1000 lifetime parameter writes the inverter restricts further changes to 1 per 20 operating hours, to protect the hardware from final damage. \n\nUse this action sparingly (e.g. one-time setup or rare adjustments). For continuous or flow-based control, use the 'Set active power curtailment (%)' action instead, which writes to a dedicated curtailment register without flash wear.",
+          "sv": "Skriver den manuella aktiva effektgränsen till växelriktarens flashminne (register 40915). \n\nVARNING: SMA:s flashminne har ett begränsat antal skrivningar. Efter ca 1000 parameterändringar under livstiden begränsar växelriktaren ytterligare ändringar till 1 per 20 driftstimmar, för att skydda hårdvaran från slutgiltig skada. \n\nAnvänd denna händelse sparsamt (t.ex. engångsinställning eller sällsynta justeringar). För kontinuerlig eller flödesbaserad styrning, använd händelsen 'Sätt aktiv effektbegränsning (%)' istället, som skriver till ett dedikerat begränsningsregister utan flashslitage."
         },
         "args": [
           {
