@@ -243,7 +243,7 @@ class BatteryDriver extends Driver {
                 this.log(`Manual repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                 await session.done(deviceSettings);
             } catch (error) {
-                throw new Error(`Unable to verify device identity. ${error.message}`);
+                throw new Error(`Unable to verify device identity. ${utilFunctions.formatError(error)}`);
             }
         });
     }

@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseDevice = require('../baseDevice.js');
+const utilFunctions = require('../../lib/util.js');
 
 class SummaryDevice extends BaseDevice {
 
@@ -105,7 +106,11 @@ class SummaryDevice extends BaseDevice {
     _initilializeTimers() {
         this.log('Adding timers');
         this.homey.setInterval(async () => {
-            await this.updateValues();
+            try {
+                await this.updateValues();
+            } catch (error) {
+                this.error(`Failed to update summary values: ${utilFunctions.formatError(error)}`);
+            }
         }, 1000 * this.getSetting('polling'));
     }
 

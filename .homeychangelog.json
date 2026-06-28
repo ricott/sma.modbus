@@ -1,4 +1,8 @@
 {
+    "2.9.2": {
+        "en": "Stability: fixed app crashes that appeared as '[object Object]' in crash reports. Transient Modbus errors (for example during connection drops or reading device properties) are now handled and logged readably instead of surfacing as unhandled errors.",
+        "sv": "Stabilitet: rättade appkrascher som visades som '[object Object]' i kraschrapporter. Tillfälliga Modbus-fel (till exempel vid avbrott i anslutningen eller vid läsning av enhetsegenskaper) hanteras nu och loggas läsbart istället för att dyka upp som ohanterade fel."
+    },
     "2.9.1": {
         "en": "Hybrid inverters (Sunny Boy Smart Energy, STP SE) no longer report battery discharge as solar production, which fixes inflated consumption in Homey Energy. These inverters now report PV power and daily PV yield instead of AC output. Battery devices now expose charged and discharged energy (kWh) so they show up correctly in the Energy flow, and the missing voltage, current, temperature and charging status are fixed for Sunny Boy Smart Energy.",
         "sv": "Hybridväxelriktare (Sunny Boy Smart Energy, STP SE) räknar inte längre batteriurladdning som solproduktion, vilket rättar den felaktigt höga förbrukningen i Homey Energy. Dessa växelriktare visar nu PV-effekt och daglig PV-produktion istället för AC-effekt. Batterienheter visar nu laddad och urladdad energi (kWh) så att de syns korrekt i energiflödet, och saknad spänning, ström, temperatur och laddningsstatus är åtgärdade för Sunny Boy Smart Energy."
