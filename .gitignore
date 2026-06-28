@@ -21,3 +21,8 @@ build
 
 # Added by Homey CLI
 /.homeybuild/
+
+# Root app.json is generated from .homeycompose/ + drivers/*/driver.compose.json
+# by `homey app build`. Anchored to root so .homeycompose/app.json (the source)
+# stays tracked.
+/app.json

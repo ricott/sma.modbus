@@ -16,7 +16,9 @@
         "lan"
     ],
     "energy": {
-        "homeBattery": true
+        "homeBattery": true,
+        "meterPowerImportedCapability": "meter_power.charged",
+        "meterPowerExportedCapability": "meter_power.discharged"
     },
     "capabilities": [
         "measure_battery",
@@ -24,8 +26,26 @@
         "measure_voltage",
         "measure_current",
         "battery_charging_state",
-        "measure_temperature"
+        "measure_temperature",
+        "meter_power.charged",
+        "meter_power.discharged"
     ],
+    "capabilitiesOptions": {
+        "meter_power.charged": {
+            "title": {
+                "en": "Charged",
+                "nl": "Opgeladen",
+                "sv": "Laddat"
+            }
+        },
+        "meter_power.discharged": {
+            "title": {
+                "en": "Discharged",
+                "nl": "Ontladen",
+                "sv": "Urladdat"
+            }
+        }
+    },
     "pair": [
         {
             "id": "start",

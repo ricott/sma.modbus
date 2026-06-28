@@ -28,10 +28,25 @@ const deviceCapabilitesList = [
 class InverterDevice extends ModbusDevice {
 
     #capabilityListenersRegistered = false;
+    // Integrated daily PV yield (Wh) for hybrid inverters, where no PV-only
+    // energy counter exists and the AC yield counters include battery discharge.
+    #dailyPvWh = 0;
+    #lastPvSampleTs = null;
 
     async onInit() {
         await super.onInit();
+        // Restore the integrated daily PV yield so a mid-day app restart doesn't
+        // lose the day's accumulation. The sample timestamp is intentionally not
+        // restored so we don't add bogus energy for the downtime gap.
+        this.#dailyPvWh = Number(this.getStoreValue('dailyPvYieldWh')) || 0;
+        this.#lastPvSampleTs = null;
         this.resetAtMidnight();
+    }
+
+    // A hybrid inverter (device class 8009) has a battery connected, so its AC
+    // output includes battery discharge. Used to report PV-only production.
+    isHybrid() {
+        return this.getSetting('deviceClass') === decodeData.decodeDeviceClass(8009);
     }
 
     async setupCapabilityListeners() {
@@ -86,9 +101,6 @@ class InverterDevice extends ModbusDevice {
             // Update availability tracking
             await this.onDataReceived();
 
-            // Handle daily yield calculation
-            await this.handleDailyYield(readings);
-
             // Destructure readings for cleaner access
             const {
                 acPowerTotal = 0,
@@ -107,8 +119,26 @@ class InverterDevice extends ModbusDevice {
                 targetPower = 0
             } = readings;
 
-            // Update basic power and voltage readings
-            await this._updateProperty('measure_power', acPowerTotal);
+            // On hybrid inverters the AC output (reg 30775) and the AC yield
+            // counters include battery discharge. If reported as-is, Homey counts
+            // that discharge as solar production and double-counts it against the
+            // battery device. Report PV (DC) production instead so Homey Energy
+            // attributes solar correctly. Non-hybrid inverters are unaffected.
+            if (this.isHybrid()) {
+                const pvPower = Math.max((dcPowerA || 0) + (dcPowerB || 0) + (dcPowerC || 0), 0);
+                await this._updateProperty('measure_power', pvPower);
+
+                // These devices expose no PV-only energy counter, so integrate the
+                // PV power over time to derive the daily PV yield.
+                const dailyPvWh = await this.accumulateDailyPvYield(pvPower);
+                await this._updateProperty('meter_power', decodeData.formatWHasKWH(dailyPvWh));
+            } else {
+                await this._updateProperty('measure_power', acPowerTotal);
+                // Handle daily yield calculation (direct register or from lifetime yield)
+                await this.handleDailyYield(readings);
+            }
+
+            // Update AC voltage readings
             await this._updateProperty('measure_voltage', acVoltageL1);
             await this._updateProperty('measure_voltage.l2', acVoltageL2);
             await this._updateProperty('measure_voltage.l3', acVoltageL3);
@@ -132,6 +162,35 @@ class InverterDevice extends ModbusDevice {
         } catch (error) {
             this.error(`Failed to process inverter readings event: ${utilFunctions.formatError(error)}`);
         }
+    }
+
+    // Integrates PV (DC) power over time to derive the daily PV yield (Wh) for
+    // hybrid inverters. Resets to zero at midnight via resetDailyYield().
+    async accumulateDailyPvYield(pvPowerW) {
+        const now = Date.now();
+        const pollingS = Number(this.getSetting('polling')) || 10;
+        const maxDtMs = pollingS * 2 * 1000;
+
+        if (this.#lastPvSampleTs != null) {
+            let dtMs = now - this.#lastPvSampleTs;
+            if (dtMs < 0) {
+                dtMs = 0;
+            } else if (dtMs > maxDtMs) {
+                // Cap the interval to avoid a spike after a polling gap or restart
+                dtMs = maxDtMs;
+            }
+
+            const incrementWh = (Math.max(pvPowerW, 0) * dtMs) / 3600000;
+            if (incrementWh > 0) {
+                this.#dailyPvWh += incrementWh;
+                await this.setStoreValue('dailyPvYieldWh', this.#dailyPvWh).catch(reason => {
+                    this.error(`Failed to persist daily PV yield: ${utilFunctions.formatError(reason)}`);
+                });
+            }
+        }
+
+        this.#lastPvSampleTs = now;
+        return this.#dailyPvWh;
     }
 
     async handleDailyYield(readings) {
@@ -216,6 +275,14 @@ class InverterDevice extends ModbusDevice {
     async resetDailyYield() {
         try {
             await this.setStoreValue('totalYieldAtMidnight', 0);
+
+            // Reset the integrated hybrid PV daily yield as well
+            this.#dailyPvWh = 0;
+            this.#lastPvSampleTs = null;
+            await this.setStoreValue('dailyPvYieldWh', 0);
+            if (this.isHybrid()) {
+                await this._updateProperty('meter_power', 0);
+            }
         } catch (reason) {
             this.error(utilFunctions.formatError(reason));
         }
@@ -263,6 +330,14 @@ class InverterDevice extends ModbusDevice {
 
         this.log(`[${this.getName()}] Updating max target power to '${this.getSetting('maxPower')}'`);
         await this.updateCapabilityOptions('target_power', { max: Number(this.getSetting('maxPower')) });
+
+        // On hybrid inverters measure_power reports PV (DC) production rather than
+        // AC grid power, so relabel the capability accordingly.
+        if (this.isHybrid()) {
+            await this.updateCapabilityOptions('measure_power', {
+                title: { en: 'PV power', nl: 'PV-vermogen', sv: 'PV-effekt' }
+            });
+        }
     }
 
     async setupCapabilities() {

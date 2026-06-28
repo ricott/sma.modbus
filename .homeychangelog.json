@@ -1,4 +1,8 @@
 {
+    "2.9.1": {
+        "en": "Hybrid inverters (Sunny Boy Smart Energy, STP SE) no longer report battery discharge as solar production, which fixes inflated consumption in Homey Energy. These inverters now report PV power and daily PV yield instead of AC output. Battery devices now expose charged and discharged energy (kWh) so they show up correctly in the Energy flow, and the missing voltage, current, temperature and charging status are fixed for Sunny Boy Smart Energy.",
+        "sv": "Hybridväxelriktare (Sunny Boy Smart Energy, STP SE) räknar inte längre batteriurladdning som solproduktion, vilket rättar den felaktigt höga förbrukningen i Homey Energy. Dessa växelriktare visar nu PV-effekt och daglig PV-produktion istället för AC-effekt. Batterienheter visar nu laddad och urladdad energi (kWh) så att de syns korrekt i energiflödet, och saknad spänning, ström, temperatur och laddningsstatus är åtgärdade för Sunny Boy Smart Energy."
+    },
     "2.9.0": {
         "en": "New action 'Set active power curtailment (%)' for repeated/automated inverter control without flash memory wear (writes register 40023). Requires external control to be enabled in EnnexOS or Sunny Portal beforehand. The existing 'Limit the active power output' action remains for one-time setup; its hint now clearly warns about flash wear with repeated use.",
         "sv": "Ny händelse 'Sätt aktiv effektbegränsning (%)' för upprepad/automatiserad styrning av växelriktaren utan slitage på flashminnet (skriver till register 40023). Kräver att extern styrning aktiverats i EnnexOS eller Sunny Portal i förväg. Den befintliga händelsen 'Begränsa den aktiva effekten' finns kvar för engångsinställning; dess beskrivning varnar nu tydligt för flashslitage vid upprepad användning."
