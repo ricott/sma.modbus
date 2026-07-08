@@ -1,4 +1,8 @@
 {
+    "2.9.5": {
+        "en": "Reliability: disabled Nagle's algorithm (TCP_NODELAY) on the Modbus connection. This addresses inverters where a single read works but reading many registers in a row times out, which can appear as repeated timeouts and 'out of sync' errors.",
+        "sv": "Tillförlitlighet: inaktiverade Nagles algoritm (TCP_NODELAY) på Modbus-anslutningen. Detta åtgärdar växelriktare där en enskild avläsning fungerar men läsning av många register i följd får timeout, vilket kan visa sig som upprepade timeouts och 'out of sync'-fel."
+    },
     "2.9.4": {
         "en": "Fix: a slow inverter that timed out on a single register could get stuck and never start reporting after 2.9.3. Readings are tolerant of individual register timeouts again (the device keeps reporting the values it did get), while the connection is still automatically reset when it goes out of sync.",
         "sv": "Rättning: en långsam växelriktare som fick timeout på ett enskilt register kunde fastna och aldrig börja rapportera efter 2.9.3. Avläsningar tål återigen timeout på enskilda register (enheten fortsätter rapportera de värden den fick), samtidigt som anslutningen fortfarande återställs automatiskt när den blir osynkroniserad."
