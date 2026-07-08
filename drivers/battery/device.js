@@ -18,11 +18,12 @@ class BatteryDevice extends ModbusDevice {
         await super.onInit();
     }
 
-    async setupSession(address, port, polling) {
+    async setupSession(address, port, polling, timeout) {
         this.api = new Battery({
             host: address,
             port: port,
             refreshInterval: polling,
+            timeout: timeout,
             device: this
         });
 

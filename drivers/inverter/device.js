@@ -71,11 +71,12 @@ class InverterDevice extends ModbusDevice {
         }
     }
 
-    async setupSession(address, port, polling) {
+    async setupSession(address, port, polling, timeout) {
         this.api = new Inverter({
             host: address,
             port: port,
             refreshInterval: polling,
+            timeout: timeout,
             device: this
         });
 

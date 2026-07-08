@@ -42,6 +42,26 @@
                     "nl": "Polling",
                     "sv": "Uppdateringsfrekvens"
                 }
+            },
+            {
+                "id": "timeout",
+                "type": "number",
+                "value": 5,
+                "step": 1,
+                "attr": {
+                    "min": 1,
+                    "max": 60
+                },
+                "label": {
+                    "en": "Modbus timeout (s)",
+                    "nl": "Modbus time-out (s)",
+                    "sv": "Modbus timeout (s)"
+                },
+                "hint": {
+                    "en": "Seconds to wait for a response to each Modbus request before it is treated as failed. Increase (e.g. 10-15) if the battery/inverter responds slowly.",
+                    "nl": "Aantal seconden dat op een antwoord op elk Modbus-verzoek wordt gewacht voordat het als mislukt wordt beschouwd. Verhoog dit (bijv. 10-15) als de omvormer traag reageert.",
+                    "sv": "Antal sekunder att vänta på svar på varje Modbus-förfrågan innan den räknas som misslyckad. Öka (t.ex. 10-15) om växelriktaren svarar långsamt."
+                }
             }
         ]
     },

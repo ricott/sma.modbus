@@ -1,4 +1,12 @@
 {
+    "2.9.7": {
+        "en": "New setting: Modbus timeout (in seconds, default 5) for inverter and battery devices. If your inverter responds slowly, increasing this (for example to 10-15) can stop reads from timing out and desyncing the connection.",
+        "sv": "Ny inställning: Modbus timeout (i sekunder, standard 5) för växelriktar- och batterienheter. Om din växelriktare svarar långsamt kan en höjning (till exempel 10-15) förhindra att avläsningar får timeout och gör anslutningen osynkroniserad."
+    },
+    "2.9.6": {
+        "en": "Reliability: many inverters allow only a single Modbus connection and are slow to release it, so resetting the connection on every hiccup made things worse. The app now recovers in place and only resets the connection as a last resort after repeated failures, with a short pause so the inverter can free the connection. This reduces the flood of timeout and 'out of sync' errors.",
+        "sv": "Tillförlitlighet: många växelriktare tillåter bara en enda Modbus-anslutning och är långsamma med att frigöra den, så att återställa anslutningen vid varje litet fel gjorde det värre. Appen återhämtar sig nu på plats och återställer anslutningen först som en sista utväg efter upprepade fel, med en kort paus så att växelriktaren hinner frigöra anslutningen. Detta minskar flödet av timeout- och 'out of sync'-fel."
+    },
     "2.9.5": {
         "en": "Reliability: disabled Nagle's algorithm (TCP_NODELAY) on the Modbus connection. This addresses inverters where a single read works but reading many registers in a row times out, which can appear as repeated timeouts and 'out of sync' errors.",
         "sv": "Tillförlitlighet: inaktiverade Nagles algoritm (TCP_NODELAY) på Modbus-anslutningen. Detta åtgärdar växelriktare där en enskild avläsning fungerar men läsning av många register i följd får timeout, vilket kan visa sig som upprepade timeouts och 'out of sync'-fel."

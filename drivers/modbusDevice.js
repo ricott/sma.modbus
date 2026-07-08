@@ -18,11 +18,12 @@ class ModbusDevice extends BaseDevice {
         this.initializeSession(
             this.getSetting('address'),
             this.getSetting('port'),
-            this.getSetting('polling')
+            this.getSetting('polling'),
+            this.getSetting('timeout')
         );
     }
 
-    async initializeSession(address, port, polling) {
+    async initializeSession(address, port, polling, timeout) {
         try {
             // Stop availability watchdog during reconnection
             this.#stopAvailabilityWatchdog();
@@ -30,7 +31,7 @@ class ModbusDevice extends BaseDevice {
             this.#lastDataReceived = null;
 
             await this.destroySession();
-            await this.setupSession(address, port, polling);
+            await this.setupSession(address, port, polling, timeout);
             
             // Connection successful, reset retry count and mark as available
             this.#retryCount = 0;
@@ -54,7 +55,7 @@ class ModbusDevice extends BaseDevice {
             // Only schedule retry if this is the initial connection attempt (not from a retry)
             // Retries are handled in the timeout callback now
             if (!this.#isReconnecting) {
-                this.#scheduleReconnection(address, port, polling);
+                this.#scheduleReconnection(address, port, polling, timeout);
             }
         }
     }
@@ -82,7 +83,7 @@ class ModbusDevice extends BaseDevice {
     }
 
     // Schedules reconnection with exponential backoff
-    #scheduleReconnection(address, port, polling) {
+    #scheduleReconnection(address, port, polling, timeout) {
         // Don't schedule new reconnection if already reconnecting or max retries reached
         if (this.#isReconnecting) {
             return;
@@ -119,7 +120,7 @@ class ModbusDevice extends BaseDevice {
                 this.#lastDataReceived = null;
 
                 await this.destroySession();
-                await this.setupSession(address, port, polling);
+                await this.setupSession(address, port, polling, timeout);
                 
                 // Connection successful, reset retry count and mark as available
                 this.#retryCount = 0;
@@ -140,14 +141,14 @@ class ModbusDevice extends BaseDevice {
                 await this.setUnavailable(utilFunctions.formatError(err) || 'Connection failed');
 
                 // Schedule next retry with exponential backoff
-                this.#scheduleReconnection(address, port, polling);
+                this.#scheduleReconnection(address, port, polling, timeout);
             }
         }, delay);
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
         let changeConn = false;
-        let address, port, polling;
+        let address, port, polling, timeout;
         if (changedKeys.indexOf("address") > -1) {
             this.logMessage(`Address value was change to '${newSettings.address}'`);
             changeConn = true;
@@ -163,13 +164,19 @@ class ModbusDevice extends BaseDevice {
             changeConn = true;
             polling = newSettings.polling;
         }
+        if (changedKeys.indexOf("timeout") > -1) {
+            this.logMessage(`Timeout value was change to '${newSettings.timeout}'`);
+            changeConn = true;
+            timeout = newSettings.timeout;
+        }
 
         if (changeConn) {
             //We need to re-initialize the session since setting(s) are changed
             this.initializeSession(
                 address || this.getSettings().address,
                 port || this.getSettings().port,
-                polling || this.getSettings().polling
+                polling || this.getSettings().polling,
+                timeout || this.getSettings().timeout
             );
         }
     }
@@ -217,7 +224,8 @@ class ModbusDevice extends BaseDevice {
                 this.#scheduleReconnection(
                     this.getSetting('address'),
                     this.getSetting('port'),
-                    this.getSetting('polling')
+                    this.getSetting('polling'),
+                    this.getSetting('timeout')
                 );
             }
         }
