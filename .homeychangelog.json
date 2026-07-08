@@ -1,4 +1,8 @@
 {
+    "2.9.4": {
+        "en": "Fix: a slow inverter that timed out on a single register could get stuck and never start reporting after 2.9.3. Readings are tolerant of individual register timeouts again (the device keeps reporting the values it did get), while the connection is still automatically reset when it goes out of sync.",
+        "sv": "Rättning: en långsam växelriktare som fick timeout på ett enskilt register kunde fastna och aldrig börja rapportera efter 2.9.3. Avläsningar tål återigen timeout på enskilda register (enheten fortsätter rapportera de värden den fick), samtidigt som anslutningen fortfarande återställs automatiskt när den blir osynkroniserad."
+    },
     "2.9.3": {
         "en": "Stability: inverter and battery devices now recover automatically from Modbus communication drop-outs. Previously a single timed-out reading could leave the connection out of sync, causing a flood of 'OutOfSync' errors and no readings until the app was restarted. The connection is now reset as soon as it goes out of sync.",
         "sv": "Stabilitet: växelriktare och batterienheter återhämtar sig nu automatiskt från avbrott i Modbus-kommunikationen. Tidigare kunde en enda avläsning som gick över tiden göra anslutningen osynkroniserad, vilket orsakade en störtflod av 'OutOfSync'-fel och inga avläsningar förrän appen startades om. Anslutningen återställs nu så snart den blir osynkroniserad."
