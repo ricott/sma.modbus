@@ -1,4 +1,8 @@
 {
+    "2.9.9": {
+        "en": "Maintenance: minor diagnostics improvement for troubleshooting the v13.3 communication issue.",
+        "sv": "Underhåll: mindre diagnostikförbättring för felsökning av kommunikationsproblemet i v13.3."
+    },
     "2.9.8": {
         "en": "Diagnostics: added optional anonymous error reporting to help gauge how widely the v13.3 Modbus drop-outs affect different inverter models and Homey versions. The app now also logs the Modbus timeout that is in effect, and a fix ensures your timeout setting is kept after an automatic reconnect.",
         "sv": "Diagnostik: lade till valfri anonym felrapportering för att bedöma hur brett v13.3 Modbus-avbrotten påverkar olika växelriktarmodeller och Homey-versioner. Appen loggar nu även vilken Modbus timeout som används, och en rättning gör att din timeout-inställning behålls efter en automatisk återanslutning."
