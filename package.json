@@ -4,8 +4,9 @@
   "description": "Monitor SMA SunnyBoy inverters over modbus protocol",
   "main": "app.js",
   "dependencies": {
+    "@sentry/node": "^7.120.3",
     "jsmodbus": "^4.0.10",
-    "spacetime": "^7.12.1"
+    "spacetime": "^7.13.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

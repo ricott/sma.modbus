@@ -2,6 +2,7 @@
 
 const BaseDevice = require('./baseDevice.js');
 const utilFunctions = require('../lib/util.js');
+const logger = require('../lib/logger.js');
 
 class ModbusDevice extends BaseDevice {
 
@@ -10,6 +11,9 @@ class ModbusDevice extends BaseDevice {
     #retryCount = 0;
     #maxRetries = 30; // Maximum number of consecutive retry attempts
     #isReconnecting = false;
+    // Sliding window of recent read-error timestamps, used to detect a sustained
+    // failure state and report it (once per interval) for blast-radius telemetry.
+    #readErrorTimestamps = [];
 
     async onInit() {
         this.logMessage(`SMA device initiated`);
@@ -256,6 +260,9 @@ class ModbusDevice extends BaseDevice {
 
     // Method for child classes to call when communication errors occur
     async onCommunicationError(error) {
+        // Telemetry: track error rate to detect sustained Modbus failures.
+        this.#recordReadErrorForTelemetry(error);
+
         // Only mark as unavailable for actual communication/connectivity errors
         const isCommunicationError = this.#isCommunicationError(error);
 
@@ -270,8 +277,52 @@ class ModbusDevice extends BaseDevice {
             this.#scheduleReconnection(
                 this.getSetting('address'),
                 this.getSetting('port'),
-                this.getSetting('polling')
+                this.getSetting('polling'),
+                this.getSetting('timeout')
             );
+        }
+    }
+
+    // Telemetry: records a read error and, when errors arrive in bursts (a
+    // sustained failure rather than an occasional glitch), reports one event per
+    // device per interval so we can see across installs which inverter models and
+    // Homey firmware versions are affected. The logger rate-limits and is a no-op
+    // when Sentry is not configured; this must never throw.
+    #recordReadErrorForTelemetry(error) {
+        try {
+            const now = Date.now();
+            const windowMs = 10 * 60 * 1000; // 10 minutes
+            const threshold = 15; // errors within the window that indicate a sustained problem
+
+            this.#readErrorTimestamps.push(now);
+            this.#readErrorTimestamps = this.#readErrorTimestamps.filter(t => now - t <= windowMs);
+
+            if (this.#readErrorTimestamps.length >= threshold) {
+                let driverId = 'unknown';
+                try { driverId = this.driver.id; } catch (_) { /* ignore */ }
+
+                logger.report(
+                    `modbus-sustained-failure:${this.getData().id}`,
+                    'Sustained Modbus read failures',
+                    {
+                        level: 'warning',
+                        tags: {
+                            deviceType: this.getSetting('deviceType') || 'unknown',
+                            driver: driverId,
+                            homeyVersion: (this.homey && this.homey.version) || 'unknown'
+                        },
+                        extra: {
+                            errorsInWindow: this.#readErrorTimestamps.length,
+                            windowMinutes: 10,
+                            polling: this.getSetting('polling'),
+                            timeoutSetting: this.getSetting('timeout'),
+                            lastError: utilFunctions.formatError(error)
+                        }
+                    }
+                );
+            }
+        } catch (_) {
+            // Telemetry must never affect device operation.
         }
     }
 
