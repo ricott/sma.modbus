@@ -1,4 +1,8 @@
 {
+    "2.9.10": {
+        "en": "Maintenance: internal diagnostics improvements for troubleshooting the v13.3 communication issue. No functional changes.",
+        "sv": "Underhåll: interna diagnostikförbättringar för felsökning av kommunikationsproblemet i v13.3. Inga funktionella ändringar."
+    },
     "2.9.9": {
         "en": "Maintenance: minor diagnostics improvement for troubleshooting the v13.3 communication issue.",
         "sv": "Underhåll: mindre diagnostikförbättring för felsökning av kommunikationsproblemet i v13.3."
