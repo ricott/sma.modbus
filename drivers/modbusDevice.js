@@ -309,7 +309,11 @@ class ModbusDevice extends BaseDevice {
                         tags: {
                             deviceType: this.getSetting('deviceType') || 'unknown',
                             driver: driverId,
-                            homeyVersion: (this.homey && this.homey.version) || 'unknown'
+                            homeyVersion: (this.homey && this.homey.version) || 'unknown',
+                            // As tags (not just extra) so you can group/filter
+                            // affected devices by their timeout / polling values.
+                            polling: String(this.getSetting('polling')),
+                            timeout: String(this.getSetting('timeout'))
                         },
                         extra: {
                             errorsInWindow: this.#readErrorTimestamps.length,
