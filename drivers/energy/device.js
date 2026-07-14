@@ -141,14 +141,14 @@ class EnergyDevice extends BaseDevice {
 
             const mainFuse = this.getSetting('mainFuse');
             const threshold = this.getSetting('threshold');
-            let phase = key.substring(key.indexOf('.') + 1);
+            const phase = key.substring(key.indexOf('.') + 1);
             let utilization = (value / mainFuse) * 100;
             if (utilization >= threshold) {
                 if (this.phaseAlerts[phase] === false) {
                     //Only trigger if this is new threshold alert
                     utilization = parseFloat(utilization.toFixed(2));
                     this.phaseAlerts[phase] = true;
-                    let tokens = {
+                    const tokens = {
                         phase: phase,
                         percentageUtilized: utilization
                     }

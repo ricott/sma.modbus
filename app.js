@@ -32,7 +32,7 @@ class SmaModbusApp extends App {
       });
     }
 
-    if (process.env.DEBUG == '1') {
+    if (process.env.DEBUG === '1') {
       const inspector = require('inspector');
       if (inspector.url()) {
         this.log(`Inspector already active at ${inspector.url()}`);

@@ -63,17 +63,16 @@ class BaseDevice extends Device {
     }
 
     isCapabilityValueChanged(key, value) {
-        let oldValue = this.getCapabilityValue(key);
-        //If oldValue===null then it is a newly added device, lets not trigger flows on that
-        if (oldValue !== null && oldValue != value) {
-            return true;
-        } else {
-            return false;
-        }
+        const oldValue = this.getCapabilityValue(key);
+        // If oldValue === null it is a newly added device; don't trigger flows on that.
+        // The loose (!=) comparison is intentional: a capability value may be
+        // read back as a different type (e.g. number vs string) and we only want
+        // to flag a genuine change.
+        return oldValue !== null && oldValue != value;
     }
 
     updateSetting(key, value) {
-        let obj = {};
+        const obj = {};
         obj[key] = String(value);
         this.setSettings(obj).catch(err => {
             this.error(`Failed to update setting '${key}' with value '${value}': ${utilFunctions.formatError(err)}`);

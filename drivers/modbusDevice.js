@@ -29,38 +29,48 @@ class ModbusDevice extends BaseDevice {
 
     async initializeSession(address, port, polling, timeout) {
         try {
-            // Stop availability watchdog during reconnection
-            this.#stopAvailabilityWatchdog();
-            // Reset availability state
-            this.#lastDataReceived = null;
-
-            await this.destroySession();
-            await this.setupSession(address, port, polling, timeout);
-            
-            // Connection successful, reset retry count and mark as available
-            this.#retryCount = 0;
-            this.#isReconnecting = false;
-            await this.setAvailable();
-            
-            // Clear any existing retry timer on successful connection
-            if (this._retryTimeout) {
-                this.homey.clearTimeout(this._retryTimeout);
-                this._retryTimeout = null;
-            }
-
-            // Start availability monitoring after successful connection
-            this.#startAvailabilityWatchdog();
-
+            await this.#establishConnection(address, port, polling, timeout);
         } catch (error) {
             this.error(`Failed to initialize device connection: ${utilFunctions.formatError(error)}`);
             // Set device as unavailable with error message
             await this.setUnavailable(utilFunctions.formatError(error) || 'Connection failed');
 
-            // Only schedule retry if this is the initial connection attempt (not from a retry)
-            // Retries are handled in the timeout callback now
+            // Only schedule retry if this is the initial connection attempt (not
+            // from a retry); retries reschedule themselves from the retry callback.
             if (!this.#isReconnecting) {
                 this.#scheduleReconnection(address, port, polling, timeout);
             }
+        }
+    }
+
+    // Shared happy-path connect sequence used by both the initial connect and
+    // each reconnection attempt: (re)build the session, mark the device
+    // available, reset retry state and (re)start the availability watchdog.
+    async #establishConnection(address, port, polling, timeout) {
+        // Stop availability watchdog while (re)connecting
+        this.#stopAvailabilityWatchdog();
+        // Reset availability state
+        this.#lastDataReceived = null;
+
+        await this.destroySession();
+        await this.setupSession(address, port, polling, timeout);
+
+        // Connection successful, reset retry count and mark as available
+        this.#retryCount = 0;
+        this.#isReconnecting = false;
+        await this.setAvailable();
+
+        // Clear any pending retry timer on successful connection
+        this.#clearRetryTimer();
+
+        // Start availability monitoring after successful connection
+        this.#startAvailabilityWatchdog();
+    }
+
+    #clearRetryTimer() {
+        if (this._retryTimeout) {
+            this.homey.clearTimeout(this._retryTimeout);
+            this._retryTimeout = null;
         }
     }
 
@@ -74,10 +84,7 @@ class ModbusDevice extends BaseDevice {
     onDeleted() {
         this.logMessage(`Deleting this SMA device from Homey.`);
         // Clear any pending retry timer
-        if (this._retryTimeout) {
-            this.homey.clearTimeout(this._retryTimeout);
-            this._retryTimeout = null;
-        }
+        this.#clearRetryTimer();
         // Reset reconnection state
         this.#isReconnecting = false;
         this.#retryCount = 0;
@@ -103,9 +110,7 @@ class ModbusDevice extends BaseDevice {
         this.#isReconnecting = true;
 
         // Clear any existing retry timer before setting a new one
-        if (this._retryTimeout) {
-            this.homey.clearTimeout(this._retryTimeout);
-        }
+        this.#clearRetryTimer();
 
         // Calculate exponential backoff delay: 30s, 1m, 2m, 4m, 8m, max 10m
         const baseDelay = 30 * 1000; // 30 seconds base
@@ -116,29 +121,11 @@ class ModbusDevice extends BaseDevice {
 
         this._retryTimeout = this.homey.setTimeout(async () => {
             this.logMessage(`Retry attempt ${this.#retryCount}/${this.#maxRetries}: Attempting to reconnect...`);
+            // Clear the flag before the attempt so a failed reconnect can
+            // reschedule itself via #scheduleReconnection.
             this.#isReconnecting = false;
             try {
-                // Stop availability watchdog during reconnection
-                this.#stopAvailabilityWatchdog();
-                // Reset availability state
-                this.#lastDataReceived = null;
-
-                await this.destroySession();
-                await this.setupSession(address, port, polling, timeout);
-                
-                // Connection successful, reset retry count and mark as available
-                this.#retryCount = 0;
-                this.#isReconnecting = false;
-                await this.setAvailable();
-                
-                // Clear any existing retry timer on successful connection
-                if (this._retryTimeout) {
-                    this.homey.clearTimeout(this._retryTimeout);
-                    this._retryTimeout = null;
-                }
-
-                // Start availability monitoring after successful connection
-                this.#startAvailabilityWatchdog();
+                await this.#establishConnection(address, port, polling, timeout);
             } catch (err) {
                 this.error(`Reconnection attempt failed: ${utilFunctions.formatError(err)}`);
                 // Set device as unavailable with error message

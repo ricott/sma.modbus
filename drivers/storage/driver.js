@@ -17,14 +17,17 @@ class SmaModbusStorageDriver extends Driver {
         isOperationalStatus.registerRunListener(async (args, state) => {
             this.log(`[${args.device.getName()}] Condition 'isOperationalStatus' triggered`);
 
-            if (args.device.getCapabilityValue('operational_status') == this.homey.__('Off') && args.status == '303') {
-            } else if (args.device.getCapabilityValue('operational_status') == this.homey.__('Standby') && args.status == '2291') {
+            const status = args.device.getCapabilityValue('operational_status');
+
+            if (status === this.homey.__('Off') && args.status === '303') {
                 return true;
-            } else if (args.device.getCapabilityValue('operational_status') == this.homey.__('Charge') && args.status == '2292') {
+            } else if (status === this.homey.__('Standby') && args.status === '2291') {
                 return true;
-            } else if (args.device.getCapabilityValue('operational_status') == this.homey.__('Discharge') && args.status == '2293') {
+            } else if (status === this.homey.__('Charge') && args.status === '2292') {
                 return true;
-            } else if (args.device.getCapabilityValue('operational_status') == this.homey.__('NA') && args.status == '16777213') {
+            } else if (status === this.homey.__('Discharge') && args.status === '2293') {
+                return true;
+            } else if (status === this.homey.__('NA') && args.status === '16777213') {
                 return true;
             } else {
                 return false;

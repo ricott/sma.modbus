@@ -1,293 +1,297 @@
 {
-    "2.9.11": {
-        "en": "Maintenance: internal diagnostics improvements, including detecting inverter models not yet supported by the app. No functional changes.",
-        "sv": "Underhåll: interna diagnostikförbättringar, inklusive upptäckt av växelriktarmodeller som appen ännu inte stöder. Inga funktionella ändringar."
-    },
-    "2.9.10": {
-        "en": "Maintenance: internal diagnostics improvements for troubleshooting the v13.3 communication issue. No functional changes.",
-        "sv": "Underhåll: interna diagnostikförbättringar för felsökning av kommunikationsproblemet i v13.3. Inga funktionella ändringar."
-    },
-    "2.9.9": {
-        "en": "Maintenance: minor diagnostics improvement for troubleshooting the v13.3 communication issue.",
-        "sv": "Underhåll: mindre diagnostikförbättring för felsökning av kommunikationsproblemet i v13.3."
-    },
-    "2.9.8": {
-        "en": "Diagnostics: added optional anonymous error reporting to help gauge how widely the v13.3 Modbus drop-outs affect different inverter models and Homey versions. The app now also logs the Modbus timeout that is in effect, and a fix ensures your timeout setting is kept after an automatic reconnect.",
-        "sv": "Diagnostik: lade till valfri anonym felrapportering för att bedöma hur brett v13.3 Modbus-avbrotten påverkar olika växelriktarmodeller och Homey-versioner. Appen loggar nu även vilken Modbus timeout som används, och en rättning gör att din timeout-inställning behålls efter en automatisk återanslutning."
-    },
-    "2.9.7": {
-        "en": "New setting: Modbus timeout (in seconds, default 5) for inverter and battery devices. If your inverter responds slowly, increasing this (for example to 10-15) can stop reads from timing out and desyncing the connection.",
-        "sv": "Ny inställning: Modbus timeout (i sekunder, standard 5) för växelriktar- och batterienheter. Om din växelriktare svarar långsamt kan en höjning (till exempel 10-15) förhindra att avläsningar får timeout och gör anslutningen osynkroniserad."
-    },
-    "2.9.6": {
-        "en": "Reliability: many inverters allow only a single Modbus connection and are slow to release it, so resetting the connection on every hiccup made things worse. The app now recovers in place and only resets the connection as a last resort after repeated failures, with a short pause so the inverter can free the connection. This reduces the flood of timeout and 'out of sync' errors.",
-        "sv": "Tillförlitlighet: många växelriktare tillåter bara en enda Modbus-anslutning och är långsamma med att frigöra den, så att återställa anslutningen vid varje litet fel gjorde det värre. Appen återhämtar sig nu på plats och återställer anslutningen först som en sista utväg efter upprepade fel, med en kort paus så att växelriktaren hinner frigöra anslutningen. Detta minskar flödet av timeout- och 'out of sync'-fel."
-    },
-    "2.9.5": {
-        "en": "Reliability: disabled Nagle's algorithm (TCP_NODELAY) on the Modbus connection. This addresses inverters where a single read works but reading many registers in a row times out, which can appear as repeated timeouts and 'out of sync' errors.",
-        "sv": "Tillförlitlighet: inaktiverade Nagles algoritm (TCP_NODELAY) på Modbus-anslutningen. Detta åtgärdar växelriktare där en enskild avläsning fungerar men läsning av många register i följd får timeout, vilket kan visa sig som upprepade timeouts och 'out of sync'-fel."
-    },
-    "2.9.4": {
-        "en": "Fix: a slow inverter that timed out on a single register could get stuck and never start reporting after 2.9.3. Readings are tolerant of individual register timeouts again (the device keeps reporting the values it did get), while the connection is still automatically reset when it goes out of sync.",
-        "sv": "Rättning: en långsam växelriktare som fick timeout på ett enskilt register kunde fastna och aldrig börja rapportera efter 2.9.3. Avläsningar tål återigen timeout på enskilda register (enheten fortsätter rapportera de värden den fick), samtidigt som anslutningen fortfarande återställs automatiskt när den blir osynkroniserad."
-    },
-    "2.9.3": {
-        "en": "Stability: inverter and battery devices now recover automatically from Modbus communication drop-outs. Previously a single timed-out reading could leave the connection out of sync, causing a flood of 'OutOfSync' errors and no readings until the app was restarted. The connection is now reset as soon as it goes out of sync.",
-        "sv": "Stabilitet: växelriktare och batterienheter återhämtar sig nu automatiskt från avbrott i Modbus-kommunikationen. Tidigare kunde en enda avläsning som gick över tiden göra anslutningen osynkroniserad, vilket orsakade en störtflod av 'OutOfSync'-fel och inga avläsningar förrän appen startades om. Anslutningen återställs nu så snart den blir osynkroniserad."
-    },
-    "2.9.2": {
-        "en": "Stability: fixed app crashes that appeared as '[object Object]' in crash reports. Transient Modbus errors (for example during connection drops or reading device properties) are now handled and logged readably instead of surfacing as unhandled errors.",
-        "sv": "Stabilitet: rättade appkrascher som visades som '[object Object]' i kraschrapporter. Tillfälliga Modbus-fel (till exempel vid avbrott i anslutningen eller vid läsning av enhetsegenskaper) hanteras nu och loggas läsbart istället för att dyka upp som ohanterade fel."
-    },
-    "2.9.1": {
-        "en": "Hybrid inverters (Sunny Boy Smart Energy, STP SE) no longer report battery discharge as solar production, which fixes inflated consumption in Homey Energy. These inverters now report PV power and daily PV yield instead of AC output. Battery devices now expose charged and discharged energy (kWh) so they show up correctly in the Energy flow, and the missing voltage, current, temperature and charging status are fixed for Sunny Boy Smart Energy.",
-        "sv": "Hybridväxelriktare (Sunny Boy Smart Energy, STP SE) räknar inte längre batteriurladdning som solproduktion, vilket rättar den felaktigt höga förbrukningen i Homey Energy. Dessa växelriktare visar nu PV-effekt och daglig PV-produktion istället för AC-effekt. Batterienheter visar nu laddad och urladdad energi (kWh) så att de syns korrekt i energiflödet, och saknad spänning, ström, temperatur och laddningsstatus är åtgärdade för Sunny Boy Smart Energy."
-    },
-    "2.9.0": {
-        "en": "New action 'Set active power curtailment (%)' for repeated/automated inverter control without flash memory wear (writes register 40023). Requires external control to be enabled in EnnexOS or Sunny Portal beforehand. The existing 'Limit the active power output' action remains for one-time setup; its hint now clearly warns about flash wear with repeated use.",
-        "sv": "Ny händelse 'Sätt aktiv effektbegränsning (%)' för upprepad/automatiserad styrning av växelriktaren utan slitage på flashminnet (skriver till register 40023). Kräver att extern styrning aktiverats i EnnexOS eller Sunny Portal i förväg. Den befintliga händelsen 'Begränsa den aktiva effekten' finns kvar för engångsinställning; dess beskrivning varnar nu tydligt för flashslitage vid upprepad användning."
-    },
-    "2.8.5": {
-        "en": "Modernised internal code for storage and PVOutput devices, cleaned up unused dependencies, and removed bundled documentation from the published bundle.",
-        "sv": "Moderniserad intern kod för storage och PVOutput-enheter, ryckte bort oanvända beroenden, och tog bort medföljande dokumentation från det publicerade paketet."
-    },
-    "2.8.4": {
-        "en": "Hardened error logging to never produce '[object Object]' for non-Error rejections",
-        "sv": "Förbättrad felloggning så att '[object Object]' inte längre kan visas för fel som inte är Error-objekt"
-    },
-    "2.8.3": {
-        "en": "Maintenance",
-        "sv": "Underhåll"
-    },
-    "2.8.1": {
-        "en": "Improved error handling when no energy meters are found",
-        "sv": "Förbättrad felhantering när ingen energimätare hittas"
-    },
-    "2.8.0": {
-        "en": "Added repair functionality for inverter and battery drivers, including UI enhancements and localization support",
-        "sv": "Lade till reparationsfunktion för växelriktare och batteridrivrutiner, inklusive UI förbättringar och lokalisering"
-    },
-    "2.7.9": {
-        "en": "Added a new action card to set the export limit for the energy device. The limit is set in percentage of the total power of all PV inverters connected to the Home Manager device. The Home Manager device needs to be configured for this to work.",
-        "sv": "Lade till en ny händelse för att sätta export gränsen för energi enheten. Gränsen sätts i procent av den totala effekten av alla växelriktare som är anslutna till Home Manager-enheten. Home Manager-enheten måste konfigureras för detta att fungera."
-    },
-    "2.7.8": {
-        "en": "Added a hint to the limit of active power output action, informing users of the use of local FLASH storage inside the inverter.",
-        "sv": "Lade till en hint till begränsa aktiv ut-effekt händelse, informerar användare om användningen av lokal FLASH lagring i växelriktaren."
-    },
-    "2.7.6": {
-        "en": "Removed battery related capabilities and properties",
-        "sv": "Radera batteri relaterade egenskaper och egenskaper"
-    },
-    "2.7.5": {
-        "en": "Fixed bug related to flow tokens for trigger cards",
-        "sv": "Fixat bugg relaterad till flödesvärden för triggers"
-    },
-    "2.7.4": {
-        "en": "Fixed bug related to setting the max active power output",
-        "sv": "Fixat bugg relaterad till att sätta den högsta aktiva ut-effekten"
-    },
-    "2.7.3": {
-        "en": "Maintenance",
-        "sv": "Underhåll"
-    },
-    "2.7.2": {
-        "en": "Added support for Homey Energy through a new battery device type. The old storage device type is deprecated and will be removed in a future version.",
-        "sv": "Lade till stöd för Homey Energy via en ny batteri enhetstyp. Den gamla lagrings enhetstypen är föråldrad och kommer att tas bort i en framtidig version."
-    },
-    "2.7.0": {
-        "en": "Maintenance",
-        "sv": "Underhåll"
-    },
-    "2.6.9": {
-        "en": "Removed surplus power capability for the energy device, instead show negative value for grid power",
-        "sv": "Radera surplus effekt för elmätaren, istället visa negativt värde för uttag elnät"
-    },
-    "2.6.8": {
-        "en": "Maintenance",
-        "sv": "Underhåll"
-    },
-    "2.6.7": {
-        "en": "Added support for MPP C voltage and power for inverters with 3 MPPs",
-        "sv": "Lade till stöd för MPP C spänning och effekt för växelriktare med 3 MPPs"
-    },
-    "2.6.5": {
-        "en": "Support for the Sunny Boy Smart Energy inverters",
-        "sv": "Stöd för Sunny Boy Smart Energy växelriktare"
-    },
-    "2.6.4": {
-        "en": "Energy Summary widget",
-        "sv": "Energisammanställnings widget"
-    },
-    "2.6.3": {
-        "en": "Maintenance",
-        "sv": "Underhåll"
-    },
-    "2.6.2": {
-        "en": "Support for the Tripower CORE1 inverters",
-        "sv": "Stöd för Tripower CORE1 växelriktare"
-    },
-    "2.5.8": {
-        "en": "Support for the Tripower X inverters",
-        "sv": "Stöd för Tripower X växelriktare"
-    },
-    "2.5.7": {
-        "en": "Battery inverters can be added using the inverter device type",
-        "sv": "Batteriväxelriktare kan läggas till med växelriktar enhetstypen"
-    },
-    "2.5.4": {
-        "en": "Voltage for all three phases are now available for energy devices",
-        "sv": "Spänning för alla tre faser är nu tillgängliga för energi enheter"
-    },
-    "2.5.3": {
-        "en": "It is now possible to set the max active power output for an inverter",
-        "sv": "Det är nu möjligt att begränsa den högsta möjliga ut-effekten på en växelriktare"
-    },
-    "2.5.0": {
-        "en": "Support for the STP SE hybrid inverters",
-        "sv": "Stöd för STP SE hybrid växelriktare"
-    },
-    "2.4.9": {
-        "en": "Maintenance",
-        "sv": "Förbättrad stabilitet"
-    },
-    "2.4.6": {
-        "en": "Fixed bug that occured when adding new energy meter or inverter",
-        "sv": "Fixat en bugg relaterat till parning med energimätare och växelriktare"
-    },
-    "2.4.5": {
-        "en": "Fixed the nightly reset of the manually calculated daily yield",
-        "sv": "Fixat den nattliga reset av den manuellt uträknade dagliga produktionen"
-    },
-    "2.4.4": {
-        "en": "Improved timer lifecycle handling",
-        "sv": "Förbättrad hantering av timers"
-    },
-    "2.4.2": {
-        "en": "Improved error handling",
-        "sv": "Förbättrad felhantering"
-    },
-    "2.4.1": {
-        "en": "Lifetime import/export/consumption capabilities added for energy and summary devices. Note! Lifetime yield for inverters are changed to kWh instead of MWh.",
-        "sv": "Livstid import/export/konsumption tillagt till elmätare och energisammanställning enheterna. OBS! Notera att liftids produktion för växelrikare är ändrad från MWh till kWh."
-    },
-    "2.4.0": {
-        "en": "New device icons! The lifetime energy import and export are now exposed as flow tokens from the energy device type.",
-        "sv": "Nya enhetsikoner! Energi för import och export exponeras som flödesvärden från elmätarenheten."
-    },
-    "2.3.9": {
-        "en": "An inverter now also displays AC voltage for L2 and L3",
-        "sv": "Växelriktare visar nu även AC spänning för L2 och L3"
-    },
-    "2.3.8": {
-        "en": "New version of the Energy Summary device",
-        "sv": "Ny version av Energisammanställning enheten"
-    },
-    "2.3.7": {
-        "en": "Fixed bug related to adding new inverter",
-        "sv": "Löst problem vid tillägg av ny växelriktare"
-    },
-    "2.3.6": {
-        "en": "Fixed bug related to adding new inverter",
-        "sv": "Löst problem vid tillägg av ny växelriktare"
-    },
-    "2.3.5": {
-        "en": "Improved discovery of Inverters",
-        "sv": "Förbättrad login vid tillägg av ny växelriktare"
-    },
-    "2.3.4": {
-        "en": "Fixed PVOutbut yield bug",
-        "sv": "Fixat PVOutput bugg relaterat till yield"
-    },
-    "2.3.3": {
-        "en": "Maintenance",
-        "sv": "Förbättrad stabilitet"
-    },
-    "2.3.2": {
-        "en": "Improved Energy Meter support",
-        "sv": "Förbättrad hantering av energimätare"
-    },
-    "2.3.1": {
-        "en": "Fixed timezone offset for PVOutput",
-        "sv": "Rättade tidszon för PVOutput"
-    },
-    "2.3.0": {
-        "en": "App upgraded to Homey SDK version 3",
-        "sv": "Uppgradering till Homey SDK version 3"
-    },
-    "2.2.2": {
-        "en": "Improved discovery for energy meter devices",
-        "sv": "Förbättrad upptäckt av elmätare"
-    },
-    "2.2.1": {
-        "en": "Improved discovery for energy meter devices",
-        "sv": "Förbättrad upptäckt av elmätare"
-    },
-    "2.2.0": {
-        "en": "Added missing operational status values",
-        "sv": "Lade till saknade statuskoder"
-    },
-    "2.1.9": {
-        "en": "New inverter power condition",
-        "sv": "Nytt villkor för effekt"
-    },
-    "2.1.8": {
-        "en": "Swedish language improvements",
-        "sv": "Förbättrad översättning till svenska"
-    },
-    "2.1.7": {
-        "en": "Swedish language improvements",
-        "sv": "Förbättrad översättning till svenska"
-    },
-    "2.1.6": {
-        "en": "Fixed PVOutput bug which caused missing reports"
-    },
-    "2.1.5": {
-        "en": "Eliminated a bug which caused app to crash"
-    },
-    "2.1.4": {
-        "en": "Filter out negative daily yield values"
-    },
-    "2.1.3": {
-        "en": "More accurate daily yield reported to PVOutput.org"
-    },
-    "2.1.2": {
-        "en": "Added manually calculated daily yield for inverters that miss this functionality"
-    },
-    "2.1.1": {
-        "en": "Added MPP A and B power capabilities to the summary device"
-    },
-    "2.1.0": {
-        "en": "Added MPP A and B power capabilities to Inverter devices that supports it"
-    },
-    "2.0.9": {
-        "en": "Added frequency capability to Energy Meter / Home Manager devices"
-    },
-    "2.0.8": {
-        "en": "Filter out unknown condition status for inverter device type. Added Swedish language support"
-    },
-    "2.0.7": {
-        "en": "PVOutput date bug solved"
-    },
-    "2.0.6": {
-        "en": "You can now report your inverter(s) status to PVOutput.org"
-    },
-    "2.0.5": {
-        "en": "Enhanced energy meter readings to use SMA obis identifiers"
-    },
-    "2.0.4": {
-        "en": "Support for SB AV-40 inverters. New inverter condition trigger."
-    },
-    "2.0.3": {
-        "en": "Enhanced wizard for adding inverters which allows to manually add the IP address of the inverter if auto-discovery doesn't find any inverters."
-    },
-    "2.0.2": {
-        "en": "New Homey app store adoption"
-    },
-    "2.0.1": {
-        "en": "Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability. Load balancing feature added Energy Meter. "
-    },
-    "2.0.0": {
-        "en": "New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters. And tons more ..."
-    }
+  "2.9.11": {
+    "en": "Maintenance: internal diagnostics improvements, including detecting inverter models not yet supported by the app. No functional changes.",
+    "sv": "Underhåll: interna diagnostikförbättringar, inklusive upptäckt av växelriktarmodeller som appen ännu inte stöder. Inga funktionella ändringar."
+  },
+  "2.9.10": {
+    "en": "Maintenance: internal diagnostics improvements for troubleshooting the v13.3 communication issue. No functional changes.",
+    "sv": "Underhåll: interna diagnostikförbättringar för felsökning av kommunikationsproblemet i v13.3. Inga funktionella ändringar."
+  },
+  "2.9.9": {
+    "en": "Maintenance: minor diagnostics improvement for troubleshooting the v13.3 communication issue.",
+    "sv": "Underhåll: mindre diagnostikförbättring för felsökning av kommunikationsproblemet i v13.3."
+  },
+  "2.9.8": {
+    "en": "Diagnostics: added optional anonymous error reporting to help gauge how widely the v13.3 Modbus drop-outs affect different inverter models and Homey versions. The app now also logs the Modbus timeout that is in effect, and a fix ensures your timeout setting is kept after an automatic reconnect.",
+    "sv": "Diagnostik: lade till valfri anonym felrapportering för att bedöma hur brett v13.3 Modbus-avbrotten påverkar olika växelriktarmodeller och Homey-versioner. Appen loggar nu även vilken Modbus timeout som används, och en rättning gör att din timeout-inställning behålls efter en automatisk återanslutning."
+  },
+  "2.9.7": {
+    "en": "New setting: Modbus timeout (in seconds, default 5) for inverter and battery devices. If your inverter responds slowly, increasing this (for example to 10-15) can stop reads from timing out and desyncing the connection.",
+    "sv": "Ny inställning: Modbus timeout (i sekunder, standard 5) för växelriktar- och batterienheter. Om din växelriktare svarar långsamt kan en höjning (till exempel 10-15) förhindra att avläsningar får timeout och gör anslutningen osynkroniserad."
+  },
+  "2.9.6": {
+    "en": "Reliability: many inverters allow only a single Modbus connection and are slow to release it, so resetting the connection on every hiccup made things worse. The app now recovers in place and only resets the connection as a last resort after repeated failures, with a short pause so the inverter can free the connection. This reduces the flood of timeout and 'out of sync' errors.",
+    "sv": "Tillförlitlighet: många växelriktare tillåter bara en enda Modbus-anslutning och är långsamma med att frigöra den, så att återställa anslutningen vid varje litet fel gjorde det värre. Appen återhämtar sig nu på plats och återställer anslutningen först som en sista utväg efter upprepade fel, med en kort paus så att växelriktaren hinner frigöra anslutningen. Detta minskar flödet av timeout- och 'out of sync'-fel."
+  },
+  "2.9.5": {
+    "en": "Reliability: disabled Nagle's algorithm (TCP_NODELAY) on the Modbus connection. This addresses inverters where a single read works but reading many registers in a row times out, which can appear as repeated timeouts and 'out of sync' errors.",
+    "sv": "Tillförlitlighet: inaktiverade Nagles algoritm (TCP_NODELAY) på Modbus-anslutningen. Detta åtgärdar växelriktare där en enskild avläsning fungerar men läsning av många register i följd får timeout, vilket kan visa sig som upprepade timeouts och 'out of sync'-fel."
+  },
+  "2.9.4": {
+    "en": "Fix: a slow inverter that timed out on a single register could get stuck and never start reporting after 2.9.3. Readings are tolerant of individual register timeouts again (the device keeps reporting the values it did get), while the connection is still automatically reset when it goes out of sync.",
+    "sv": "Rättning: en långsam växelriktare som fick timeout på ett enskilt register kunde fastna och aldrig börja rapportera efter 2.9.3. Avläsningar tål återigen timeout på enskilda register (enheten fortsätter rapportera de värden den fick), samtidigt som anslutningen fortfarande återställs automatiskt när den blir osynkroniserad."
+  },
+  "2.9.3": {
+    "en": "Stability: inverter and battery devices now recover automatically from Modbus communication drop-outs. Previously a single timed-out reading could leave the connection out of sync, causing a flood of 'OutOfSync' errors and no readings until the app was restarted. The connection is now reset as soon as it goes out of sync.",
+    "sv": "Stabilitet: växelriktare och batterienheter återhämtar sig nu automatiskt från avbrott i Modbus-kommunikationen. Tidigare kunde en enda avläsning som gick över tiden göra anslutningen osynkroniserad, vilket orsakade en störtflod av 'OutOfSync'-fel och inga avläsningar förrän appen startades om. Anslutningen återställs nu så snart den blir osynkroniserad."
+  },
+  "2.9.2": {
+    "en": "Stability: fixed app crashes that appeared as '[object Object]' in crash reports. Transient Modbus errors (for example during connection drops or reading device properties) are now handled and logged readably instead of surfacing as unhandled errors.",
+    "sv": "Stabilitet: rättade appkrascher som visades som '[object Object]' i kraschrapporter. Tillfälliga Modbus-fel (till exempel vid avbrott i anslutningen eller vid läsning av enhetsegenskaper) hanteras nu och loggas läsbart istället för att dyka upp som ohanterade fel."
+  },
+  "2.9.1": {
+    "en": "Hybrid inverters (Sunny Boy Smart Energy, STP SE) no longer report battery discharge as solar production, which fixes inflated consumption in Homey Energy. These inverters now report PV power and daily PV yield instead of AC output. Battery devices now expose charged and discharged energy (kWh) so they show up correctly in the Energy flow, and the missing voltage, current, temperature and charging status are fixed for Sunny Boy Smart Energy.",
+    "sv": "Hybridväxelriktare (Sunny Boy Smart Energy, STP SE) räknar inte längre batteriurladdning som solproduktion, vilket rättar den felaktigt höga förbrukningen i Homey Energy. Dessa växelriktare visar nu PV-effekt och daglig PV-produktion istället för AC-effekt. Batterienheter visar nu laddad och urladdad energi (kWh) så att de syns korrekt i energiflödet, och saknad spänning, ström, temperatur och laddningsstatus är åtgärdade för Sunny Boy Smart Energy."
+  },
+  "2.9.0": {
+    "en": "New action 'Set active power curtailment (%)' for repeated/automated inverter control without flash memory wear (writes register 40023). Requires external control to be enabled in EnnexOS or Sunny Portal beforehand. The existing 'Limit the active power output' action remains for one-time setup; its hint now clearly warns about flash wear with repeated use.",
+    "sv": "Ny händelse 'Sätt aktiv effektbegränsning (%)' för upprepad/automatiserad styrning av växelriktaren utan slitage på flashminnet (skriver till register 40023). Kräver att extern styrning aktiverats i EnnexOS eller Sunny Portal i förväg. Den befintliga händelsen 'Begränsa den aktiva effekten' finns kvar för engångsinställning; dess beskrivning varnar nu tydligt för flashslitage vid upprepad användning."
+  },
+  "2.8.5": {
+    "en": "Modernised internal code for storage and PVOutput devices, cleaned up unused dependencies, and removed bundled documentation from the published bundle.",
+    "sv": "Moderniserad intern kod för storage och PVOutput-enheter, ryckte bort oanvända beroenden, och tog bort medföljande dokumentation från det publicerade paketet."
+  },
+  "2.8.4": {
+    "en": "Hardened error logging to never produce '[object Object]' for non-Error rejections",
+    "sv": "Förbättrad felloggning så att '[object Object]' inte längre kan visas för fel som inte är Error-objekt"
+  },
+  "2.8.3": {
+    "en": "Maintenance",
+    "sv": "Underhåll"
+  },
+  "2.8.1": {
+    "en": "Improved error handling when no energy meters are found",
+    "sv": "Förbättrad felhantering när ingen energimätare hittas"
+  },
+  "2.8.0": {
+    "en": "Added repair functionality for inverter and battery drivers, including UI enhancements and localization support",
+    "sv": "Lade till reparationsfunktion för växelriktare och batteridrivrutiner, inklusive UI förbättringar och lokalisering"
+  },
+  "2.7.9": {
+    "en": "Added a new action card to set the export limit for the energy device. The limit is set in percentage of the total power of all PV inverters connected to the Home Manager device. The Home Manager device needs to be configured for this to work.",
+    "sv": "Lade till en ny händelse för att sätta export gränsen för energi enheten. Gränsen sätts i procent av den totala effekten av alla växelriktare som är anslutna till Home Manager-enheten. Home Manager-enheten måste konfigureras för detta att fungera."
+  },
+  "2.7.8": {
+    "en": "Added a hint to the limit of active power output action, informing users of the use of local FLASH storage inside the inverter.",
+    "sv": "Lade till en hint till begränsa aktiv ut-effekt händelse, informerar användare om användningen av lokal FLASH lagring i växelriktaren."
+  },
+  "2.7.6": {
+    "en": "Removed battery related capabilities and properties",
+    "sv": "Radera batteri relaterade egenskaper och egenskaper"
+  },
+  "2.7.5": {
+    "en": "Fixed bug related to flow tokens for trigger cards",
+    "sv": "Fixat bugg relaterad till flödesvärden för triggers"
+  },
+  "2.7.4": {
+    "en": "Fixed bug related to setting the max active power output",
+    "sv": "Fixat bugg relaterad till att sätta den högsta aktiva ut-effekten"
+  },
+  "2.7.3": {
+    "en": "Maintenance",
+    "sv": "Underhåll"
+  },
+  "2.7.2": {
+    "en": "Added support for Homey Energy through a new battery device type. The old storage device type is deprecated and will be removed in a future version.",
+    "sv": "Lade till stöd för Homey Energy via en ny batteri enhetstyp. Den gamla lagrings enhetstypen är föråldrad och kommer att tas bort i en framtidig version."
+  },
+  "2.7.0": {
+    "en": "Maintenance",
+    "sv": "Underhåll"
+  },
+  "2.6.9": {
+    "en": "Removed surplus power capability for the energy device, instead show negative value for grid power",
+    "sv": "Radera surplus effekt för elmätaren, istället visa negativt värde för uttag elnät"
+  },
+  "2.6.8": {
+    "en": "Maintenance",
+    "sv": "Underhåll"
+  },
+  "2.6.7": {
+    "en": "Added support for MPP C voltage and power for inverters with 3 MPPs",
+    "sv": "Lade till stöd för MPP C spänning och effekt för växelriktare med 3 MPPs"
+  },
+  "2.6.5": {
+    "en": "Support for the Sunny Boy Smart Energy inverters",
+    "sv": "Stöd för Sunny Boy Smart Energy växelriktare"
+  },
+  "2.6.4": {
+    "en": "Energy Summary widget",
+    "sv": "Energisammanställnings widget"
+  },
+  "2.6.3": {
+    "en": "Maintenance",
+    "sv": "Underhåll"
+  },
+  "2.6.2": {
+    "en": "Support for the Tripower CORE1 inverters",
+    "sv": "Stöd för Tripower CORE1 växelriktare"
+  },
+  "2.5.8": {
+    "en": "Support for the Tripower X inverters",
+    "sv": "Stöd för Tripower X växelriktare"
+  },
+  "2.5.7": {
+    "en": "Battery inverters can be added using the inverter device type",
+    "sv": "Batteriväxelriktare kan läggas till med växelriktar enhetstypen"
+  },
+  "2.5.4": {
+    "en": "Voltage for all three phases are now available for energy devices",
+    "sv": "Spänning för alla tre faser är nu tillgängliga för energi enheter"
+  },
+  "2.5.3": {
+    "en": "It is now possible to set the max active power output for an inverter",
+    "sv": "Det är nu möjligt att begränsa den högsta möjliga ut-effekten på en växelriktare"
+  },
+  "2.5.0": {
+    "en": "Support for the STP SE hybrid inverters",
+    "sv": "Stöd för STP SE hybrid växelriktare"
+  },
+  "2.4.9": {
+    "en": "Maintenance",
+    "sv": "Förbättrad stabilitet"
+  },
+  "2.4.6": {
+    "en": "Fixed bug that occured when adding new energy meter or inverter",
+    "sv": "Fixat en bugg relaterat till parning med energimätare och växelriktare"
+  },
+  "2.4.5": {
+    "en": "Fixed the nightly reset of the manually calculated daily yield",
+    "sv": "Fixat den nattliga reset av den manuellt uträknade dagliga produktionen"
+  },
+  "2.4.4": {
+    "en": "Improved timer lifecycle handling",
+    "sv": "Förbättrad hantering av timers"
+  },
+  "2.4.2": {
+    "en": "Improved error handling",
+    "sv": "Förbättrad felhantering"
+  },
+  "2.4.1": {
+    "en": "Lifetime import/export/consumption capabilities added for energy and summary devices. Note! Lifetime yield for inverters are changed to kWh instead of MWh.",
+    "sv": "Livstid import/export/konsumption tillagt till elmätare och energisammanställning enheterna. OBS! Notera att liftids produktion för växelrikare är ändrad från MWh till kWh."
+  },
+  "2.4.0": {
+    "en": "New device icons! The lifetime energy import and export are now exposed as flow tokens from the energy device type.",
+    "sv": "Nya enhetsikoner! Energi för import och export exponeras som flödesvärden från elmätarenheten."
+  },
+  "2.3.9": {
+    "en": "An inverter now also displays AC voltage for L2 and L3",
+    "sv": "Växelriktare visar nu även AC spänning för L2 och L3"
+  },
+  "2.3.8": {
+    "en": "New version of the Energy Summary device",
+    "sv": "Ny version av Energisammanställning enheten"
+  },
+  "2.3.7": {
+    "en": "Fixed bug related to adding new inverter",
+    "sv": "Löst problem vid tillägg av ny växelriktare"
+  },
+  "2.3.6": {
+    "en": "Fixed bug related to adding new inverter",
+    "sv": "Löst problem vid tillägg av ny växelriktare"
+  },
+  "2.3.5": {
+    "en": "Improved discovery of Inverters",
+    "sv": "Förbättrad login vid tillägg av ny växelriktare"
+  },
+  "2.3.4": {
+    "en": "Fixed PVOutbut yield bug",
+    "sv": "Fixat PVOutput bugg relaterat till yield"
+  },
+  "2.3.3": {
+    "en": "Maintenance",
+    "sv": "Förbättrad stabilitet"
+  },
+  "2.3.2": {
+    "en": "Improved Energy Meter support",
+    "sv": "Förbättrad hantering av energimätare"
+  },
+  "2.3.1": {
+    "en": "Fixed timezone offset for PVOutput",
+    "sv": "Rättade tidszon för PVOutput"
+  },
+  "2.3.0": {
+    "en": "App upgraded to Homey SDK version 3",
+    "sv": "Uppgradering till Homey SDK version 3"
+  },
+  "2.2.2": {
+    "en": "Improved discovery for energy meter devices",
+    "sv": "Förbättrad upptäckt av elmätare"
+  },
+  "2.2.1": {
+    "en": "Improved discovery for energy meter devices",
+    "sv": "Förbättrad upptäckt av elmätare"
+  },
+  "2.2.0": {
+    "en": "Added missing operational status values",
+    "sv": "Lade till saknade statuskoder"
+  },
+  "2.1.9": {
+    "en": "New inverter power condition",
+    "sv": "Nytt villkor för effekt"
+  },
+  "2.1.8": {
+    "en": "Swedish language improvements",
+    "sv": "Förbättrad översättning till svenska"
+  },
+  "2.1.7": {
+    "en": "Swedish language improvements",
+    "sv": "Förbättrad översättning till svenska"
+  },
+  "2.1.6": {
+    "en": "Fixed PVOutput bug which caused missing reports"
+  },
+  "2.1.5": {
+    "en": "Eliminated a bug which caused app to crash"
+  },
+  "2.1.4": {
+    "en": "Filter out negative daily yield values"
+  },
+  "2.1.3": {
+    "en": "More accurate daily yield reported to PVOutput.org"
+  },
+  "2.1.2": {
+    "en": "Added manually calculated daily yield for inverters that miss this functionality"
+  },
+  "2.1.1": {
+    "en": "Added MPP A and B power capabilities to the summary device"
+  },
+  "2.1.0": {
+    "en": "Added MPP A and B power capabilities to Inverter devices that supports it"
+  },
+  "2.0.9": {
+    "en": "Added frequency capability to Energy Meter / Home Manager devices"
+  },
+  "2.0.8": {
+    "en": "Filter out unknown condition status for inverter device type. Added Swedish language support"
+  },
+  "2.0.7": {
+    "en": "PVOutput date bug solved"
+  },
+  "2.0.6": {
+    "en": "You can now report your inverter(s) status to PVOutput.org"
+  },
+  "2.0.5": {
+    "en": "Enhanced energy meter readings to use SMA obis identifiers"
+  },
+  "2.0.4": {
+    "en": "Support for SB AV-40 inverters. New inverter condition trigger."
+  },
+  "2.0.3": {
+    "en": "Enhanced wizard for adding inverters which allows to manually add the IP address of the inverter if auto-discovery doesn't find any inverters."
+  },
+  "2.0.2": {
+    "en": "New Homey app store adoption"
+  },
+  "2.0.1": {
+    "en": "Battery added to Summary device. Please delete the Energy Summary device and add it again to see new capability. Load balancing feature added Energy Meter. "
+  },
+  "2.0.0": {
+    "en": "New device discovery method for inverters. Using Speedwire Device Discovery, the local network is queried for SMA inverters. And tons more ..."
+  },
+  "2.9.12": {
+    "en": "Reliability: register values are now grouped into fewer Modbus requests per poll (for example the battery device drops from 9 reads to 3). This lowers latency and reduces the timeouts and \"out of sync\" errors seen on slow or busy networks.",
+    "sv": "Tillförlitlighet: registervärden grupperas nu till färre Modbus-förfrågningar per avläsning (t.ex. minskar batterienheten från 9 till 3 avläsningar). Detta sänker fördröjningen och minskar de timeouts och \"out of sync\"-fel som uppstår på långsamma eller upptagna nätverk."
+  }
 }

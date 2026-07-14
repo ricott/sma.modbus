@@ -11,7 +11,7 @@ class PVOutputDriver extends Driver {
   }
 
   async onPair(session) {
-    let devices = [];
+    const devices = [];
     let settings;
 
     session.setHandler('settings', async (data) => {
@@ -27,7 +27,7 @@ class PVOutputDriver extends Driver {
       //Check that we have an inverter registered as a device
       //Validate pvoutput account by looking up system
       if (this.homey.drivers.getDriver('inverter').getDevices().length > 0) {
-        let client = new PVOutputClient({
+        const client = new PVOutputClient({
           apikey: settings.apikey,
           systemId: settings.systemid
         });

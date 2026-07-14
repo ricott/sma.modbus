@@ -30,7 +30,7 @@ class BatteryDriver extends Driver {
     }
 
     async onPair(session) {
-        let devices = [];
+        const devices = [];
         let mode;
         let settings;
 
@@ -129,7 +129,7 @@ class BatteryDriver extends Driver {
 
                 await session.showView('list_devices');
             } catch (error) {
-                throw new Error('Wrong IP number or port, no SMA device found');
+                throw new Error('Wrong IP number or port, no SMA device found', { cause: error });
             }
         });
 
@@ -145,7 +145,7 @@ class BatteryDriver extends Driver {
     async onRepair(session, device) {
         this.log(`[${device.getName()}] Starting repair process`);
         
-        let repairDevices = [];
+        const repairDevices = [];
         let mode = 'discovery';
         const deviceData = device.getData();
         const currentSerial = deviceData.id;
@@ -243,7 +243,7 @@ class BatteryDriver extends Driver {
                 this.log(`Manual repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                 await session.done(deviceSettings);
             } catch (error) {
-                throw new Error(`Unable to verify device identity. ${utilFunctions.formatError(error)}`);
+                throw new Error(`Unable to verify device identity. ${utilFunctions.formatError(error)}`, { cause: error });
             }
         });
     }

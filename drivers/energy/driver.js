@@ -27,9 +27,9 @@ class EnergyDriver extends Driver {
             this.log(`[${args.device.getName()}] Condition 'phaseUtilized' triggered`);
             this.log(`[${args.device.getName()}] Phase: '${args.phase}'`);
             this.log(`[${args.device.getName()}] Utilization: ${args.utilization}%`);
-            let phaseCurrent = args.device.getCapabilityValue(`measure_current.${args.phase}`);
+            const phaseCurrent = args.device.getCapabilityValue(`measure_current.${args.phase}`);
             this.log(`[${args.device.getName()}] - Phase current: ${phaseCurrent}A`);
-            let utilization = (phaseCurrent / args.device.energy.mainFuse) * 100;
+            const utilization = (phaseCurrent / args.device.energy.mainFuse) * 100;
             this.log(`[${args.device.getName()}] - Phase utlization: ${utilization}%`);
 
             if (utilization >= args.utilization) {
@@ -43,9 +43,9 @@ class EnergyDriver extends Driver {
         anyPhaseUtilized.registerRunListener(async (args, state) => {
             this.log(`[${args.device.getName()}] Condition 'anyPhaseUtilized' triggered`);
             this.log(`[${args.device.getName()}] Utilization: ${args.utilization}%`);
-            let utilizationL1 = (args.device.getCapabilityValue('measure_current.L1') / args.device.energy.mainFuse) * 100;
-            let utilizationL2 = (args.device.getCapabilityValue('measure_current.L2') / args.device.energy.mainFuse) * 100;
-            let utilizationL3 = (args.device.getCapabilityValue('measure_current.L3') / args.device.energy.mainFuse) * 100;
+            const utilizationL1 = (args.device.getCapabilityValue('measure_current.L1') / args.device.energy.mainFuse) * 100;
+            const utilizationL2 = (args.device.getCapabilityValue('measure_current.L2') / args.device.energy.mainFuse) * 100;
+            const utilizationL3 = (args.device.getCapabilityValue('measure_current.L3') / args.device.energy.mainFuse) * 100;
             this.log(`[${args.device.getName()}] - Phase utlization: ${utilizationL1}%, ${utilizationL2}%, ${utilizationL3}%`);
 
             if (utilizationL1 >= args.utilization || utilizationL2 >= args.utilization || utilizationL3 >= args.utilization) {
@@ -72,10 +72,10 @@ class EnergyDriver extends Driver {
     }
 
     async onPair(session) {
-        let devices = [];
+        const devices = [];
 
         session.setHandler('list_devices', async (data) => {
-            let emSession = new EnergyMeter({
+            const emSession = new EnergyMeter({
                 device: this
             });
             emSession.on('readings', readings => {

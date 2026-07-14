@@ -62,9 +62,9 @@ class InverterDevice extends ModbusDevice {
                     const activePower = Math.min(Number(this.getSetting('maxPower')), power);
                     await this.api.setMaxActivePowerOutput(activePower);
                 } catch (reason) {
-                    let msg = `Failed to set active power limit! Reason: ${utilFunctions.formatError(reason)}`;
+                    const msg = `Failed to set active power limit! Reason: ${utilFunctions.formatError(reason)}`;
                     this.error(msg);
-                    throw new Error(msg);
+                    throw new Error(msg, { cause: reason });
                 }
             });
             this.#capabilityListenersRegistered = true;
@@ -344,8 +344,8 @@ class InverterDevice extends ModbusDevice {
     async setupCapabilities() {
         this.log(`[${this.getName()}] Setting up capabilities`);
 
-        let capabilities = this.api.getDeviceCapabilities();
-        let capabilityKeys = Object.values(capabilities);
+        const capabilities = this.api.getDeviceCapabilities();
+        const capabilityKeys = Object.values(capabilities);
 
         for (const capability of deviceCapabilitesList) {
             if (capabilityKeys.includes(capability)) {

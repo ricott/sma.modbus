@@ -40,11 +40,7 @@ class InverterDriver extends Driver {
             this.log(`[${args.device.getName()}] - inverter.dailyYield: ${args.device.getCapabilityValue('meter_power')}`);
             this.log(`[${args.device.getName()}] - parameter yield: '${args.daily_yield}'`);
 
-            if (args.device.getCapabilityValue('meter_power') > args.daily_yield) {
-                return true;
-            } else {
-                return false;
-            }
+            return args.device.getCapabilityValue('meter_power') > args.daily_yield;
         });
 
         const isInverterStatus = this.homey.flow.getConditionCard('isInverterStatus');
@@ -53,25 +49,17 @@ class InverterDriver extends Driver {
             this.log(`[${args.device.getName()}] - inverter.status: ${args.device.getCapabilityValue('operational_status')}`);
             this.log(`[${args.device.getName()}] - parameter status: '${args.inverter_status}'`);
 
-            if (args.device.getCapabilityValue('operational_status').indexOf(args.inverter_status) > -1) {
-                return true;
-            } else {
-                return false;
-            }
+            return args.device.getCapabilityValue('operational_status').indexOf(args.inverter_status) > -1;
         });
 
         const power_condition = this.homey.flow.getConditionCard('power_condition');
         power_condition.registerRunListener(async (args, state) => {
             this.log(`[${args.device.getName()}] Condition 'power_condition' triggered`);
-            let power = args.device.getCapabilityValue('measure_power');
+            const power = args.device.getCapabilityValue('measure_power');
             this.log(`- inverter.power: ${power}`);
             this.log(`- parameter power: '${args.power}'`);
 
-            if (power < args.power) {
-                return true;
-            } else {
-                return false;
-            }
+            return power < args.power;
         });
 
         const set_target_power = this.homey.flow.getActionCard('set_target_power');
@@ -86,7 +74,7 @@ class InverterDriver extends Driver {
                     return Promise.resolve(true);
                 }).catch(reason => {
                     this.error(utilFunctions.formatError(reason));
-                    throw new Error(`Failed to set the active power output. Reason: ${utilFunctions.formatError(reason)}`);
+                    throw new Error(`Failed to set the active power output. Reason: ${utilFunctions.formatError(reason)}`, { cause: reason });
                 });
         });
 
@@ -100,7 +88,7 @@ class InverterDriver extends Driver {
                 return true;
             } catch (reason) {
                 this.error(utilFunctions.formatError(reason));
-                throw new Error(`Failed to set the active power curtailment. Reason: ${utilFunctions.formatError(reason)}`);
+                throw new Error(`Failed to set the active power curtailment. Reason: ${utilFunctions.formatError(reason)}`, { cause: reason });
             }
         });
     }
@@ -118,7 +106,7 @@ class InverterDriver extends Driver {
     }
 
     async onPair(session) {
-        let devices = [];
+        const devices = [];
         let mode;
         let settings;
 
@@ -218,7 +206,7 @@ class InverterDriver extends Driver {
 
                 await session.showView('list_devices');
             } catch (error) {
-                throw new Error('Wrong IP number or port, no SMA inverter found');
+                throw new Error('Wrong IP number or port, no SMA inverter found', { cause: error });
             }
         });
 
@@ -234,7 +222,7 @@ class InverterDriver extends Driver {
     async onRepair(session, device) {
         this.log(`[${device.getName()}] Starting repair process`);
 
-        let repairDevices = [];
+        const repairDevices = [];
         let mode = 'discovery';
         const deviceData = device.getData();
         const currentSerial = deviceData.id;
@@ -332,7 +320,7 @@ class InverterDriver extends Driver {
                 this.log(`Manual repair completed with settings: ${utilFunctions.formatError(deviceSettings)}`);
                 await session.done(deviceSettings);
             } catch (error) {
-                throw new Error(`Unable to verify device identity. ${utilFunctions.formatError(error)}`);
+                throw new Error(`Unable to verify device identity. ${utilFunctions.formatError(error)}`, { cause: error });
             }
         });
     }

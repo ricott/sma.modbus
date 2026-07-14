@@ -41,7 +41,7 @@ class SummaryDevice extends BaseDevice {
     }
 
     getInverterMPPConfig() {
-        let mpp = { MPP_A: true, MPP_A_LBL: '', MPP_B: true, MPP_B_LBL: '' };
+        const mpp = { MPP_A: true, MPP_A_LBL: '', MPP_B: true, MPP_B_LBL: '' };
         for (const inverter of this.homey.drivers.getDriver('inverter').getDevices()) {
 
             if (!inverter.hasCapability('measure_power.dcA')) {
@@ -80,7 +80,7 @@ class SummaryDevice extends BaseDevice {
             lifetime_export = lifetime_export + em.getCapabilityValue('meter_power.export');
         }
 
-        let consumption = power_pv - batteryPower + power_grid;
+        const consumption = power_pv - batteryPower + power_grid;
 
         await this._updateProperty('measure_power.battery', batteryPower);
         await this._updateProperty('measure_power.pv', power_pv);

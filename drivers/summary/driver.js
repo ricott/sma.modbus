@@ -9,7 +9,7 @@ class SummaryDriver extends Driver {
 	}
 
   async onPair (session) {
-    let devices = [];
+    const devices = [];
 
     session.setHandler('list_devices', async (data) => {
 

@@ -9,3 +9,6 @@ README.*
 .gitignore
 .github/
 sma.code-workspace
+
+# Linting
+eslint.config.js
