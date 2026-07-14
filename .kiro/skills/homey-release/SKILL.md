@@ -41,9 +41,14 @@ homey app version <patch|minor|major|X.Y.Z> \
   --changelog.en "<ENGLISH>" \
   --changelog.sv "<SWEDISH>"
 ```
-This updates `.homeycompose/app.json`, regenerates `app.json`, and prepends the
-entry to `.homeychangelog.json`. It does **not** manage `package.json`, so set
-its `version` to the same value manually. Confirm the result with `git diff`.
+This updates `.homeycompose/app.json` and regenerates `app.json`. **Caveat:** the
+CLI does *not* prepend the changelog entry — it **appends the new `X.Y.Z` block
+at the bottom of `.homeychangelog.json` and reformats the file to 2-space
+indent**, but this changelog is **newest-first**. After running the command,
+move the new entry to the top (right after the opening `{`) and verify with
+`node -e "console.log(Object.keys(require('./.homeychangelog.json'))[0])"` (should
+print the new version). It also does **not** manage `package.json`, so set its
+`version` to the same value manually. Confirm the result with `git diff`.
 
 (If editing by hand instead: bump the version in `.homeycompose/app.json` and
 `package.json`, and add the newest-first `{ "en": ..., "sv": ... }` entry to
@@ -57,16 +62,27 @@ Must end with: `validated successfully against level 'publish'`.
 This also regenerates `app.json` from `.homeycompose/app.json`.
 
 ## Step 4 — Commit + tag
-Tag convention is **v-prefixed** (e.g. `v0.4.1`). Review `git status` first, then
-stage the release files explicitly (avoid blind `git add -A`; do NOT stage
-`app.json` — it is gitignored):
+Tag convention is **v-prefixed** (e.g. `v2.9.12`). Use an **annotated** tag
+(`git tag -a`): a lightweight tag (`git tag <name>`) is NOT carried by
+`git push --follow-tags` and would have to be pushed separately. The default
+branch is **`master`**.
+
+Review `git status` first, then stage the release files explicitly (avoid blind
+`git add -A`; do NOT stage `app.json` — it is gitignored):
 ```
 git add .homeycompose/app.json package.json .homeychangelog.json
 # add any remaining source files that belong to this release
 git commit -m "chore(release): v<X.Y.Z>"
-git tag v<X.Y.Z>
-git push origin main --follow-tags
+git tag -a v<X.Y.Z> -m "v<X.Y.Z>"
+git push origin master --follow-tags
 ```
+Then confirm the tag reached the remote:
+```
+git ls-remote --tags origin | grep v<X.Y.Z>
+```
+If it is missing (e.g. a lightweight tag was created by mistake), push it
+explicitly with `git push origin v<X.Y.Z>`.
+
 Shortcut: `homey app version <next> --changelog.* --commit` does the bump +
 changelog + commit + tag in one step, but it runs *before* validation and does
 not touch `package.json`, so the explicit flow above is preferred.
@@ -88,4 +104,5 @@ treat it as a high-impact action and only proceed on the user's explicit go-ahea
 ## Notes
 - `test/` and `eslint.config.js` are excluded from the published bundle via
   `.homeyignore`.
-- Recent versions (0.3.x, 0.4.x) were not git-tagged; this flow restores tagging.
+- Releases before `v2.9.12` were not git-tagged; annotated tagging starts at
+  `v2.9.12`.
