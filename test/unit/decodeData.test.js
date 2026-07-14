@@ -59,6 +59,20 @@ test('decodeDeviceType maps a known type id and reports unknowns', () => {
     assert.match(decodeData.decodeDeviceType([0, 1]), /^UNKNOWN \(1\)$/);
 });
 
+test('decodeDeviceType returns the not-ready marker for the 0xFFFFFD sentinel', () => {
+    // 0x00FFFFFD = 16777213, SMA's "information not available" value returned by
+    // a device that is booting or asleep. Supplied as [highWord, lowWord].
+    assert.equal(decodeData.decodeDeviceType([0x00FF, 0xFFFD]), decodeData.DEVICE_NOT_READY);
+    // The sentinel must NOT be reported as an unsupported model...
+    assert.equal(/^UNKNOWN/.test(decodeData.decodeDeviceType([0x00FF, 0xFFFD])), false);
+});
+
+test('isDeviceNotReady only matches the not-ready marker', () => {
+    assert.equal(decodeData.isDeviceNotReady(decodeData.DEVICE_NOT_READY), true);
+    assert.equal(decodeData.isDeviceNotReady('STP 20000TL-30'), false);
+    assert.equal(decodeData.isDeviceNotReady('UNKNOWN (16777213)'), false);
+});
+
 test('decodeDeviceClass maps known classes and reports unknowns', () => {
     assert.equal(decodeData.decodeDeviceClass(8007), 'Battery Inverter');
     assert.equal(decodeData.decodeDeviceClass(8001), 'Solar Inverter');
