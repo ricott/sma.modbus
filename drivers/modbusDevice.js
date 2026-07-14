@@ -7,6 +7,7 @@ const logger = require('../lib/logger.js');
 class ModbusDevice extends BaseDevice {
 
     #lastDataReceived = null;
+    #sessionStartedAt = null;
     #availabilityWatchdog = null;
     #retryCount = 0;
     #maxRetries = 30; // Maximum number of consecutive retry attempts
@@ -49,8 +50,11 @@ class ModbusDevice extends BaseDevice {
     async #establishConnection(address, port, polling, timeout) {
         // Stop availability watchdog while (re)connecting
         this.#stopAvailabilityWatchdog();
-        // Reset availability state
+        // Reset availability state. Keep a session start timestamp so a device
+        // that never produces its first valid reading is still covered by the
+        // watchdog instead of remaining available forever.
         this.#lastDataReceived = null;
+        this.#sessionStartedAt = Date.now();
 
         await this.destroySession();
         await this.setupSession(address, port, polling, timeout);
@@ -88,6 +92,7 @@ class ModbusDevice extends BaseDevice {
         // Reset reconnection state
         this.#isReconnecting = false;
         this.#retryCount = 0;
+        this.#sessionStartedAt = null;
         // Stop availability watchdog
         this.#stopAvailabilityWatchdog();
         this.destroySession();
@@ -195,14 +200,15 @@ class ModbusDevice extends BaseDevice {
     }
 
     async #checkDataTimeout() {
-        if (!this.#lastDataReceived) {
-            return; // No data received yet, don't mark as unavailable
+        const dataReferenceTime = this.#lastDataReceived || this.#sessionStartedAt;
+        if (!dataReferenceTime) {
+            return;
         }
 
         const now = Date.now();
         const polling = this.getSetting('polling') || 10;
         const timeoutThreshold = polling * 2 * 1000; // 2x polling interval
-        const timeSinceLastData = now - this.#lastDataReceived;
+        const timeSinceLastData = now - dataReferenceTime;
 
         if (timeSinceLastData > timeoutThreshold) {
             if (this.getAvailable()) {

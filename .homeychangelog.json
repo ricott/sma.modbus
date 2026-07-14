@@ -1,4 +1,8 @@
 {
+  "2.10.0": {
+    "en": "Improved Modbus connection reliability and recovery, reducing repeated inverter dropouts and preventing failed reads from replacing valid measurements.",
+    "sv": "Förbättrad tillförlitlighet och återhämtning för Modbus-anslutningar, vilket minskar upprepade avbrott för växelriktare och förhindrar att misslyckade avläsningar ersätter giltiga mätvärden."
+  },
   "2.9.12": {
     "en": "Reliability: register values are now grouped into fewer Modbus requests per poll (for example the battery device drops from 9 reads to 3). This lowers latency and reduces the timeouts and \"out of sync\" errors seen on slow or busy networks.",
     "sv": "Tillförlitlighet: registervärden grupperas nu till färre Modbus-förfrågningar per avläsning (t.ex. minskar batterienheten från 9 till 3 avläsningar). Detta sänker fördröjningen och minskar de timeouts och \"out of sync\"-fel som uppstår på långsamma eller upptagna nätverk."
