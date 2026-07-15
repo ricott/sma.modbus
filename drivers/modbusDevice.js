@@ -4,6 +4,8 @@ const BaseDevice = require('./baseDevice.js');
 const utilFunctions = require('../lib/util.js');
 const logger = require('../lib/logger.js');
 
+const MINIMUM_AVAILABILITY_GRACE_PERIOD_MS = 5 * 60 * 1000;
+
 class ModbusDevice extends BaseDevice {
 
     #lastDataReceived = null;
@@ -207,7 +209,10 @@ class ModbusDevice extends BaseDevice {
 
         const now = Date.now();
         const polling = this.getSetting('polling') || 10;
-        const timeoutThreshold = polling * 2 * 1000; // 2x polling interval
+        // Brief Modbus dropouts commonly recover on their own. Keep the device
+        // available for at least five minutes while retaining its last valid
+        // values; unusually long polling intervals still get two full cycles.
+        const timeoutThreshold = Math.max(MINIMUM_AVAILABILITY_GRACE_PERIOD_MS, polling * 2 * 1000);
         const timeSinceLastData = now - dataReferenceTime;
 
         if (timeSinceLastData > timeoutThreshold) {

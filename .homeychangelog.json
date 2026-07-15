@@ -1,4 +1,8 @@
 {
+  "2.10.1": {
+    "en": "Reliability: devices now wait at least five minutes without valid Modbus data before showing a communication warning. This avoids false unavailable warnings during short dropouts while retaining the last good values.",
+    "sv": "Tillförlitlighet: enheter väntar nu minst fem minuter utan giltiga Modbus-data innan en kommunikationsvarning visas. Detta undviker felaktiga varningar om att enheten inte är tillgänglig vid korta avbrott, samtidigt som de senaste giltiga värdena behålls."
+  },
   "2.10.0": {
     "en": "Improved Modbus connection reliability and recovery, reducing repeated inverter dropouts and preventing failed reads from replacing valid measurements.",
     "sv": "Förbättrad tillförlitlighet och återhämtning för Modbus-anslutningar, vilket minskar upprepade avbrott för växelriktare och förhindrar att misslyckade avläsningar ersätter giltiga mätvärden."
