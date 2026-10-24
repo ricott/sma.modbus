@@ -1,0 +1,37 @@
+{
+    "id": "grid_connection_status_changed",
+    "title": {
+        "en": "Grid connection status changed",
+        "nl": "Status netaansluiting gewijzigd",
+        "sv": "Status för nätanslutning ändrad"
+    },
+    "titleFormatted": {
+        "en": "Grid connection status changed to [[grid_connection_status]]",
+        "nl": "Status netaansluiting gewijzigd naar [[grid_connection_status]]",
+        "sv": "Status för nätanslutning ändrades till [[grid_connection_status]]"
+    },
+    "hint": {
+        "en": "Sunny Island only. Fires when the external power connection changes, e.g. between 'Mains connected' and 'Backup'."
+    },
+    "tokens": [
+        {
+            "name": "grid_connection_status",
+            "type": "string",
+            "title": {
+                "en": "Grid connection status",
+                "nl": "Status netaansluiting",
+                "sv": "Status för nätanslutning"
+            },
+            "example": {
+                "en": "Mains connected"
+            }
+        }
+    ],
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=battery&capabilities=grid_connection_status"
+        }
+    ]
+}

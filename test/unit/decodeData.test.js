@@ -91,3 +91,12 @@ test('WH/KWH/MWH formatters convert as expected', () => {
     assert.equal(decodeData.formatKWHasWH(1.5), 1500);
     assert.equal(decodeData.formatWHasMWH(1500000), 1.5);
 });
+
+test('decodeGridConnectionStatus maps Sunny Island power supply codes', () => {
+    assert.equal(decodeData.decodeGridConnectionStatus([0, 303]), 'Off');
+    assert.equal(decodeData.decodeGridConnectionStatus([0, 1461]), 'Mains connected');
+    assert.equal(decodeData.decodeGridConnectionStatus([0, 1462]), 'Backup not available');
+    assert.equal(decodeData.decodeGridConnectionStatus([0, 1463]), 'Backup');
+    assert.equal(decodeData.decodeGridConnectionStatus([0x00FF, 0xFFFD]), 'Information not available');
+    assert.equal(decodeData.decodeGridConnectionStatus([0, 1]), 'UNKNOWN (1)');
+});

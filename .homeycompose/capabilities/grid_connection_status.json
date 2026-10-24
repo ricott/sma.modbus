@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Grid Connection",
+    "nl": "Netaansluiting",
+    "sv": "Nätanslutning"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/operational_status.svg"
+}

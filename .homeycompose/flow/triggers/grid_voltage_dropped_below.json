@@ -1,0 +1,58 @@
+{
+    "id": "grid_voltage_dropped_below",
+    "title": {
+        "en": "Grid voltage dropped below",
+        "nl": "Netspanning gedaald onder",
+        "sv": "Nätspänning sjönk under"
+    },
+    "titleFormatted": {
+        "en": "Grid voltage on [[phase]] dropped below [[voltage]] V",
+        "nl": "Netspanning op [[phase]] gedaald onder [[voltage]] V",
+        "sv": "Nätspänning på [[phase]] sjönk under [[voltage]] V"
+    },
+    "hint": {
+        "en": "Sunny Island only. Fires once when the voltage of the external power connection crosses below the threshold."
+    },
+    "tokens": [
+        {
+            "name": "phase",
+            "type": "string",
+            "title": { "en": "Phase", "nl": "Fase", "sv": "Fas" },
+            "example": { "en": "L1" }
+        },
+        {
+            "name": "voltage",
+            "type": "number",
+            "title": { "en": "Voltage (V)", "nl": "Spanning (V)", "sv": "Spänning (V)" },
+            "example": 180
+        }
+    ],
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=battery&capabilities=measure_voltage.grid_l1"
+        },
+        {
+            "name": "phase",
+            "type": "dropdown",
+            "values": [
+                { "id": "any", "label": { "en": "any phase", "nl": "een fase", "sv": "någon fas" } },
+                { "id": "L1", "label": { "en": "L1" } },
+                { "id": "L2", "label": { "en": "L2" } },
+                { "id": "L3", "label": { "en": "L3" } }
+            ]
+        },
+        {
+            "name": "voltage",
+            "type": "number",
+            "min": 0,
+            "max": 500,
+            "title": {
+                "en": "Voltage (V)",
+                "nl": "Spanning (V)",
+                "sv": "Spänning (V)"
+            }
+        }
+    ]
+}

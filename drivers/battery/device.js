@@ -5,6 +5,14 @@ const Battery = require('../../lib/devices/battery.js');
 const decodeData = require('../../lib/modbus/decodeData.js');
 const utilFunctions = require('../../lib/util.js');
 
+// External grid connection capabilities, only exposed by Sunny Island devices
+const gridCapabilities = {
+    'measure_voltage.grid_l1': { en: 'Grid voltage L1', nl: 'Netspanning L1', sv: 'Nätspänning L1' },
+    'measure_voltage.grid_l2': { en: 'Grid voltage L2', nl: 'Netspanning L2', sv: 'Nätspänning L2' },
+    'measure_voltage.grid_l3': { en: 'Grid voltage L3', nl: 'Netspanning L3', sv: 'Nätspänning L3' },
+    'grid_connection_status': null
+};
+
 class BatteryDevice extends ModbusDevice {
 
     async onInit() {
@@ -88,8 +96,55 @@ class BatteryDevice extends ModbusDevice {
                 this._updateProperty('meter_power.charged', decodeData.formatWHasKWH(readings.batteryChargeTotal || 0)),
                 this._updateProperty('meter_power.discharged', decodeData.formatWHasKWH(readings.batteryDischargeTotal || 0))
             ]);
+
+            await this.updateGridReadings(readings);
         } catch (err) {
             this.error(`Failed to update readings: ${utilFunctions.formatError(err)}`);
+        }
+    }
+
+    async updateGridReadings(readings) {
+        const phases = { L1: readings.gridVoltageL1, L2: readings.gridVoltageL2, L3: readings.gridVoltageL3 };
+        for (const [phase, voltage] of Object.entries(phases)) {
+            const capability = `measure_voltage.grid_${phase.toLowerCase()}`;
+            if (voltage == null || !this.hasCapability(capability)) {
+                continue;
+            }
+
+            const previous = this.getCapabilityValue(capability);
+            await this._updateProperty(capability, voltage);
+            if (previous != null && voltage !== previous) {
+                await this.driver.triggerGridVoltageChanged(this, { phase, voltage }, { phase, voltage, previous });
+            }
+        }
+
+        const status = readings.gridConnectionStatus;
+        if (status && !status.startsWith('UNKNOWN')) {
+            await this._updateProperty('grid_connection_status', status);
+        }
+    }
+
+    async setupGridCapabilities() {
+        const capabilityKeys = Object.values(this.api.getDeviceCapabilities());
+
+        for (const [capability, title] of Object.entries(gridCapabilities)) {
+            if (capabilityKeys.includes(capability)) {
+                await this.addCapabilityHelper(capability);
+                if (title) {
+                    await this.updateCapabilityOptions(capability, { title });
+                }
+            } else {
+                await this.removeCapabilityHelper(capability);
+            }
+        }
+    }
+
+    async _handlePropertyTriggers(key, value) {
+        if (key === 'grid_connection_status') {
+            const tokens = {
+                grid_connection_status: value || 'n/a'
+            };
+            await this.driver.triggerGridConnectionStatusChanged(this, tokens).catch(error => { this.error(utilFunctions.formatError(error)) });
         }
     }
 
@@ -101,6 +156,9 @@ class BatteryDevice extends ModbusDevice {
                 serialNo: String(properties.serialNo),
                 swVersion: String(properties.swVersion || 'unknown')
             });
+
+            // When properties are read we have the device type needed to know capabilities
+            await this.setupGridCapabilities();
         } catch (err) {
             this.error(`Failed to update settings: ${utilFunctions.formatError(err)}`);
         }

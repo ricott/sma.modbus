@@ -15,6 +15,50 @@ class BatteryDriver extends Driver {
         if (!this.homey.settings.get('port')) {
             this.homey.settings.set('port', 502);
         }
+
+        this._registerFlows();
+    }
+
+    async triggerGridConnectionStatusChanged(device, tokens) {
+        await this._grid_connection_status_changed.trigger(device, tokens, {}).catch(error => { this.error(utilFunctions.formatError(error)) });
+    }
+
+    async triggerGridVoltageChanged(device, tokens, state) {
+        await this._grid_voltage_dropped_below.trigger(device, tokens, state).catch(error => { this.error(utilFunctions.formatError(error)) });
+    }
+
+    _registerFlows() {
+        this.log('Registering flows');
+
+        // Register device triggers
+        this._grid_connection_status_changed = this.homey.flow.getDeviceTriggerCard('grid_connection_status_changed');
+
+        this._grid_voltage_dropped_below = this.homey.flow.getDeviceTriggerCard('grid_voltage_dropped_below');
+        this._grid_voltage_dropped_below.registerRunListener(async (args, state) => {
+            // Only fire when the voltage crosses the threshold, not on every reading below it
+            return (args.phase === 'any' || args.phase === state.phase) &&
+                state.previous >= args.voltage && state.voltage < args.voltage;
+        });
+
+        // Register conditions
+        const grid_voltage_below = this.homey.flow.getConditionCard('grid_voltage_below');
+        grid_voltage_below.registerRunListener(async (args, state) => {
+            const phases = args.phase === 'any' ? ['L1', 'L2', 'L3'] : [args.phase];
+            const voltages = phases
+                .map(phase => args.device.getCapabilityValue(`measure_voltage.grid_${phase.toLowerCase()}`))
+                .filter(voltage => voltage != null);
+            this.log(`[${args.device.getName()}] Condition 'grid_voltage_below' phase '${args.phase}', voltages '${voltages}', threshold '${args.voltage}'`);
+
+            return voltages.some(voltage => voltage < args.voltage);
+        });
+
+        const isGridConnectionStatus = this.homey.flow.getConditionCard('isGridConnectionStatus');
+        isGridConnectionStatus.registerRunListener(async (args, state) => {
+            const status = args.device.getCapabilityValue('grid_connection_status');
+            this.log(`[${args.device.getName()}] Condition 'isGridConnectionStatus' status '${status}', parameter '${args.status}'`);
+
+            return status === args.status;
+        });
     }
 
     isDeviceNew(deviceId) {

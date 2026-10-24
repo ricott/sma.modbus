@@ -1,0 +1,44 @@
+{
+    "id": "grid_voltage_below",
+    "title": {
+        "en": "Grid voltage is !{{below|not below}}",
+        "nl": "Netspanning is !{{lager dan|niet lager dan}}",
+        "sv": "Nätspänning är !{{under|inte under}}"
+    },
+    "titleFormatted": {
+        "en": "Grid voltage on [[phase]] is !{{below|not below}} [[voltage]] V",
+        "nl": "Netspanning op [[phase]] is !{{lager dan|niet lager dan}} [[voltage]] V",
+        "sv": "Nätspänning på [[phase]] är !{{under|inte under}} [[voltage]] V"
+    },
+    "hint": {
+        "en": "Sunny Island only. With 'any phase' the condition is true when at least one phase is below the threshold."
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=battery&capabilities=measure_voltage.grid_l1"
+        },
+        {
+            "name": "phase",
+            "type": "dropdown",
+            "values": [
+                { "id": "any", "label": { "en": "any phase", "nl": "een fase", "sv": "någon fas" } },
+                { "id": "L1", "label": { "en": "L1" } },
+                { "id": "L2", "label": { "en": "L2" } },
+                { "id": "L3", "label": { "en": "L3" } }
+            ]
+        },
+        {
+            "name": "voltage",
+            "type": "number",
+            "min": 0,
+            "max": 500,
+            "title": {
+                "en": "Voltage (V)",
+                "nl": "Spanning (V)",
+                "sv": "Spänning (V)"
+            }
+        }
+    ]
+}

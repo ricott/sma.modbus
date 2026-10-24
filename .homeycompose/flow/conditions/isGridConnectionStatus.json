@@ -1,0 +1,30 @@
+{
+    "id": "isGridConnectionStatus",
+    "title": {
+        "en": "Grid connection status !{{is|is not}}",
+        "nl": "Status netaansluiting !{{is|is niet}}",
+        "sv": "Status för nätanslutning !{{är|är inte}}"
+    },
+    "titleFormatted": {
+        "en": "Grid connection status !{{is|is not}} [[status]]",
+        "nl": "Status netaansluiting !{{is|is niet}} [[status]]",
+        "sv": "Status för nätanslutning !{{är|är inte}} [[status]]"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=battery&capabilities=grid_connection_status"
+        },
+        {
+            "name": "status",
+            "type": "dropdown",
+            "values": [
+                { "id": "Mains connected", "label": { "en": "Mains connected", "nl": "Net aangesloten", "sv": "Nät anslutet" } },
+                { "id": "Backup", "label": { "en": "Backup", "nl": "Noodstroom", "sv": "Reservkraft" } },
+                { "id": "Backup not available", "label": { "en": "Backup not available", "nl": "Noodstroom niet beschikbaar", "sv": "Reservkraft ej tillgänglig" } },
+                { "id": "Off", "label": { "en": "Off", "nl": "Uit", "sv": "Av" } }
+            ]
+        }
+    ]
+}
