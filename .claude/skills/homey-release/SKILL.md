@@ -1,5 +1,5 @@
 ---
-name: Homey App Release
+name: homey-release
 description: >-
   Cut and publish a new release of the SMA Energy Homey app. Use when the user
   asks to make a new release, bump the version and publish, or ship the app to
@@ -27,7 +27,6 @@ npm test
 npm run lint
 ```
 Fix failures before continuing. Lint *warnings* are acceptable; *errors* are not.
-Optionally run `npm run test:integration` if the device is reachable.
 
 ## Step 2 — Bump version + changelog
 Bump the version in the two tracked files: `.homeycompose/app.json` (source of
@@ -88,9 +87,10 @@ changelog + commit + tag in one step, but it runs *before* validation and does
 not touch `package.json`, so the explicit flow above is preferred.
 
 ## Step 5 — Publish (interactive; user runs this)
-`homey app publish` has **no flags** to skip its prompts (CLI v4.4.0), and an
-automated shell cannot answer them. Do not attempt to run it non-interactively.
-Tell the user to run it in their terminal:
+`homey app publish` has **no flags** to skip its prompts (checked up to CLI v4.6.1),
+and an automated shell cannot answer them. Do not attempt to run it non-interactively.
+Tell the user to run it in their own terminal (or, in the Claude desktop app,
+open it in a Terminal panel tab for them to answer the prompts):
 ```
 homey app publish
 ```
