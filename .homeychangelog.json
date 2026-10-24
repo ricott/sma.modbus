@@ -1,4 +1,8 @@
 {
+  "2.11.0": {
+    "en": "Sunny Island: the Battery device now shows the external grid voltage per phase and the grid connection status (mains connected / backup), with new flow cards to react when the grid voltage drops or the connection status changes.",
+    "sv": "Sunny Island: Batteri-enheten visar nu extern nätspänning per fas och status för nätanslutningen (nät anslutet / reservkraft), med nya flödeskort för när nätspänningen sjunker eller anslutningsstatusen ändras."
+  },
   "2.10.4": {
     "en": "Manual pairing now accepts an address entered as \"IP:port\" and, when a device cannot be reached, explains what to check - including that Modbus has to be enabled on the SMA device. Device search also releases its network port afterwards, so a repeated search no longer risks finding nothing.",
     "sv": "Manuell parkoppling accepterar nu adresser angivna som \"IP:port\" och förklarar, när en enhet inte kan nås, vad som bör kontrolleras - bland annat att Modbus måste vara aktiverat i SMA-enheten. Enhetssökningen frigör dessutom sin nätverksport efteråt, så att en upprepad sökning inte riskerar att inte hitta något."
